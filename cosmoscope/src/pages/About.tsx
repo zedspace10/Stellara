@@ -1,0 +1,159 @@
+import { Link } from "wouter";
+import { Heart, Star, Globe, BookOpen, Telescope, ChevronRight } from "lucide-react";
+import Footer from "@/components/Footer";
+
+export default function About() {
+  return (
+    <div className="min-h-screen pt-20 pb-16" style={{ background: "linear-gradient(180deg, #020208 0%, #05050f 100%)" }}>
+      <div className="max-w-2xl mx-auto px-5 py-10">
+
+        <div className="text-center mb-14">
+          <h1
+            className="text-4xl md:text-5xl font-bold text-white mb-3"
+            style={{ fontFamily: "Orbitron, sans-serif", letterSpacing: "0.08em" }}
+          >
+            STELLARA
+          </h1>
+          <p className="text-base" style={{ color: "rgba(255,255,255,0.45)" }}>
+            Explore the Universe, One Star at a Time
+          </p>
+        </div>
+
+        <Section icon={<Globe className="w-4 h-4" />} title="What is STELLARA?" color="#4fc3f7">
+          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
+            STELLARA is a free, open astronomy and cosmology platform built for everyone — from curious
+            ten-year-olds to seasoned stargazers. We believe that the universe belongs to everyone, and that
+            access to genuine scientific wonder should never cost anything.
+          </p>
+          <p className="text-sm leading-relaxed mt-3" style={{ color: "rgba(255,255,255,0.7)" }}>
+            You can explore our Solar System in 3D, journey from the Planck length to the Observable Universe,
+            discover tonight's sky, read daily imagery from NASA, and ask any question about space to our AI guide.
+          </p>
+        </Section>
+
+        <Section icon={<Star className="w-4 h-4" />} title="Why we built it" color="#ffd54f">
+          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
+            Space exploration tools have historically been locked behind expensive software, paywalled journals,
+            or cluttered with ads. STELLARA was built because we thought that was wrong.
+          </p>
+          <p className="text-sm leading-relaxed mt-3" style={{ color: "rgba(255,255,255,0.7)" }}>
+            The universe is the greatest story ever told. It deserves a beautiful, free, accessible platform
+            to explore it. That's what we're building.
+          </p>
+        </Section>
+
+        <Section icon={<Heart className="w-4 h-4" />} title="Our mission" color="#9c27b0">
+          <ul className="space-y-2">
+            {[
+              "Make space science accessible to everyone, everywhere",
+              "Inspire the next generation of astronomers and scientists",
+              "Donate telescopes to UK schools and community groups",
+              "Keep STELLARA free, forever — no ads, no premium tiers",
+              "Build with scientific accuracy and genuine wonder",
+            ].map((item, i) => (
+              <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "rgba(255,255,255,0.65)" }}>
+                <span style={{ color: "#9c27b0" }}>·</span> {item}
+              </li>
+            ))}
+          </ul>
+        </Section>
+
+        <Section icon={<BookOpen className="w-4 h-4" />} title="Technology" color="#4fc3f7">
+          <div className="space-y-1.5">
+            {[
+              ["3D Universe", "Three.js — real-time solar system, galaxy, and cosmic web rendering"],
+              ["Imagery", "NASA APOD API · ESA · Webb Space Telescope"],
+              ["Space data", "SpaceX · launch trackers · live ISS data"],
+              ["Ask the Universe", "Anthropic Claude — AI science educator"],
+              ["Platform", "React · Vite · Tailwind — open source"],
+            ].map(([name, desc]) => (
+              <div key={name} className="flex gap-3 text-sm">
+                <span className="shrink-0 font-semibold" style={{ color: "#4fc3f7", minWidth: "120px" }}>{name}</span>
+                <span style={{ color: "rgba(255,255,255,0.5)" }}>{desc}</span>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section icon={<Telescope className="w-4 h-4" />} title="Support STELLARA" color="#ffd54f" accent>
+          <p className="text-sm leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>
+            STELLARA is a Community Interest Company — a non-profit structure that legally commits all
+            revenue to our social mission. We are funded entirely by donations and grants.
+          </p>
+          <p className="text-sm leading-relaxed mb-5" style={{ color: "rgba(255,255,255,0.7)" }}>
+            If STELLARA has shown you something extraordinary, you can help keep it that way.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <a
+              href="https://ko-fi.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all"
+              style={{
+                background: "rgba(255,213,79,0.15)",
+                border: "1px solid rgba(255,213,79,0.4)",
+                color: "#ffd54f",
+                fontFamily: "Orbitron, sans-serif",
+                fontSize: "12px",
+                letterSpacing: "0.05em",
+              }}
+            >
+              <Heart className="w-4 h-4" /> Support on Ko-fi
+            </a>
+          </div>
+          <p className="text-xs mt-4" style={{ color: "rgba(255,255,255,0.3)" }}>
+            Even £1 helps. Thank you.
+          </p>
+          <div className="mt-3 text-xs space-y-1" style={{ color: "rgba(255,255,255,0.35)" }}>
+            <p>Your support funds:</p>
+            {[
+              "Keeping STELLARA free for everyone",
+              "Ask the Universe AI feature",
+              "Telescope donations to UK schools",
+              "New features and improvements",
+            ].map((item, i) => (
+              <p key={i}>· {item}</p>
+            ))}
+          </div>
+        </Section>
+
+        <div className="mt-10 text-center">
+          <Link href="/">
+            <button
+              className="flex items-center gap-2 mx-auto text-sm transition-colors"
+              style={{ color: "#4fc3f7" }}
+            >
+              Open Interactive Universe <ChevronRight className="w-4 h-4" />
+            </button>
+          </Link>
+        </div>
+
+      </div>
+      <Footer />
+    </div>
+  );
+}
+
+function Section({
+  icon, title, color, accent, children,
+}: {
+  icon: React.ReactNode; title: string; color: string; accent?: boolean; children: React.ReactNode;
+}) {
+  return (
+    <div
+      className="rounded-2xl p-5 mb-4"
+      style={{
+        background: accent ? "rgba(255,213,79,0.03)" : "rgba(255,255,255,0.03)",
+        border: `1px solid ${accent ? "rgba(255,213,79,0.12)" : "rgba(255,255,255,0.07)"}`,
+      }}
+    >
+      <div className="flex items-center gap-2 mb-4">
+        <span style={{ color }}>{icon}</span>
+        <h2 className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
+          {title}
+        </h2>
+      </div>
+      {children}
+    </div>
+  );
+}
