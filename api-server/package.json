@@ -2,10 +2,10 @@
   "name": "stellara-api-server",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node18 --outfile=dist/index.mjs --format=esm --external:pino --external:pino-http",
-    "start": "node --enable-source-maps ./dist/index.mjs"
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node18 --outfile=dist/index.js --format=cjs --external:pino --external:pino-http --external:pino-pretty",
+    "start": "node --enable-source-maps ./dist/index.js"
   },
   "dependencies": {
     "cookie-parser": "^1.4.7",
