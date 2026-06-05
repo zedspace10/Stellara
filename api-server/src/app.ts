@@ -25,7 +25,14 @@ app.use(
     },
   }),
 );
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://stellaraspace.com',
+    'https://www.stellaraspace.com',
+    'https://stellara-production.up.railway.app'
+  ],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
