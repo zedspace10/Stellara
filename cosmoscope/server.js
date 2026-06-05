@@ -12,8 +12,12 @@ const API_URL = process.env.API_URL || 'https://intuitive-reflection-production.
 app.use('/api', createProxyMiddleware({
   target: API_URL,
   changeOrigin: true,
+  on: {
+    proxyReq: (proxyReq) => {
+      proxyReq.path = '/api' + proxyReq.path;
+    }
+  }
 }));
-
 // Serve static files
 app.use(express.static(path.join(__dirname, 'dist/public')));
 
