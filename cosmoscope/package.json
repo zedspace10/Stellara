@@ -72,15 +72,9 @@
   },
   "dependencies": {
     "@types/three": "^0.184.1",
+    "express": "^4.18.2",
+    "http-proxy-middleware": "^3.0.0",
     "react-markdown": "^10.1.0",
     "three": "^0.184.0"
-    "dependencies": {
-    "@types/three": "^0.184.1",
-    "react-markdown": "^10.1.0",
-    "three": "^0.184.0",
-    "express": "^4.18.2",
-    "http-proxy-middleware": "^3.0.0"
-  }
-}
   }
 }
