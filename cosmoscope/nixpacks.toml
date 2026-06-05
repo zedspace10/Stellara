@@ -6,6 +6,7 @@ cmds = ['pnpm install --no-frozen-lockfile']
 
 [phases.build]
 cmds = ['pnpm run build']
+envVars = ['VITE_API_URL']
 
 [start]
 cmd = 'pnpm run serve'
