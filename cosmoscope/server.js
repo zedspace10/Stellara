@@ -8,16 +8,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const API_URL = process.env.API_URL || 'https://intuitive-reflection-production.up.railway.app';
 
-// Proxy /api requests to api-server
+// Proxy /api requests — keep the full path including /api
 app.use('/api', createProxyMiddleware({
   target: API_URL,
   changeOrigin: true,
-  on: {
-    proxyReq: (proxyReq) => {
-      proxyReq.path = '/api' + proxyReq.path;
-    }
-  }
+  pathRewrite: { '^/': '/api/' },
 }));
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'dist/public')));
 
