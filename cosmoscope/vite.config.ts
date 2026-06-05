@@ -5,6 +5,8 @@ import path from "path";
 
 const port = Number(process.env.PORT) || 3000;
 const basePath = process.env.BASE_PATH || '/';
+const apiUrl = process.env.API_URL || 'https://intuitive-reflection-production.up.railway.app';
+
 export default defineConfig({
   base: basePath,
   plugins: [
@@ -28,6 +30,13 @@ export default defineConfig({
     strictPort: true,
     host: "0.0.0.0",
     allowedHosts: true,
+    proxy: {
+      '/api': {
+        target: apiUrl,
+        changeOrigin: true,
+        secure: true,
+      }
+    },
     fs: {
       strict: true,
     },
@@ -36,5 +45,12 @@ export default defineConfig({
     port,
     host: "0.0.0.0",
     allowedHosts: true,
+    proxy: {
+      '/api': {
+        target: apiUrl,
+        changeOrigin: true,
+        secure: true,
+      }
+    },
   },
 });
