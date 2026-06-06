@@ -131,7 +131,7 @@ export default function AskTheUniverse() {
     const history = messages.map((m) => ({ role: m.role, content: m.content }));
 
     try {
-      const res = await fetch("/api/ask", {
+ const res = await fetch("/api/ask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question, history }),

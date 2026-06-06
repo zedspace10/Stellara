@@ -1,0 +1,12 @@
+[phases.setup]
+nixPkgs = ['nodejs_18', 'nodePackages.pnpm']
+
+[phases.install]
+cmds = ['pnpm install --no-frozen-lockfile']
+
+[phases.build]
+cmds = ['pnpm run build']
+envVars = ['VITE_API_URL']
+
+[start]
+cmd = 'pnpm run serve'
