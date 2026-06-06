@@ -28,12 +28,12 @@ For unanswerable questions reply with: "Nobody knows — and that's one of the m
 For questions outside scope reply with: "That's outside my universe — I'm built for space and astronomy questions."`;
 
 router.post("/ask", async (req, res) => {
-  const apiKey = process.env["ANTHROPIC_API_KEY"];
+  const apiKey = process.env["OPENAI_API_KEY"];
 
   if (!apiKey) {
     res.status(503).json({
       error: "ask_unavailable",
-      message: "Ask the Universe is not yet configured. The ANTHROPIC_API_KEY environment variable is required.",
+      message: "Ask the Universe is not yet configured. The OPENAI_API_KEY environment variable is required.",
     });
     return;
   }
@@ -54,43 +54,44 @@ router.post("/ask", async (req, res) => {
   }
 
   const messages = [
+    { role: "system" as const, content: SYSTEM_PROMPT },
     ...history.slice(-20),
     { role: "user" as const, content: question },
   ];
 
   try {
-    const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
+        "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-6",
+        model: "gpt-4o-mini",
         max_tokens: 1024,
-        system: SYSTEM_PROMPT,
         messages,
       }),
     });
 
-    if (anthropicRes.status === 429) {
+    if (openaiRes.status === 429) {
+      const body429 = await openaiRes.text();
+      req.log.warn({ body: body429 }, "OpenAI rate limit");
       res.status(429).json({ error: "rate_limit", message: "Very popular right now. Please try again in a moment." });
       return;
     }
 
-    if (!anthropicRes.ok) {
-      const errBody = await anthropicRes.text();
-      req.log.error({ status: anthropicRes.status, body: errBody }, "Anthropic API error");
+    if (!openaiRes.ok) {
+      const errBody = await openaiRes.text();
+      req.log.error({ status: openaiRes.status, body: errBody }, "OpenAI API error");
       res.status(502).json({ error: "upstream_error", message: "Something went wrong in the void. Please try again." });
       return;
     }
 
-    const data = await anthropicRes.json() as {
-      content: Array<{ type: string; text: string }>;
+    const data = await openaiRes.json() as {
+      choices: Array<{ message: { content: string } }>;
     };
 
-    const rawText = data.content[0]?.text ?? "";
+    const rawText = data.choices[0]?.message?.content ?? "";
 
     const followUpsMatch = rawText.match(/FOLLOW_UPS:\s*(.+)$/m);
     const followUps = followUpsMatch

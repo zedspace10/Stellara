@@ -169,7 +169,7 @@ export default function BigBangSim() {
     geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
 
     const material = new THREE.PointsMaterial({
-      size: 1.35,
+      size: 2.0,
       vertexColors: true,
       transparent: true,
       opacity: 0.9,

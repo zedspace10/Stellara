@@ -42,6 +42,7 @@ function getMoonPhaseName(age: number) {
 export default function TonightsSky() {
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [usingFallback, setUsingFallback] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const requestLocation = () => {
@@ -54,8 +55,10 @@ export default function TonightsSky() {
           });
           setError(null);
         },
-        (err) => {
-          setError("Location access denied. Using generic northern hemisphere sky map.");
+        () => {
+          // Denied — fall back to London so content still shows
+          setLocation({ lat: 51.5074, lon: -0.1278 });
+          setUsingFallback(true);
         }
       );
     } else {
@@ -178,6 +181,12 @@ export default function TonightsSky() {
           </CardContent>
         </Card>
       ) : (
+        <>
+        {usingFallback && (
+          <p className="text-center text-sm text-amber-400/80 mb-6">
+            Showing sky for London, UK — enable location for your local sky
+          </p>
+        )}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
             <Card className="bg-card/40 backdrop-blur-md border-white/10 overflow-hidden">
@@ -187,7 +196,7 @@ export default function TonightsSky() {
                   {location && (
                     <span className="text-xs bg-white/10 px-2 py-1 rounded text-primary flex items-center gap-1">
                       <MapPin className="w-3 h-3" />
-                      {location.lat.toFixed(2)}°, {location.lon.toFixed(2)}°
+                      {usingFallback ? "London, UK" : `${location.lat.toFixed(2)}°, ${location.lon.toFixed(2)}°`}
                     </span>
                   )}
                 </div>
@@ -275,6 +284,7 @@ export default function TonightsSky() {
             </Card>
           </div>
         </div>
+        </>
       )}
 
       {/* Additional Content Sections */}

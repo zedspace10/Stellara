@@ -37,6 +37,7 @@ import About from "@/pages/About";
 import BlackHoles from "@/pages/BlackHoles";
 import Constellations from "@/pages/Constellations";
 import Glossary from "@/pages/Glossary";
+import BuildYourOwnUniverse from "@/pages/BuildYourOwnUniverse";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +72,7 @@ function Router() {
         <Route path="/constellations" component={Constellations} />
         <Route path="/glossary" component={Glossary} />
         <Route path="/history" component={Discover} />
+        <Route path="/build-universe" component={BuildYourOwnUniverse} />
         <Route component={NotFound} />
       </Switch>
     </AnimatePresence>
@@ -105,7 +107,7 @@ function App() {
           >
             <StarField />
             <Navigation />
-            <main className="relative z-10">
+            <main className="relative z-10 pb-20 md:pb-0">
               <Router />
             </main>
           </motion.div>

@@ -33,7 +33,7 @@ export function makeParticleMaterial(options: {
   vertexColors?: boolean;
   color?: number;
 }): THREE.PointsMaterial {
-  const { size = 1.0, opacity = 0.9, vertexColors = true, color = 0xffffff } = options;
+  const { size = 2.0, opacity = 0.9, vertexColors = true, color = 0xffffff } = options;
   return new THREE.PointsMaterial({
     size,
     opacity,

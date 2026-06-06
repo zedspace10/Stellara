@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { X, Heart } from "lucide-react";
+import { X } from "lucide-react";
 
 const NAV_ITEMS = [
   {
@@ -28,6 +28,7 @@ const NAV_ITEMS = [
     label: "LEARN",
     items: [
       { id: "simulations", label: "Simulations", path: "/simulations" },
+      { id: "build-universe", label: "Build Your Own Universe", path: "/build-universe" },
       { id: "blackholes", label: "Black Holes & Relativity", path: "/blackholes" },
       { id: "education", label: "Education Centre", path: "/education" },
       { id: "blog", label: "Blog", path: "/blog" },
@@ -37,88 +38,10 @@ const NAV_ITEMS = [
   },
 ];
 
-function DonationModal({ onClose }: { onClose: () => void }) {
-  return (
-    <div
-      className="fixed inset-0 z-[300] flex items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(8px)" }}
-      onClick={onClose}
-    >
-      <div
-        className="relative w-full max-w-md rounded-2xl p-8"
-        style={{
-          background: "rgba(10,10,26,0.98)",
-          border: "1px solid rgba(255,213,79,0.25)",
-          boxShadow: "0 0 60px rgba(255,213,79,0.08)",
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-1 rounded-full"
-          style={{ color: "rgba(255,255,255,0.4)" }}
-        >
-          <X className="w-4 h-4" />
-        </button>
-        <div className="text-center mb-6">
-          <div className="text-3xl mb-3">✨</div>
-          <h2
-            className="text-lg font-bold tracking-widest text-white mb-2"
-            style={{ fontFamily: "Orbitron, sans-serif", letterSpacing: "0.12em" }}
-          >
-            SUPPORT STELLARA
-          </h2>
-          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>
-            STELLARA is free. Always will be.
-            <br />
-            If it moved you, help keep it that way.
-          </p>
-        </div>
-        <div className="space-y-3 mb-6">
-          {[
-            "Server hosting and compute costs",
-            "AI query budget (Ask the Universe)",
-            "New features and improvements",
-            "Keeping it ad-free forever",
-          ].map((item) => (
-            <div key={item} className="flex items-center gap-3">
-              <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: "#ffd54f" }} />
-              <span className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
-                {item}
-              </span>
-            </div>
-          ))}
-        </div>
-        <a
-          href="https://ko-fi.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm transition-all"
-          style={{
-            background: "linear-gradient(135deg, rgba(255,213,79,0.15) 0%, rgba(255,143,0,0.15) 100%)",
-            border: "1px solid rgba(255,213,79,0.4)",
-            color: "#ffd54f",
-            fontFamily: "Orbitron, sans-serif",
-            letterSpacing: "0.08em",
-            fontSize: "12px",
-          }}
-        >
-          <Heart className="w-4 h-4" />
-          Support on Ko-fi
-        </a>
-        <p className="text-center text-[11px] mt-4" style={{ color: "rgba(255,255,255,0.2)" }}>
-          STELLARA · Community Interest Company · No pressure, ever.
-        </p>
-      </div>
-    </div>
-  );
-}
-
 export default function Navigation() {
   const [location, navigate] = useLocation();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [mobileDrawer, setMobileDrawer] = useState<string | null>(null);
-  const [showDonation, setShowDonation] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -278,23 +201,20 @@ export default function Navigation() {
             );
           })}
 
-          {/* Donation button */}
-          <button
-            onClick={() => setShowDonation(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all duration-150"
+          {/* ABOUT direct link */}
+          <Link
+            href="/about"
+            className="py-1 px-1 transition-colors duration-150"
             style={{
               fontFamily: "Orbitron, sans-serif",
-              fontSize: "10px",
-              letterSpacing: "0.08em",
+              fontSize: "11px",
+              letterSpacing: "0.1em",
               fontWeight: 700,
-              background: "transparent",
-              border: "1px solid rgba(255,213,79,0.2)",
-              color: "rgba(255,213,79,0.6)",
+              color: location === "/about" ? "#ffd54f" : "rgba(255,255,255,0.75)",
             }}
           >
-            <Heart className="w-3 h-3" />
-            SUPPORT
-          </button>
+            ABOUT
+          </Link>
 
           {/* ASK pill */}
           <Link
@@ -333,12 +253,6 @@ export default function Navigation() {
             <span style={{ color: "#ffd54f" }}>A</span>
           </span>
         </Link>
-        <button
-          onClick={() => setShowDonation(true)}
-          style={{ color: "rgba(255,213,79,0.5)" }}
-        >
-          <Heart className="w-4 h-4" />
-        </button>
       </header>
 
       {/* Mobile bottom tab bar */}
@@ -369,6 +283,15 @@ export default function Navigation() {
             </button>
           );
         })}
+        <Link
+          href="/about"
+          className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5 transition-colors"
+          style={{ color: location === "/about" ? "#4fc3f7" : "rgba(255,255,255,0.4)" }}
+        >
+          <span className="text-[10px] font-bold tracking-widest" style={{ fontFamily: "Orbitron, sans-serif" }}>
+            ABOUT
+          </span>
+        </Link>
         <Link
           href="/ask"
           className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5"
@@ -431,7 +354,6 @@ export default function Navigation() {
         </div>
       )}
 
-      {showDonation && <DonationModal onClose={() => setShowDonation(false)} />}
     </>
   );
 }

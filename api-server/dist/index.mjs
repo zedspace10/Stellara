@@ -20494,27 +20494,27 @@ var require_router = __commonJS({
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var methods = METHODS.map((method) => method.toLowerCase());
-    module.exports = Router5;
+    module.exports = Router6;
     module.exports.Route = Route;
-    function Router5(options) {
-      if (!(this instanceof Router5)) {
-        return new Router5(options);
+    function Router6(options) {
+      if (!(this instanceof Router6)) {
+        return new Router6(options);
       }
       const opts = options || {};
-      function router4(req, res, next) {
-        router4.handle(req, res, next);
+      function router5(req, res, next) {
+        router5.handle(req, res, next);
       }
-      Object.setPrototypeOf(router4, this);
-      router4.caseSensitive = opts.caseSensitive;
-      router4.mergeParams = opts.mergeParams;
-      router4.params = {};
-      router4.strict = opts.strict;
-      router4.stack = [];
-      return router4;
+      Object.setPrototypeOf(router5, this);
+      router5.caseSensitive = opts.caseSensitive;
+      router5.mergeParams = opts.mergeParams;
+      router5.params = {};
+      router5.strict = opts.strict;
+      router5.stack = [];
+      return router5;
     }
-    Router5.prototype = function() {
+    Router6.prototype = function() {
     };
-    Router5.prototype.param = function param(name, fn) {
+    Router6.prototype.param = function param(name, fn) {
       if (!name) {
         throw new TypeError("argument name is required");
       }
@@ -20534,7 +20534,7 @@ var require_router = __commonJS({
       params.push(fn);
       return this;
     };
-    Router5.prototype.handle = function handle(req, res, callback) {
+    Router6.prototype.handle = function handle(req, res, callback) {
       if (!callback) {
         throw new TypeError("argument callback is required");
       }
@@ -20661,7 +20661,7 @@ var require_router = __commonJS({
         }
       }
     };
-    Router5.prototype.use = function use(handler) {
+    Router6.prototype.use = function use(handler) {
       let offset = 0;
       let path = "/";
       if (typeof handler !== "function") {
@@ -20694,7 +20694,7 @@ var require_router = __commonJS({
       }
       return this;
     };
-    Router5.prototype.route = function route(path) {
+    Router6.prototype.route = function route(path) {
       const route2 = new Route(path);
       const layer = new Layer(path, {
         sensitive: this.caseSensitive,
@@ -20709,7 +20709,7 @@ var require_router = __commonJS({
       return route2;
     };
     methods.concat("all").forEach(function(method) {
-      Router5.prototype[method] = function(path) {
+      Router6.prototype[method] = function(path) {
         const route = this.route(path);
         route[method].apply(route, slice.call(arguments, 1));
         return this;
@@ -20892,13 +20892,13 @@ var require_application = __commonJS({
     var compileTrust = require_utils3().compileTrust;
     var resolve = __require("node:path").resolve;
     var once = require_once();
-    var Router5 = require_router();
+    var Router6 = require_router();
     var slice = Array.prototype.slice;
     var flatten = Array.prototype.flat;
     var app2 = exports = module.exports = {};
     var trustProxyDefaultSymbol = "@@symbol:trust_proxy_default";
     app2.init = function init() {
-      var router4 = null;
+      var router5 = null;
       this.cache = /* @__PURE__ */ Object.create(null);
       this.engines = /* @__PURE__ */ Object.create(null);
       this.settings = /* @__PURE__ */ Object.create(null);
@@ -20907,13 +20907,13 @@ var require_application = __commonJS({
         configurable: true,
         enumerable: true,
         get: function getrouter() {
-          if (router4 === null) {
-            router4 = new Router5({
+          if (router5 === null) {
+            router5 = new Router6({
               caseSensitive: this.enabled("case sensitive routing"),
               strict: this.enabled("strict routing")
             });
           }
-          return router4;
+          return router5;
         }
       });
     };
@@ -20984,15 +20984,15 @@ var require_application = __commonJS({
       if (fns.length === 0) {
         throw new TypeError("app.use() requires a middleware function");
       }
-      var router4 = this.router;
+      var router5 = this.router;
       fns.forEach(function(fn2) {
         if (!fn2 || !fn2.handle || !fn2.set) {
-          return router4.use(path, fn2);
+          return router5.use(path, fn2);
         }
         debug(".use app under %s", path);
         fn2.mountpath = path;
         fn2.parent = this;
-        router4.use(path, function mounted_app(req, res, next) {
+        router5.use(path, function mounted_app(req, res, next) {
           var orig = req.app;
           fn2.handle(req, res, function(err) {
             Object.setPrototypeOf(req, orig.request);
@@ -23565,7 +23565,7 @@ var require_express = __commonJS({
     var EventEmitter = __require("node:events").EventEmitter;
     var mixin = require_merge_descriptors();
     var proto = require_application();
-    var Router5 = require_router();
+    var Router6 = require_router();
     var req = require_request();
     var res = require_response();
     exports = module.exports = createApplication;
@@ -23587,8 +23587,8 @@ var require_express = __commonJS({
     exports.application = proto;
     exports.request = req;
     exports.response = res;
-    exports.Route = Router5.Route;
-    exports.Router = Router5;
+    exports.Route = Router6.Route;
+    exports.Router = Router6;
     exports.json = bodyParser.json;
     exports.raw = bodyParser.raw;
     exports.static = require_serve_static();
@@ -28447,12 +28447,12 @@ var require_logger = __commonJS({
 });
 
 // src/app.ts
-var import_express5 = __toESM(require_express2(), 1);
+var import_express6 = __toESM(require_express2(), 1);
 var import_cors = __toESM(require_lib3(), 1);
 var import_pino_http = __toESM(require_logger(), 1);
 
 // src/routes/index.ts
-var import_express4 = __toESM(require_express2(), 1);
+var import_express5 = __toESM(require_express2(), 1);
 
 // src/routes/health.ts
 var import_express = __toESM(require_express2(), 1);
@@ -32393,11 +32393,11 @@ For unanswerable questions reply with: "Nobody knows \u2014 and that's one of th
 
 For questions outside scope reply with: "That's outside my universe \u2014 I'm built for space and astronomy questions."`;
 router2.post("/ask", async (req, res) => {
-  const apiKey = process.env["ANTHROPIC_API_KEY"];
+  const apiKey = process.env["OPENAI_API_KEY"];
   if (!apiKey) {
     res.status(503).json({
       error: "ask_unavailable",
-      message: "Ask the Universe is not yet configured. The ANTHROPIC_API_KEY environment variable is required."
+      message: "Ask the Universe is not yet configured. The OPENAI_API_KEY environment variable is required."
     });
     return;
   }
@@ -32411,36 +32411,37 @@ router2.post("/ask", async (req, res) => {
     return;
   }
   const messages = [
+    { role: "system", content: SYSTEM_PROMPT },
     ...history.slice(-20),
     { role: "user", content: question }
   ];
   try {
-    const anthropicRes = await fetch("https://api.anthropic.com/v1/messages", {
+    const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01"
+        "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-6",
+        model: "gpt-4o-mini",
         max_tokens: 1024,
-        system: SYSTEM_PROMPT,
         messages
       })
     });
-    if (anthropicRes.status === 429) {
+    if (openaiRes.status === 429) {
+      const body429 = await openaiRes.text();
+      req.log.warn({ body: body429 }, "OpenAI rate limit");
       res.status(429).json({ error: "rate_limit", message: "Very popular right now. Please try again in a moment." });
       return;
     }
-    if (!anthropicRes.ok) {
-      const errBody = await anthropicRes.text();
-      req.log.error({ status: anthropicRes.status, body: errBody }, "Anthropic API error");
+    if (!openaiRes.ok) {
+      const errBody = await openaiRes.text();
+      req.log.error({ status: openaiRes.status, body: errBody }, "OpenAI API error");
       res.status(502).json({ error: "upstream_error", message: "Something went wrong in the void. Please try again." });
       return;
     }
-    const data = await anthropicRes.json();
-    const rawText = data.content[0]?.text ?? "";
+    const data = await openaiRes.json();
+    const rawText = data.choices[0]?.message?.content ?? "";
     const followUpsMatch = rawText.match(/FOLLOW_UPS:\s*(.+)$/m);
     const followUps = followUpsMatch ? followUpsMatch[1].split("|").map((s) => s.trim()).filter(Boolean) : [];
     const answer = rawText.replace(/\nFOLLOW_UPS:.+$/m, "").trim();
@@ -32500,15 +32501,81 @@ aiRouter.post("/ai", async (req, res) => {
 });
 var ai_default = aiRouter;
 
-// src/routes/index.ts
+// src/routes/subscribe.ts
+var import_express4 = __toESM(require_express2(), 1);
 var router3 = (0, import_express4.Router)();
-router3.use(health_default);
-router3.use(ask_default);
-router3.use(ai_default);
-var routes_default = router3;
+router3.post("/subscribe", async (req, res) => {
+  const apiKey = process.env["MAILCHIMP_API_KEY"];
+  const listId = process.env["MAILCHIMP_LIST_ID"];
+  if (!apiKey || !listId) {
+    res.status(503).json({ error: "subscribe_unavailable", message: "Mailing list not configured." });
+    return;
+  }
+  const dc = apiKey.split("-").pop();
+  if (!dc) {
+    res.status(503).json({ error: "invalid_key", message: "Invalid Mailchimp API key format." });
+    return;
+  }
+  const { email } = req.body;
+  if (!email || typeof email !== "string") {
+    res.status(400).json({ error: "invalid_request", message: "Email is required." });
+    return;
+  }
+  const emailRegex2 = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex2.test(email)) {
+    res.status(400).json({ error: "invalid_email", message: "Please enter a valid email address." });
+    return;
+  }
+  try {
+    const mcRes = await fetch(
+      `https://${dc}.api.mailchimp.com/3.0/lists/${listId}/members`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          email_address: email.toLowerCase().trim(),
+          status: "subscribed",
+          tags: ["stellara-web"]
+        })
+      }
+    );
+    if (mcRes.status === 400) {
+      const body = await mcRes.json();
+      if (body.title === "Member Exists") {
+        res.status(200).json({ ok: true, message: "You're already on the list!" });
+        return;
+      }
+      req.log.warn({ title: body.title }, "Mailchimp 400");
+      res.status(400).json({ error: "invalid_email", message: "Please check your email address and try again." });
+      return;
+    }
+    if (!mcRes.ok) {
+      const errText = await mcRes.text();
+      req.log.error({ status: mcRes.status, body: errText }, "Mailchimp API error");
+      res.status(502).json({ error: "upstream_error", message: "Something went wrong. Please try again." });
+      return;
+    }
+    res.json({ ok: true, message: "You're in! Welcome to the STELLARA community." });
+  } catch (err) {
+    logger.error({ err }, "Mailchimp subscribe fetch failed");
+    res.status(500).json({ error: "network_error", message: "Something went wrong. Please try again." });
+  }
+});
+var subscribe_default = router3;
+
+// src/routes/index.ts
+var router4 = (0, import_express5.Router)();
+router4.use(health_default);
+router4.use(ask_default);
+router4.use(ai_default);
+router4.use(subscribe_default);
+var routes_default = router4;
 
 // src/app.ts
-var app = (0, import_express5.default)();
+var app = (0, import_express6.default)();
 app.use(
   (0, import_pino_http.default)({
     logger,
@@ -32529,8 +32596,8 @@ app.use(
   })
 );
 app.use((0, import_cors.default)());
-app.use(import_express5.default.json());
-app.use(import_express5.default.urlencoded({ extended: true }));
+app.use(import_express6.default.json());
+app.use(import_express6.default.urlencoded({ extended: true }));
 app.use("/api", routes_default);
 var app_default = app;
 

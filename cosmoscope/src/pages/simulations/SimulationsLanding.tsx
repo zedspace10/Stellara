@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Play, Clock, BarChart2 } from "lucide-react";
+import { Play, Clock, BarChart2, Sliders } from "lucide-react";
 
 const SIMS = [
   {
@@ -211,6 +211,58 @@ export default function SimulationsLanding() {
         <p className="text-gray-400 text-lg max-w-xl mx-auto leading-relaxed">
           Witness the most profound events in cosmic history — scientifically accurate, visually cinematic.
         </p>
+      </motion.div>
+
+      {/* Featured: Build Your Own Universe */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="mb-8"
+      >
+        <Link href="/build-universe">
+          <div className="group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.01]"
+            style={{ background: "linear-gradient(135deg, rgba(156,39,176,0.15) 0%, rgba(79,195,247,0.08) 50%, rgba(255,213,79,0.08) 100%)", border: "1px solid rgba(156,39,176,0.35)" }}>
+            {/* Animated star field background */}
+            <div className="absolute inset-0 overflow-hidden">
+              {Array.from({ length: 40 }).map((_, i) => (
+                <div key={i} className="absolute rounded-full animate-pulse"
+                  style={{
+                    width: Math.random() * 2 + 1 + "px", height: Math.random() * 2 + 1 + "px",
+                    left: Math.random() * 100 + "%", top: Math.random() * 100 + "%",
+                    background: ["#4fc3f7", "#ffd54f", "#ce93d8", "#ff9f43"][Math.floor(Math.random() * 4)],
+                    opacity: 0.3 + Math.random() * 0.5,
+                    animationDelay: Math.random() * 3 + "s",
+                    animationDuration: 2 + Math.random() * 2 + "s",
+                  }} />
+              ))}
+            </div>
+            <div className="relative flex flex-col md:flex-row items-center gap-6 p-6 md:p-8">
+              <div className="shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center"
+                style={{ background: "rgba(156,39,176,0.2)", border: "1px solid rgba(156,39,176,0.4)" }}>
+                <Sliders className="w-8 h-8" style={{ color: "#ce93d8" }} />
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <div className="text-[10px] font-bold tracking-widest mb-1" style={{ fontFamily: "Orbitron, sans-serif", color: "#ce93d8" }}>
+                  INTERACTIVE SANDBOX
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2" style={{ fontFamily: "Orbitron, sans-serif" }}>
+                  Build Your Own Universe
+                </h2>
+                <p className="text-sm md:text-base leading-relaxed max-w-2xl" style={{ color: "rgba(255,255,255,0.6)" }}>
+                  What if gravity were stronger? What if dark energy didn't exist? Adjust the fundamental constants of physics and watch a completely different universe unfold — from the Big Bang to the present day.
+                </p>
+              </div>
+              <div className="shrink-0">
+                <div className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all group-hover:scale-105"
+                  style={{ background: "linear-gradient(135deg, #9c27b0, #4fc3f7)", color: "#fff", fontFamily: "Orbitron, sans-serif", letterSpacing: "0.05em" }}>
+                  <Play className="w-4 h-4 fill-white" />
+                  BEGIN
+                </div>
+              </div>
+            </div>
+          </div>
+        </Link>
       </motion.div>
 
       {/* Grid */}

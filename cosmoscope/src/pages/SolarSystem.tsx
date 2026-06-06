@@ -1653,7 +1653,7 @@ export default function SolarSystem() {
       {/* Top Right Controls — unified panel, always on top */}
       {!screenshotMode && (
         <div
-          className="absolute top-20 right-4 z-[100] flex flex-col"
+          className="absolute bottom-20 top-auto right-4 z-[100] flex flex-col md:top-20 md:bottom-auto"
           style={{
             background: "rgba(10,10,26,0.92)",
             backdropFilter: "blur(16px)",
@@ -1801,7 +1801,7 @@ export default function SolarSystem() {
 
       {/* Zoom Level Indicator */}
       {!screenshotMode && (
-        <div className="absolute bottom-32 md:bottom-6 left-6 z-20 flex flex-col gap-2">
+        <div className="absolute bottom-52 md:bottom-6 left-6 z-20 flex flex-col gap-2">
           <div className="text-xs text-white/50 tracking-widest uppercase">
             {zoomLevel === 1 && "SOLAR SYSTEM"}
             {zoomLevel === 2 && "MILKY WAY GALAXY"}

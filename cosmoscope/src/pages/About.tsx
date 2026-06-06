@@ -1,6 +1,7 @@
 import { Link } from "wouter";
-import { Heart, Star, Globe, BookOpen, Telescope, ChevronRight } from "lucide-react";
+import { Heart, Star, Globe, BookOpen, ChevronRight, Mail } from "lucide-react";
 import Footer from "@/components/Footer";
+import MailingListForm from "@/components/MailingListForm";
 
 export default function About() {
   return (
@@ -64,8 +65,6 @@ export default function About() {
               ["3D Universe", "Three.js — real-time solar system, galaxy, and cosmic web rendering"],
               ["Imagery", "NASA APOD API · ESA · Webb Space Telescope"],
               ["Space data", "SpaceX · launch trackers · live ISS data"],
-              ["Ask the Universe", "Anthropic Claude — AI science educator"],
-              ["Platform", "React · Vite · Tailwind — open source"],
             ].map(([name, desc]) => (
               <div key={name} className="flex gap-3 text-sm">
                 <span className="shrink-0 font-semibold" style={{ color: "#4fc3f7", minWidth: "120px" }}>{name}</span>
@@ -75,47 +74,21 @@ export default function About() {
           </div>
         </Section>
 
-        <Section icon={<Telescope className="w-4 h-4" />} title="Support STELLARA" color="#ffd54f" accent>
-          <p className="text-sm leading-relaxed mb-4" style={{ color: "rgba(255,255,255,0.7)" }}>
-            STELLARA is a Community Interest Company — a non-profit structure that legally commits all
-            revenue to our social mission. We are funded entirely by donations and grants.
-          </p>
-          <p className="text-sm leading-relaxed mb-5" style={{ color: "rgba(255,255,255,0.7)" }}>
-            If STELLARA has shown you something extraordinary, you can help keep it that way.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <a
-              href="https://ko-fi.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all"
-              style={{
-                background: "rgba(255,213,79,0.15)",
-                border: "1px solid rgba(255,213,79,0.4)",
-                color: "#ffd54f",
-                fontFamily: "Orbitron, sans-serif",
-                fontSize: "12px",
-                letterSpacing: "0.05em",
-              }}
-            >
-              <Heart className="w-4 h-4" /> Support on Ko-fi
-            </a>
+        <div
+          className="rounded-2xl p-6 mb-4"
+          style={{ background: "rgba(79,195,247,0.04)", border: "1px solid rgba(79,195,247,0.12)" }}
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <Mail className="w-4 h-4" style={{ color: "#4fc3f7" }} />
+            <h2 className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
+              Stay in the loop
+            </h2>
           </div>
-          <p className="text-xs mt-4" style={{ color: "rgba(255,255,255,0.3)" }}>
-            Even £1 helps. Thank you.
+          <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.55)" }}>
+            Get updates on new features, upcoming space events, and cosmic discoveries — straight to your inbox. No spam, ever.
           </p>
-          <div className="mt-3 text-xs space-y-1" style={{ color: "rgba(255,255,255,0.35)" }}>
-            <p>Your support funds:</p>
-            {[
-              "Keeping STELLARA free for everyone",
-              "Ask the Universe AI feature",
-              "Telescope donations to UK schools",
-              "New features and improvements",
-            ].map((item, i) => (
-              <p key={i}>· {item}</p>
-            ))}
-          </div>
-        </Section>
+          <MailingListForm />
+        </div>
 
         <div className="mt-10 text-center">
           <Link href="/">

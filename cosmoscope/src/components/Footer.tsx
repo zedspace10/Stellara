@@ -1,4 +1,6 @@
 import { Link } from "wouter";
+import { Mail } from "lucide-react";
+import MailingListForm from "./MailingListForm";
 
 export default function Footer() {
   return (
@@ -45,6 +47,22 @@ export default function Footer() {
               Free forever. No ads. No profit. Just space.
             </p>
           </div>
+        </div>
+
+        <div
+          className="rounded-2xl p-5 mb-6"
+          style={{ background: "rgba(79,195,247,0.04)", border: "1px solid rgba(79,195,247,0.12)" }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Mail className="w-3.5 h-3.5" style={{ color: "#4fc3f7" }} />
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
+              Stay in the loop
+            </span>
+          </div>
+          <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.45)" }}>
+            New features, space events, and cosmic discoveries — delivered to your inbox.
+          </p>
+          <MailingListForm compact />
         </div>
 
         <div
