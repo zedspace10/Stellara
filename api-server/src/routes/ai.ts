@@ -2,7 +2,7 @@ import { Router } from "express";
 
 const aiRouter = Router();
 
-aiRouter.post("/ai", async (req, res) => {
+aiRouter.post("/", async (req, res) => {
   const { system, messages, maxTokens = 800 } = req.body as {
     system?: string;
     messages: Array<{ role: string; content: string }>;

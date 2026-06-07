@@ -27,7 +27,7 @@ For unanswerable questions reply with: "Nobody knows — and that's one of the m
 
 For questions outside scope reply with: "That's outside my universe — I'm built for space and astronomy questions."`;
 
-router.post("/ask", async (req, res) => {
+router.post("/", async (req, res) => {
   const apiKey = process.env["OPENAI_API_KEY"];
 
   if (!apiKey) {

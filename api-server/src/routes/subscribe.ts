@@ -3,7 +3,7 @@ import { logger } from "../lib/logger";
 
 const router = Router();
 
-router.post("/subscribe", async (req, res) => {
+router.post("/", async (req, res) => {
   const apiKey = process.env["MAILCHIMP_API_KEY"];
   const listId = process.env["MAILCHIMP_LIST_ID"];
 
