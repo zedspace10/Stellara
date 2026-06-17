@@ -34,6 +34,7 @@ import Discover from "@/pages/Discover";
 import Observatory from "@/pages/Observatory";
 import AskTheUniverse from "@/pages/AskTheUniverse";
 import About from "@/pages/About";
+import Privacy from "@/pages/Privacy";
 import BlackHoles from "@/pages/BlackHoles";
 import Constellations from "@/pages/Constellations";
 import Glossary from "@/pages/Glossary";
@@ -68,6 +69,7 @@ function Router() {
         <Route path="/observatory" component={Observatory} />
         <Route path="/ask" component={AskTheUniverse} />
         <Route path="/about" component={About} />
+        <Route path="/privacy" component={Privacy} />
         <Route path="/blackholes" component={BlackHoles} />
         <Route path="/constellations" component={Constellations} />
         <Route path="/glossary" component={Glossary} />
