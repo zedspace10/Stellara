@@ -66,7 +66,6 @@ function Router() {
         <Route path="/news" component={SpaceNews} />
         <Route path="/discover" component={Discover} />
         <Route path="/observatory" component={Observatory} />
-        <Route path="/ask" component={AskTheUniverse} />
         <Route path="/about" component={About} />
         <Route path="/privacy" component={Privacy} />
         <Route path="/blackholes" component={BlackHoles} />
