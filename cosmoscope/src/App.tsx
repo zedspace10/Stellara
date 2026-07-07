@@ -32,7 +32,6 @@ import LaunchTracker from "@/pages/LaunchTracker";
 import SpaceNews from "@/pages/SpaceNews";
 import Discover from "@/pages/Discover";
 import Observatory from "@/pages/Observatory";
-import AskTheUniverse from "@/pages/AskTheUniverse";
 import About from "@/pages/About";
 import Privacy from "@/pages/Privacy";
 import BlackHoles from "@/pages/BlackHoles";
