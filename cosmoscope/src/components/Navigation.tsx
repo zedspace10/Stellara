@@ -215,22 +215,6 @@ export default function Navigation() {
           >
             ABOUT
           </Link>
-
-          {/* ASK pill */}
-          <Link
-            href="/ask"
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full font-bold transition-all duration-150"
-            style={{
-              fontFamily: "Orbitron, sans-serif",
-              fontSize: "11px",
-              letterSpacing: "0.1em",
-              background: location === "/ask" ? "rgba(255,213,79,0.18)" : "rgba(255,213,79,0.1)",
-              border: "1px solid rgba(255,213,79,0.4)",
-              color: "#ffd54f",
-            }}
-          >
-            ASK
-          </Link>
         </nav>
       </header>
 
@@ -290,15 +274,6 @@ export default function Navigation() {
         >
           <span className="text-[10px] font-bold tracking-widest" style={{ fontFamily: "Orbitron, sans-serif" }}>
             ABOUT
-          </span>
-        </Link>
-        <Link
-          href="/ask"
-          className="flex-1 flex flex-col items-center justify-center py-3 gap-0.5"
-          style={{ color: location === "/ask" ? "#ffd54f" : "rgba(255,213,79,0.55)" }}
-        >
-          <span className="text-[10px] font-bold tracking-widest" style={{ fontFamily: "Orbitron, sans-serif" }}>
-            ASK
           </span>
         </Link>
       </nav>
