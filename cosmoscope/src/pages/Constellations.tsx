@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import Footer from "@/components/Footer";
+import { CONSTELLATION_STORIES } from "./constellationStories";
 
 type Hemisphere = "N" | "S" | "Both";
 
@@ -342,38 +342,7 @@ function ConstellationCard({ data, onClick }: { data: ConstellationData; onClick
 }
 
 function ConstellationDetail({ data, onBack }: { data: ConstellationData; onBack: () => void }) {
-  const [aiContent, setAiContent] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const cacheKey = `stellara_constellation_${data.id}`;
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      setAiContent(cached);
-      return;
-    }
-
-    setLoading(true);
-    fetch("/api/ai", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        maxTokens: 800,
-        system: `You are STELLARA's astronomy expert. When asked about a constellation provide: the mythology and origin story, the IAU abbreviation, the brightest stars and their types, the best viewing months from the UK, any notable deep sky objects within it, interesting historical significance, and one extraordinary fact most people don't know. Write in STELLARA's voice — warm, clear, wonderful. Format in clean markdown. Under 500 words.`,
-        messages: [{ role: "user", content: `Tell me about the ${data.name} constellation.` }],
-      }),
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        const text = d.text || "";
-        setAiContent(text);
-        localStorage.setItem(cacheKey, text);
-      })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false));
-  }, [data.id, data.name]);
-
+  const story = CONSTELLATION_STORIES[data.id];
   const badge = HEMISPHERE_BADGE[data.hemisphere];
 
   return (
@@ -423,42 +392,21 @@ function ConstellationDetail({ data, onBack }: { data: ConstellationData; onBack
         </div>
       </div>
 
-      {loading && (
-        <div className="text-center py-12">
-          <div className="text-2xl mb-3 animate-pulse">✨</div>
-          <p style={{ color: "rgba(255,255,255,0.4)" }}>Learning the stories of {data.name}...</p>
-        </div>
-      )}
-
-      {error && (
-        <div className="rounded-xl p-6 text-center" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-          <p style={{ color: "rgba(255,255,255,0.4)" }}>Signal lost. Connect an AI key to unlock full constellation stories.</p>
-        </div>
-      )}
-
-      {aiContent && (
+      {story && (
         <div
           className="prose prose-invert prose-sm max-w-none rounded-2xl p-6 mb-6"
           style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
         >
-          <ReactMarkdown>{aiContent}</ReactMarkdown>
+          <ReactMarkdown>{story}</ReactMarkdown>
         </div>
       )}
 
-      <Link
-        href={`/ask`}
-        className="flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm"
-        style={{
-          background: "rgba(255,213,79,0.08)",
-          border: "1px solid rgba(255,213,79,0.25)",
-          color: "#ffd54f",
-          fontFamily: "Orbitron, sans-serif",
-          fontSize: "11px",
-          letterSpacing: "0.08em",
-        }}
+      <p
+        className="text-center text-[11px] mt-2"
+        style={{ color: "rgba(255,255,255,0.25)" }}
       >
-        Ask more about {data.name} →
-      </Link>
+        Star designations: International Astronomical Union · Written by STELLARA
+      </p>
     </div>
   );
 }
