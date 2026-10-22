@@ -28,7 +28,7 @@ export default function About() {
           </p>
           <p className="text-sm leading-relaxed mt-3" style={{ color: "rgba(255,255,255,0.7)" }}>
             You can explore our Solar System in 3D, journey from the Planck length to the Observable Universe,
-            discover tonight's sky, read daily imagery from NASA, and ask any question about space to our AI guide.
+            discover tonight's sky, and read daily imagery from NASA.
           </p>
         </Section>
 

@@ -6,14 +6,15 @@ import Footer from "@/components/Footer";
 interface GlossaryTerm {
   term: string;
   definition: string;
-  category: "Stars" | "Galaxies" | "Cosmology" | "Physics" | "Phenomena" | "Instruments";
+  category: Category;
 }
 
-const CATEGORIES = ["Stars", "Galaxies", "Cosmology", "Physics", "Phenomena", "Instruments"] as const;
+const CATEGORIES = ["Stars", "Planets", "Galaxies", "Cosmology", "Physics", "Phenomena", "Instruments"] as const;
 type Category = typeof CATEGORIES[number];
 
 const CATEGORY_COLORS: Record<Category, string> = {
   Stars: "#ffd54f",
+  Planets: "#26c6da",
   Galaxies: "#4fc3f7",
   Cosmology: "#9c27b0",
   Physics: "#ef5350",
@@ -35,7 +36,7 @@ const FEATURED_TERMS: GlossaryTerm[] = [
   { term: "Singularity", definition: "A point of infinite density where the known laws of physics break down — found at the centres of black holes.", category: "Physics" },
   { term: "Supernova", definition: "The catastrophic explosion of a massive star at the end of its life — briefly outshining entire galaxies.", category: "Stars" },
   { term: "White Dwarf", definition: "The dense remnant of a Sun-like star after it exhausts its fuel, slowly cooling over billions of years.", category: "Stars" },
-  { term: "Exoplanet", definition: "A planet orbiting a star other than our Sun. Over 5,500 have been confirmed as of 2024.", category: "Planets" as Category },
+  { term: "Exoplanet", definition: "A planet orbiting a star other than our Sun. Over 5,500 have been confirmed as of 2024.", category: "Planets" },
   { term: "Cosmic Microwave Background", definition: "The faint afterglow of the Big Bang's radiation, filling the entire universe at a temperature of 2.725 K.", category: "Cosmology" },
   { term: "Gravitational Wave", definition: "A ripple in the fabric of spacetime caused by accelerating massive objects, traveling at the speed of light.", category: "Physics" },
   { term: "Hawking Radiation", definition: "Theoretical thermal radiation emitted by black holes due to quantum effects near the event horizon, causing slow evaporation.", category: "Physics" },

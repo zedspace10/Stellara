@@ -337,24 +337,6 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button
-              onClick={() => { navigate('/ask'); onClose(); }}
-              style={{
-                width: '100%',
-                padding: '11px 16px',
-                background: 'rgba(255,213,79,0.08)',
-                border: '1px solid rgba(255,213,79,0.25)',
-                borderRadius: 10,
-                color: '#ffd54f',
-                fontSize: 13,
-                fontFamily: 'Space Grotesk, sans-serif',
-                cursor: 'pointer',
-                textAlign: 'left',
-                letterSpacing: '0.02em',
-              }}
-            >
-              Ask about Sagittarius A* →
-            </button>
-            <button
               onClick={() => { navigate('/blackholes'); onClose(); }}
               style={{
                 width: '100%',

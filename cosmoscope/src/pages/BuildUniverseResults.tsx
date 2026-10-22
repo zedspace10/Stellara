@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "wouter";
-import { RotateCcw, MessageCircle, BookOpen, Share2, ExternalLink } from "lucide-react";
+import { RotateCcw, BookOpen, Share2, ExternalLink } from "lucide-react";
 
 // ── Re-exported types (must match BuildYourOwnUniverse.tsx) ──────
 export interface Params {
@@ -329,7 +329,6 @@ export default function BuildUniverseResults({ params, outcome, onRebuild }: Pro
     navigator.clipboard.writeText(url).then(() => { setCopied(true); setTimeout(() => setCopied(false), 2000); });
   };
 
-  const askUrl = `/ask?q=${encodeURIComponent(`Tell me about a "${meta.label}" universe — what would it look like and why?`)}`;
   const decisiveVal = params[decisive.key] as number;
   const decisiveMult = decisiveVal.toFixed(2);
   const decisiveDir = decisiveVal > 1 ? "higher" : "lower";
@@ -469,19 +468,6 @@ export default function BuildUniverseResults({ params, outcome, onRebuild }: Pro
             WHAT NEXT
           </div>
           <div className="grid grid-cols-1 gap-2">
-            <Link href={askUrl}>
-              <div className="flex items-center gap-3 rounded-xl p-3.5 cursor-pointer transition-all hover:bg-white/5"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={{ background: "rgba(255,213,79,0.15)" }}>
-                  <MessageCircle className="w-4 h-4" style={{ color: "#ffd54f" }} />
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-white">Ask about this universe</div>
-                  <div className="text-[10px]" style={{ color: "rgba(255,255,255,0.35)" }}>Open Ask the Universe with a pre-filled question about your outcome</div>
-                </div>
-                <ExternalLink className="w-3.5 h-3.5 ml-auto shrink-0" style={{ color: "rgba(255,255,255,0.25)" }} />
-              </div>
-            </Link>
             <Link href="/education">
               <div className="flex items-center gap-3 rounded-xl p-3.5 cursor-pointer transition-all hover:bg-white/5"
                 style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>

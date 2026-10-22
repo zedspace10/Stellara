@@ -328,20 +328,6 @@ function TopicDetail({ topic, onBack }: { topic: typeof TOPICS[0]; onBack: () =>
         <p className="text-sm" style={{ color: "#ffd54f" }}>★ {topic.keyFact}</p>
       </div>
 
-      <Link
-        href={`/ask?q=Tell me about ${topic.askTopic}`}
-        className="mt-6 flex items-center justify-center gap-2 w-full py-3 rounded-xl font-semibold text-sm transition-all"
-        style={{
-          background: `${topic.color}12`,
-          border: `1px solid ${topic.color}30`,
-          color: topic.color,
-          fontFamily: "Orbitron, sans-serif",
-          fontSize: "11px",
-          letterSpacing: "0.08em",
-        }}
-      >
-        Ask about {topic.askTopic} →
-      </Link>
     </div>
   );
 }
