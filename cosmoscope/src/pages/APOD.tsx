@@ -5,6 +5,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
+// Set VITE_NASA_API_KEY on Railway to a free key from api.nasa.gov. DEMO_KEY only allows a few requests an hour.
+const NASA_KEY = import.meta.env.VITE_NASA_API_KEY || "DEMO_KEY";
+
 interface ApodData {
   title: string;
   explanation: string;
@@ -40,7 +43,7 @@ export default function APOD() {
         }
       }
 
-      const url = `https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY${date ? `&date=${date}` : ''}`;
+      const url = `https://api.nasa.gov/planetary/apod?api_key=${NASA_KEY}${date ? `&date=${date}` : ''}`;
       const res = await fetch(url);
       if (!res.ok) {
         if (res.status === 429) {
@@ -60,7 +63,7 @@ export default function APOD() {
   };
 
   useEffect(() => {
-    document.title = "APOD — STELLARA";
+    document.title = "APOD · PALE";
     fetchApod();
 
     // Fetch archive (past 7 days)
@@ -87,7 +90,7 @@ export default function APOD() {
           }
         }
 
-        const res = await fetch(`https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&start_date=${startStr}&end_date=${endStr}`);
+        const res = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_KEY}&start_date=${startStr}&end_date=${endStr}`);
         if (res.ok) {
           const json = await res.json();
           // reverse to show newest first
@@ -192,7 +195,7 @@ export default function APOD() {
 
         {/* Archive Section */}
         <div className="mt-16 pt-12 border-t border-white/10">
-          <h3 className="text-2xl font-bold text-white font-['Orbitron'] mb-6">Recent Archives</h3>
+          <h3 className="text-2xl font-bold text-white font-sans mb-6">Recent Archives</h3>
           {loadingArchive ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[...Array(4)].map((_, i) => (

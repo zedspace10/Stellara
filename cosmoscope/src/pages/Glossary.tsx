@@ -80,7 +80,7 @@ function TermCard({
       }}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-bold text-sm" style={{ fontFamily: "Orbitron, sans-serif", color, letterSpacing: "0.04em" }}>
+        <h3 className="font-bold text-sm" style={{ fontFamily: "Inter, sans-serif", color, letterSpacing: "0.04em" }}>
           {term.term}
         </h3>
         <span
@@ -121,13 +121,13 @@ function TermDetail({
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         maxTokens: 600,
-        system: `You are STELLARA's astronomy glossary. When given an astronomy or physics term provide:
+        system: `You are PALE's astronomy glossary. When given an astronomy or physics term provide:
 1. A clear plain language definition
 2. A real world analogy that makes it tangible
 3. Why it matters in astronomy
 4. One fascinating related fact
 5. Related terms to explore
-Write in STELLARA's voice — warm, clear, accessible. Never patronising. Format in clean markdown. Under 400 words.`,
+Write in PALE's voice: warm, clear, accessible. Never patronising. Format in clean markdown. Under 400 words.`,
         messages: [{ role: "user", content: `Define: ${term.term}` }],
       }),
     })
@@ -154,7 +154,7 @@ Write in STELLARA's voice — warm, clear, accessible. Never patronising. Format
       >
         <div className="sticky top-0 flex items-center justify-between p-5 pb-4" style={{ background: "rgba(8,8,22,0.99)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
           <div>
-            <h2 className="font-bold text-lg" style={{ fontFamily: "Orbitron, sans-serif", color, letterSpacing: "0.06em" }}>
+            <h2 className="font-bold text-lg" style={{ fontFamily: "Inter, sans-serif", color, letterSpacing: "0.06em" }}>
               {term.term}
             </h2>
             <span
@@ -238,7 +238,7 @@ export default function Glossary() {
         <div className="text-center mb-10">
           <h1
             className="text-3xl md:text-4xl font-bold tracking-widest mb-3"
-            style={{ fontFamily: "Orbitron, sans-serif", color: "#4fc3f7" }}
+            style={{ fontFamily: "Inter, sans-serif", color: "#4fc3f7" }}
           >
             SPACE GLOSSARY
           </h1>
@@ -289,7 +289,7 @@ export default function Glossary() {
                 background: "rgba(79,195,247,0.1)",
                 border: "1px solid rgba(79,195,247,0.25)",
                 color: "#4fc3f7",
-                fontFamily: "Orbitron, sans-serif",
+                fontFamily: "Inter, sans-serif",
                 fontSize: "11px",
               }}
             >
@@ -316,7 +316,7 @@ export default function Glossary() {
                   color: letterFilter === letter ? "#4fc3f7" : hasTerms ? "rgba(255,255,255,0.5)" : "rgba(255,255,255,0.12)",
                   border: letterFilter === letter ? "1px solid rgba(79,195,247,0.3)" : "1px solid transparent",
                   cursor: hasTerms ? "pointer" : "default",
-                  fontFamily: "Orbitron, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                   fontSize: "10px",
                 }}
               >

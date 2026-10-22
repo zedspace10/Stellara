@@ -70,7 +70,7 @@ function SunContent({ onClose }: { onClose: () => void }) {
           </div>
           <h2
             className="text-3xl font-bold tracking-tight"
-            style={{ fontFamily: 'Orbitron, sans-serif', color: '#ffd54f' }}
+            style={{ fontFamily: 'Inter, sans-serif', color: '#ffd54f' }}
           >
             The Sun
           </h2>
@@ -168,7 +168,7 @@ function SunContent({ onClose }: { onClose: () => void }) {
           <div>
             <h3 className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-2">About</h3>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
-              The Sun is the star at the centre of our Solar System — a nearly perfect sphere of hot plasma generating
+              The Sun is the star at the centre of our Solar System, a nearly perfect sphere of hot plasma generating
               energy through nuclear fusion in its core. Every second it converts 600 million tonnes of hydrogen into
               helium, releasing the energy that makes life on Earth possible. It accounts for 99.8% of the total mass
               of the Solar System.
@@ -180,9 +180,9 @@ function SunContent({ onClose }: { onClose: () => void }) {
             <h3 className="text-xs font-semibold uppercase tracking-widest text-white/40 mb-2">Notable Facts</h3>
             <div className="space-y-2">
               {[
-                'Light from the Sun takes exactly 8 minutes and 20 seconds to reach Earth.',
+                'Light from the Sun takes about 8 minutes and 20 seconds to reach Earth.',
                 'The Sun is so large that 1.3 million Earths could fit inside it.',
-                "The Sun's corona reaches 1,000,000°C — paradoxically hotter than the surface at 5,778K.",
+                "The Sun's outer atmosphere, the corona, reaches over 1,000,000°C, far hotter than the surface at about 5,500°C.",
               ].map((fact, i) => (
                 <div
                   key={i}
@@ -210,7 +210,7 @@ function SunContent({ onClose }: { onClose: () => void }) {
               <Ruler className="w-3.5 h-3.5" /> Scale Comparison
             </div>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>
-              If the Sun were the size of a front door, Earth would be a 2p coin sitting 26 metres away.
+              If the Sun were as tall as a front door, Earth would be the size of a grape about 215 metres away.
             </p>
           </div>
         </div>

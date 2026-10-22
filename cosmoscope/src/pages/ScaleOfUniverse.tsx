@@ -24,7 +24,7 @@ const SCALE_OBJECTS = [
     renderStyle: 'particle',
     displayRadius: 18,
     description: 'The nucleus of a hydrogen atom. Made of three quarks held together by the strong nuclear force.',
-    fact: 'If a proton were the size of a football stadium, an electron orbit would extend 30 kilometres.',
+    fact: 'If a proton were the size of a marble, the hydrogen atom around it would be about a kilometre across.',
     comparison: '100,000 times smaller than an atom',
   },
   {
@@ -36,7 +36,7 @@ const SCALE_OBJECTS = [
     colour: '#4488ff',
     renderStyle: 'atom',
     displayRadius: 35,
-    description: 'The simplest atom — one proton, one electron. The most abundant element in the universe.',
+    description: 'The simplest atom: one proton and one electron. The most abundant element in the universe.',
     fact: 'Atoms are 99.9999% empty space. If an atom were a football stadium the nucleus would be a marble at the centre.',
     comparison: '1 million times smaller than a human hair',
   },
@@ -50,8 +50,8 @@ const SCALE_OBJECTS = [
     renderStyle: 'molecular',
     displayRadius: 55,
     description: 'The molecule that carries the genetic instructions for all known life.',
-    fact: 'If your DNA were uncoiled it would stretch from Earth to the Sun and back 600 times.',
-    comparison: '50,000 times thinner than a human hair',
+    fact: 'Uncoiled, the DNA inside just one of your cells would stretch about 2 metres.',
+    comparison: '35,000 times thinner than a human hair',
   },
   {
     id: 'redbloodcell',
@@ -75,9 +75,9 @@ const SCALE_OBJECTS = [
     colour: '#c8a060',
     renderStyle: 'standard',
     displayRadius: 95,
-    description: 'The traditional unit of barely visible. About 70 micrometres across.',
-    fact: 'A human hair is roughly 1,000 times wider than a wavelength of visible light.',
-    comparison: '25,000 hairs side by side = 1 metre',
+    description: 'About as small as the naked eye can easily see. Roughly 70 micrometres across.',
+    fact: 'A human hair is roughly 100 times wider than a wavelength of visible light.',
+    comparison: 'About 14,000 hairs side by side make a metre',
   },
   {
     id: 'human',
@@ -88,8 +88,8 @@ const SCALE_OBJECTS = [
     colour: '#ffffff',
     renderStyle: 'anchor',
     displayRadius: 120,
-    description: 'You. Roughly halfway between the Planck length and the observable universe on a logarithmic scale.',
-    fact: 'You are made of approximately 7 × 10²⁷ atoms — each one mostly empty space.',
+    description: 'You. On a logarithmic scale you are far closer to the size of the universe than to the Planck length.',
+    fact: 'You are made of approximately 7 × 10²⁷ atoms, each one mostly empty space.',
     comparison: 'You are here',
     isAnchor: true,
   },
@@ -115,7 +115,7 @@ const SCALE_OBJECTS = [
     colour: '#aaccdd',
     renderStyle: 'standard',
     displayRadius: 175,
-    description: 'The highest point on Earth above sea level. Its summit is in the jet stream.',
+    description: 'The highest point on Earth above sea level. Its summit often reaches into the jet stream.',
     fact: 'Everest grows about 4mm per year as the Indian tectonic plate pushes into Asia.',
     comparison: '5,205 humans stacked',
   },
@@ -141,9 +141,9 @@ const SCALE_OBJECTS = [
     colour: '#888888',
     renderStyle: 'moon',
     displayRadius: 185,
-    description: "Earth's only natural satellite. The furthest humans have ever travelled.",
-    fact: 'The Moon is moving away from Earth at 3.8cm per year. It was 15x closer when it formed.',
-    comparison: 'All 7 planets fit between Earth and Moon',
+    description: "Earth's only natural satellite, and the furthest humans have ever travelled.",
+    fact: 'The Moon is moving away from Earth by 3.8 cm a year. When it formed it was many times closer.',
+    comparison: 'All the other planets would fit between Earth and the Moon',
   },
   {
     id: 'sun',
@@ -162,14 +162,14 @@ const SCALE_OBJECTS = [
     id: 'solarsystem',
     name: 'Solar System',
     size: 9e12,
-    sizeLabel: '~60 billion km across',
+    sizeLabel: '~9 billion km across, out to Neptune',
     category: 'Solar System',
     colour: '#ffdd88',
     renderStyle: 'system',
     displayRadius: 260,
-    description: 'Our cosmic neighbourhood — the Sun and everything bound to it by gravity.',
-    fact: "Voyager 1, launched in 1977, is only just beyond the solar system's edge after 47 years.",
-    comparison: '107 light minutes across',
+    description: 'Our cosmic neighbourhood: the Sun and everything bound to it by gravity.',
+    fact: "Voyager 1 left the Sun's wind behind in 2012, yet it will take around 300 more years to reach the inner edge of the Oort Cloud.",
+    comparison: 'About 8 light hours across',
   },
   {
     id: 'lightyear',
@@ -181,20 +181,20 @@ const SCALE_OBJECTS = [
     renderStyle: 'lightspeed',
     displayRadius: 270,
     description: 'The distance light travels in one year at 300,000 km per second.',
-    fact: 'The nearest star, Proxima Centauri, is 4.24 light years away. At Voyager speed: 73,000 years.',
+    fact: 'The nearest star, Proxima Centauri, is 4.25 light years away. At Voyager 1 speed the trip would take about 75,000 years.',
     comparison: '63,241 times the Earth-Sun distance',
   },
   {
     id: 'proxima',
     name: 'Proxima Centauri',
     size: 4e16,
-    sizeLabel: '4.24 light years away',
+    sizeLabel: '4.25 light years away',
     category: 'Stellar',
     colour: '#ff6644',
     renderStyle: 'star',
     displayRadius: 265,
-    description: 'The nearest star to our Sun. A red dwarf with at least one rocky planet in its habitable zone.',
-    fact: 'Even at the speed of light it would take 4.24 years to reach Proxima Centauri.',
+    description: 'The nearest star to our Sun. A red dwarf with at least one planet, probably rocky, in its habitable zone.',
+    fact: 'Even at the speed of light it would take 4.25 years to reach Proxima Centauri.',
     comparison: '268,000 times Earth-Sun distance',
   },
   {
@@ -206,22 +206,22 @@ const SCALE_OBJECTS = [
     colour: '#9966ff',
     renderStyle: 'galaxy',
     displayRadius: 285,
-    description: 'Our galaxy. A barred spiral containing 200–400 billion stars.',
+    description: 'Our galaxy. A barred spiral containing between 100 and 400 billion stars.',
     fact: 'The Milky Way has been rotating for 13 billion years. Our Sun orbits it every 225 million years.',
-    comparison: '100,000 light years — light takes that long to cross it',
+    comparison: 'Light takes 100,000 years to cross it',
   },
   {
     id: 'andromeda',
     name: 'Andromeda Galaxy',
-    size: 2.2e22,
+    size: 2.4e22,
     sizeLabel: '2.5 million light years away',
     category: 'Galactic',
     colour: '#aabbff',
     renderStyle: 'galaxy',
     displayRadius: 290,
-    description: 'The nearest large galaxy. On a collision course with the Milky Way.',
-    fact: 'In 4.5 billion years Andromeda will merge with the Milky Way. Stars are so spread out virtually none will collide.',
-    comparison: '25 times wider than the Milky Way',
+    description: 'The nearest large galaxy, slowly moving towards the Milky Way.',
+    fact: 'There is roughly an even chance Andromeda merges with the Milky Way in the next 10 billion years. Stars are so spread out that almost none would collide.',
+    comparison: 'As far as 25 Milky Ways laid end to end',
   },
   {
     id: 'universe',
@@ -232,9 +232,9 @@ const SCALE_OBJECTS = [
     colour: '#ffd54f',
     renderStyle: 'universe',
     displayRadius: 300,
-    description: 'Everything we can see. The universe continues beyond this — we simply cannot observe it yet.',
-    fact: 'Contains approximately 2 trillion galaxies. You are made of the same stuff as all of it.',
-    comparison: '2 trillion galaxies, each with billions of stars',
+    description: 'Everything we can see. The universe continues beyond this, but light from there has not reached us, and much of it never will.',
+    fact: 'Contains hundreds of billions of galaxies, perhaps more. You are made of the same stuff as all of it.',
+    comparison: 'Hundreds of billions of galaxies, each with billions of stars',
   },
 ];
 
@@ -244,7 +244,7 @@ type ScaleObject = (typeof SCALE_OBJECTS)[0] & { isAnchor?: boolean };
 function getZoneBg(idx: number): [number, number, number] {
   if (idx <= 1) return [0, 0, 0];          // quantum: pure black
   if (idx <= 5) return [0, 0, 5];          // atomic/molecular: deep navy tint
-  if (idx <= 7) return [10, 10, 26];       // human scale: STELLARA dark
+  if (idx <= 7) return [10, 10, 26];       // human scale: PALE dark
   if (idx <= 12) return [5, 5, 16];        // geographical/solar: deep space
   return [0, 0, 0];                        // stellar/galactic/cosmic: pure black
 }
@@ -937,7 +937,7 @@ export default function ScaleOfUniverse() {
 
       // Name
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 28px Orbitron, monospace';
+      ctx.font = 'bold 28px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(obj.name, cx, h * 0.13);
 
@@ -1116,7 +1116,7 @@ export default function ScaleOfUniverse() {
         </div>
 
         <h1 style={{
-          fontFamily: 'Orbitron, monospace',
+          fontFamily: 'Inter, sans-serif',
           fontSize: 'clamp(24px, 5vw, 48px)',
           color: '#ffffff',
           letterSpacing: '0.15em',
@@ -1146,7 +1146,7 @@ export default function ScaleOfUniverse() {
           style={{
             padding: '16px 48px', background: 'transparent',
             border: '1px solid #ffd54f', borderRadius: 8, color: '#ffd54f',
-            fontFamily: 'Orbitron, monospace', fontSize: 14,
+            fontFamily: 'Inter, sans-serif', fontSize: 14,
             letterSpacing: '0.2em', cursor: 'pointer', transition: 'all 300ms',
           }}
           onMouseEnter={e => { (e.target as HTMLButtonElement).style.background = 'rgba(255,213,79,0.1)'; }}
@@ -1213,7 +1213,7 @@ export default function ScaleOfUniverse() {
                   {selectedObject.category}
                 </span>
                 <h2 style={{
-                  fontFamily: 'Orbitron, monospace',
+                  fontFamily: 'Inter, sans-serif',
                   color: selectedObject.colour, fontSize: 22, margin: '4px 0',
                 }}>
                   {selectedObject.name}

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 
 export default function OurGalaxy() {
   useEffect(() => {
-    document.title = "Our Galaxy — STELLARA";
+    document.title = "Our Galaxy · PALE";
   }, []);
 
   const notableObjects = [
@@ -16,8 +16,8 @@ export default function OurGalaxy() {
     { name: "Orion Nebula", type: "Nebula", description: "Only 1,344 light years away, this stellar nursery is one of the most photographed objects in the night sky.", icon: <Zap className="w-6 h-6" /> },
     { name: "Crab Nebula", type: "Supernova Remnant", description: "The remnant of a stellar explosion witnessed in 1054 AD, now containing a rapidly spinning pulsar.", icon: <Zap className="w-6 h-6" /> },
     { name: "Large Magellanic Cloud", type: "Satellite Galaxy", description: "A companion galaxy 160,000 light years away, visible from the Southern Hemisphere with the naked eye.", icon: <Circle className="w-6 h-6" /> },
-    { name: "Andromeda Galaxy", type: "Neighbour Galaxy", description: "Our nearest large galactic neighbour, 2.5 million light years away, on a collision course with the Milky Way in ~4.5 billion years.", icon: <Circle className="w-6 h-6" /> },
-    { name: "Proxima Centauri", type: "Nearest Star", description: "Our closest stellar neighbour at just 4.24 light years, hosting at least one potentially habitable planet.", icon: <Star className="w-6 h-6" /> }
+    { name: "Andromeda Galaxy", type: "Neighbour Galaxy", description: "Our nearest large galactic neighbour, 2.5 million light years away and slowly moving towards the Milky Way.", icon: <Circle className="w-6 h-6" /> },
+    { name: "Proxima Centauri", type: "Nearest Star", description: "Our closest stellar neighbour at just 4.25 light years, hosting at least one potentially habitable planet.", icon: <Star className="w-6 h-6" /> }
   ];
 
   return (
@@ -47,7 +47,7 @@ export default function OurGalaxy() {
         </div>
         
         <div className="relative z-10 space-y-6">
-          <h1 className="text-5xl md:text-7xl font-bold font-['Orbitron'] text-white tracking-widest uppercase">The Milky Way</h1>
+          <h1 className="text-5xl md:text-7xl font-bold font-sans text-white tracking-widest uppercase">The Milky Way</h1>
           <p className="text-xl md:text-2xl text-[#4fc3f7] max-w-3xl mx-auto font-light">Our home galaxy — a barred spiral 100,000 light years across</p>
         </div>
       </motion.section>
@@ -81,7 +81,7 @@ export default function OurGalaxy() {
         viewport={{ once: true }}
         className="mb-24"
       >
-        <h2 className="text-3xl md:text-4xl font-bold font-['Orbitron'] text-white mb-12 text-center">Anatomy of Our Galaxy</h2>
+        <h2 className="text-3xl md:text-4xl font-bold font-sans text-white mb-12 text-center">Anatomy of Our Galaxy</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <Card className="bg-white/5 backdrop-blur border-white/10 p-6">
             <Circle className="w-10 h-10 text-[#ffd54f] mb-4" />
@@ -133,7 +133,7 @@ export default function OurGalaxy() {
         viewport={{ once: true }}
         className="mb-24"
       >
-        <h2 className="text-3xl md:text-4xl font-bold font-['Orbitron'] text-white mb-12 text-center">Notable Objects</h2>
+        <h2 className="text-3xl md:text-4xl font-bold font-sans text-white mb-12 text-center">Notable Objects</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {notableObjects.map((obj, i) => (
             <Card key={i} className="bg-white/5 backdrop-blur border-white/10 flex flex-col">
@@ -179,10 +179,10 @@ export default function OurGalaxy() {
         className="text-center"
       >
         <Card className="bg-gradient-to-br from-[#0a0a1a] to-[#1a1a3a] border-[#4fc3f7]/30 max-w-3xl mx-auto p-12">
-          <h2 className="text-3xl font-bold font-['Orbitron'] text-white mb-4">See for yourself</h2>
+          <h2 className="text-3xl font-bold font-sans text-white mb-4">See for yourself</h2>
           <p className="text-lg text-gray-300 mb-8">See our galaxy in three dimensions — zoom from the Solar System all the way out to the observable universe.</p>
           <Button asChild size="lg" className="bg-[#4fc3f7] hover:bg-[#4fc3f7]/80 text-black font-bold px-8 py-6 text-lg rounded-full">
-            <a href="/">Explore in Interactive Universe</a>
+            <a href="/universe">Explore in the interactive universe</a>
           </Button>
         </Card>
       </motion.section>

@@ -11,19 +11,19 @@ const SAGITTARIUS_DATA = {
   category: 'Supermassive Black Hole',
   stats: [
     { label: 'Mass', value: '4 million solar masses' },
-    { label: 'Event horizon diameter', value: '~24 million km' },
+    { label: 'Event horizon diameter', value: '~25 million km' },
     { label: 'Distance from Earth', value: '26,000 light years' },
     { label: 'Location', value: 'Centre of Milky Way' },
-    { label: 'First imaged', value: 'May 12, 2022' },
+    { label: 'First imaged', value: '12 May 2022' },
     { label: 'Radio source discovery', value: '1974' },
   ],
-  about: `Sagittarius A* is the supermassive black hole at the very centre of our Milky Way galaxy. With a mass 4 million times that of our Sun compressed into a region smaller than our Solar System, it is one of the most extreme objects in the known universe. Despite its immense mass it is relatively quiet — consuming very little material compared to active galactic nuclei in other galaxies.`,
+  about: `Sagittarius A* is the supermassive black hole at the very centre of our Milky Way galaxy. With a mass 4 million times that of our Sun compressed into a region smaller than our Solar System, it is one of the most extreme objects in the known universe. Despite its immense mass it is relatively quiet, consuming very little material compared to active galactic nuclei in other galaxies.`,
   facts: [
-    `In 2022 the Event Horizon Telescope captured the first direct image of Sagittarius A* — humanity's first look at our own galaxy's central black hole.`,
-    `The star S2 orbits Sagittarius A* at up to 3% the speed of light — among the fastest known stellar orbits.`,
+    `In 2022 the Event Horizon Telescope captured the first direct image of Sagittarius A*, humanity's first look at our own galaxy's central black hole.`,
+    `At its closest, the star S2 races past Sagittarius A* at about 2.5% of the speed of light, one of the fastest stellar orbits known.`,
     `Despite being 4 million solar masses, Sagittarius A* is unusually dim and quiet for a black hole of its size.`,
   ],
-  ehtNote: `The 2022 EHT image showed a glowing ring of hot gas with a dark central shadow — the black hole's silhouette. The image required radio telescopes on multiple continents working simultaneously as an Earth-sized instrument.`,
+  ehtNote: `The 2022 EHT image showed a glowing ring of hot gas around a dark central shadow, the black hole's silhouette. The image required radio telescopes on multiple continents working simultaneously as an Earth-sized instrument.`,
 };
 
 function BlackHoleCanvas() {
@@ -175,7 +175,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
         >
           <div>
             <h2 style={{
-              fontFamily: 'Orbitron, sans-serif',
+              fontFamily: 'Inter, sans-serif',
               fontSize: 18,
               fontWeight: 700,
               color: '#ffd54f',
@@ -193,7 +193,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
               borderRadius: 20,
               color: '#ff7722',
               fontSize: 11,
-              fontFamily: 'Space Grotesk, sans-serif',
+              fontFamily: 'Inter, sans-serif',
               letterSpacing: '0.08em',
               fontWeight: 600,
             }}>
@@ -236,7 +236,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
               color: 'rgba(255,255,255,0.3)',
               padding: '6px 0',
               margin: 0,
-              fontFamily: 'Space Grotesk, sans-serif',
+              fontFamily: 'Inter, sans-serif',
               letterSpacing: '0.06em',
             }}>
               SIMULATED · BASED ON 2022 EHT IMAGE
@@ -261,10 +261,10 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
                   padding: '8px 10px',
                 }}
               >
-                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 3, fontFamily: 'Space Grotesk, sans-serif', letterSpacing: '0.06em' }}>
+                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 3, fontFamily: 'Inter, sans-serif', letterSpacing: '0.06em' }}>
                   {s.label.toUpperCase()}
                 </div>
-                <div style={{ fontSize: 12, color: '#e0e0e0', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif' }}>
+                <div style={{ fontSize: 12, color: '#e0e0e0', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>
                   {s.value}
                 </div>
               </div>
@@ -318,7 +318,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
                 color: '#ff9933',
                 fontSize: 10,
                 fontWeight: 700,
-                fontFamily: 'Space Grotesk, sans-serif',
+                fontFamily: 'Inter, sans-serif',
                 letterSpacing: '0.08em',
               }}>
                 FIRST IMAGE 2022
@@ -346,7 +346,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
                 borderRadius: 10,
                 color: 'rgba(255,150,80,0.85)',
                 fontSize: 13,
-                fontFamily: 'Space Grotesk, sans-serif',
+                fontFamily: 'Inter, sans-serif',
                 cursor: 'pointer',
                 textAlign: 'left',
                 letterSpacing: '0.02em',

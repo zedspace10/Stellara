@@ -131,7 +131,7 @@ function DetailBody({ launch, onClose }: { launch: Launch; onClose: () => void }
       <div className="px-5 py-6 space-y-6">
         {/* Name */}
         <div>
-          <h2 id="launch-detail-title" className="text-xl text-white font-['Orbitron'] font-medium leading-tight">
+          <h2 id="launch-detail-title" className="text-xl text-white font-sans font-medium leading-tight">
             {launch.name}
           </h2>
           <div className="text-sm mt-1" style={{ color: "#4fc3f7" }}>{launch.rocketName}</div>
@@ -183,7 +183,7 @@ function DetailBody({ launch, onClose }: { launch: Launch; onClose: () => void }
               ? <CheckCircle2 className="w-4 h-4 text-[#81c784] flex-shrink-0 mt-0.5" />
               : <XCircle className="w-4 h-4 text-[#ef9a9a] flex-shrink-0 mt-0.5" />}
             <div className="flex-1">
-              <div className="text-[10px] uppercase tracking-[0.25em] font-['Orbitron'] mb-1"
+              <div className="text-[10px] uppercase tracking-[0.25em] font-sans mb-1"
                 style={{ color: launch.status === "Success" ? "#81c784" : "#ef9a9a" }}>
                 {launch.status === "Success" ? "Mission Successful" : launch.status === "Partial Failure" ? "Partial Failure" : "Mission Failure"}
               </div>
@@ -254,7 +254,7 @@ function DetailBody({ launch, onClose }: { launch: Launch; onClose: () => void }
 
 function SectionTitle({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
-    <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.3em] text-white/35 font-['Orbitron']">
+    <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-[0.3em] text-white/35 font-sans">
       {icon}
       <span>{label}</span>
     </div>

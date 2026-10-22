@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Switch, Route, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -7,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import Navigation from "@/components/Navigation";
 import StarField from "@/components/StarField";
-import WelcomeScreen from "@/components/WelcomeScreen";
 
 // Pages
 import NotFound from "@/pages/not-found";
@@ -15,6 +13,8 @@ import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import APOD from "@/pages/APOD";
 import SolarSystem from "@/pages/SolarSystem";
+import Home from "@/pages/Home";
+import Explore from "@/pages/Explore";
 import Education from "@/pages/Education";
 import TonightsSky from "@/pages/TonightsSky";
 import OurGalaxy from "@/pages/OurGalaxy";
@@ -45,7 +45,9 @@ function Router() {
   return (
     <AnimatePresence mode="wait">
       <Switch>
-        <Route path="/" component={SolarSystem} />
+        <Route path="/" component={Home} />
+        <Route path="/explore" component={Explore} />
+        <Route path="/universe" component={SolarSystem} />
         <Route path="/galaxy" component={OurGalaxy} />
         <Route path="/simulations" component={SimulationsLanding} />
         <Route path="/simulations/big-bang" component={BigBangSim} />
@@ -83,16 +85,6 @@ function App() {
   // Ensure dark mode is active
   if (typeof document !== 'undefined') {
     document.documentElement.classList.add('dark');
-  }
-
-  const [welcomed, setWelcomed] = useState(() => localStorage.getItem('stellara_welcomed') === '1');
-
-  if (!welcomed) {
-    return (
-      <AnimatePresence>
-        <WelcomeScreen onComplete={() => { localStorage.setItem('stellara_welcomed', '1'); setWelcomed(true); }} />
-      </AnimatePresence>
-    );
   }
 
   return (

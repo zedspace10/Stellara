@@ -129,11 +129,11 @@ export default function SkyMap({ planets, onSelectStar, highlightIds }: Props) {
       if (!sys) return;
       const { x, y } = project(sys.ra, sys.dec, W, H);
       if (x < 0 || x > W || y < 0 || y > H) return;
-      ctx.font = "bold 10px Orbitron, sans-serif";
+      ctx.font = "bold 10px Inter, sans-serif";
       ctx.textAlign = "left";
       ctx.fillStyle = "rgba(255,213,79,0.85)";
       ctx.fillText(info.label, x + 8, y - 5);
-      ctx.font = "9px Space Grotesk, sans-serif";
+      ctx.font = "9px Inter, sans-serif";
       ctx.fillStyle = "rgba(255,255,255,0.4)";
       ctx.fillText(info.note, x + 8, y + 7);
     });
@@ -152,10 +152,10 @@ export default function SkyMap({ planets, onSelectStar, highlightIds }: Props) {
       ctx.roundRect(tx, ty, tw, 58, 8);
       ctx.fill(); ctx.stroke();
       ctx.textAlign = "left";
-      ctx.font = "bold 11px Orbitron, sans-serif";
+      ctx.font = "bold 11px Inter, sans-serif";
       ctx.fillStyle = "#ffffff";
       ctx.fillText(hovered.starName, tx + 10, ty + 18);
-      ctx.font = "10px Space Grotesk, sans-serif";
+      ctx.font = "10px Inter, sans-serif";
       ctx.fillStyle = "rgba(255,255,255,0.5)";
       ctx.fillText(`${hovered.count} confirmed planet${hovered.count > 1 ? "s" : ""}`, tx + 10, ty + 34);
       if (hovered.planets[0]?.distanceLY) {
@@ -165,7 +165,7 @@ export default function SkyMap({ planets, onSelectStar, highlightIds }: Props) {
     }
 
     // Bottom label
-    ctx.font = "11px Space Grotesk, sans-serif";
+    ctx.font = "11px Inter, sans-serif";
     ctx.textAlign = "center";
     ctx.fillStyle = "rgba(255,255,255,0.2)";
     ctx.fillText("Every point is a star with at least one confirmed planet · Drag to pan · Scroll to zoom", W / 2, H - 14);

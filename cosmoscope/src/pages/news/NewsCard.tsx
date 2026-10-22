@@ -34,7 +34,7 @@ export function NewsCard({ article, isSaved, onToggleSave, index = 0 }: Props) {
   const cats = getCategories(article);
 
   const onShare = async () => {
-    const data = { title: article.title, text: `${article.title} — via STELLARA`, url: article.url };
+    const data = { title: article.title, text: `${article.title} (via PALE)`, url: article.url };
     try {
       if (navigator.share) await navigator.share(data);
       else await navigator.clipboard.writeText(article.url);

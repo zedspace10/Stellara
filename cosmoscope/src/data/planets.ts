@@ -7,7 +7,7 @@ export const planets = [
     orbitRadius: 5,
     orbitalPeriod: 88,
     color: 0xb5b5b5,
-    tilt: 0.034,
+    tilt: 0.0006,
     diameter: "4,879 km",
     mass: "3.3×10²³ kg",
     distance: "57.9M km",
@@ -61,7 +61,7 @@ export const planets = [
     distance: "227.9M km",
     moons: 2,
     day: "24.6 hours",
-    description: "Mars is a dusty, cold, desert world with a very thin atmosphere. There is strong evidence Mars was – billions of years ago – wetter and warmer, with a thicker atmosphere."
+    description: "Mars is a dusty, cold, desert world with a very thin atmosphere. There is strong evidence that billions of years ago Mars was wetter and warmer, with a thicker atmosphere."
   },
   {
     id: "jupiter",
@@ -75,9 +75,9 @@ export const planets = [
     diameter: "139,820 km",
     mass: "1.90×10²⁷ kg",
     distance: "778.5M km",
-    moons: 95,
+    moons: 101,
     day: "9.9 hours",
-    description: "Jupiter is more than twice as massive than the other planets of our solar system combined. The giant planet's Great Red Spot is a centuries-old storm bigger than Earth."
+    description: "Jupiter is more than twice as massive as all the other planets combined. Its Great Red Spot is a storm wider than Earth that has lasted for at least 190 years."
   },
   {
     id: "saturn",
@@ -91,7 +91,7 @@ export const planets = [
     diameter: "116,460 km",
     mass: "5.68×10²⁶ kg",
     distance: "1.43B km",
-    moons: 146,
+    moons: 285,
     day: "10.7 hours",
     description: "Adorned with a dazzling, complex system of icy rings, Saturn is unique in our solar system. The other giant planets have rings, but none are as spectacular as Saturn's."
   },
@@ -107,9 +107,9 @@ export const planets = [
     diameter: "50,724 km",
     mass: "8.68×10²⁵ kg",
     distance: "2.87B km",
-    moons: 28,
+    moons: 29,
     day: "17.2 hours",
-    description: "Uranus is an ice giant. Most of its mass is a hot, dense fluid of 'icy' materials – water, methane and ammonia – above a small rocky core."
+    description: "Uranus is an ice giant. Most of its mass is a hot, dense fluid of 'icy' materials such as water, methane and ammonia, above a small rocky core."
   },
   {
     id: "neptune",

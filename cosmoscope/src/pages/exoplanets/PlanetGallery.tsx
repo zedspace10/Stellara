@@ -57,7 +57,7 @@ export default function PlanetGallery({ planets, onSelect }: Props) {
             </div>
             <div className="flex-1 min-w-0">
               <div className="text-[10px] tracking-widest text-[#ffd54f]/60 uppercase mb-1">Featured World</div>
-              <h2 className="text-xl font-['Orbitron'] text-white mb-1">{potwPlanet.name}</h2>
+              <h2 className="text-xl font-sans text-white mb-1">{potwPlanet.name}</h2>
               <p className="text-sm text-white/50 leading-relaxed">
                 {potwPlanet.potentiallyHabitable
                   ? "This world sits within its star's habitable zone — one of the most compelling candidates in the known catalogue for conditions that could support liquid water."
@@ -95,7 +95,7 @@ export default function PlanetGallery({ planets, onSelect }: Props) {
       <div ref={sentinelRef} className="h-8 mt-4" />
       {visible >= planets.length && planets.length > 0 && (
         <div className="text-center py-8">
-          <div className="text-sm text-white/30 font-['Orbitron'] tracking-widest">
+          <div className="text-sm text-white/30 font-sans tracking-widest">
             All {planets.length.toLocaleString()} worlds explored.
           </div>
           <div className="text-xs text-white/20 mt-1">The search for more continues.</div>
@@ -103,7 +103,7 @@ export default function PlanetGallery({ planets, onSelect }: Props) {
       )}
       {planets.length === 0 && (
         <div className="text-center py-20">
-          <div className="text-base text-white/30 font-['Orbitron'] mb-2">No worlds match these filters.</div>
+          <div className="text-base text-white/30 font-sans mb-2">No worlds match these filters.</div>
           <div className="text-sm text-white/20">Try broadening your search.</div>
         </div>
       )}

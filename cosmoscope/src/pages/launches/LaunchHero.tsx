@@ -50,7 +50,7 @@ export function LaunchHero({ launch, onOpenDetail }: Props) {
         {/* NEXT LAUNCH label */}
         <div className="flex items-center gap-2 mb-6">
           <Rocket className="w-3 h-3" style={{ color: "#4fc3f7" }} />
-          <div className="text-[10px] tracking-[0.4em] uppercase text-[#4fc3f7]/70 font-['Orbitron']">
+          <div className="text-[10px] tracking-[0.4em] uppercase text-[#4fc3f7]/70 font-sans">
             Next Launch
           </div>
         </div>
@@ -76,7 +76,7 @@ export function LaunchHero({ launch, onOpenDetail }: Props) {
 
         {/* Mission info */}
         <div className="mt-7 text-center max-w-xl">
-          <h2 className="text-xl sm:text-2xl text-white font-['Orbitron'] font-medium leading-tight">
+          <h2 className="text-xl sm:text-2xl text-white font-sans font-medium leading-tight">
             {launch.name}
           </h2>
           <div className="mt-2 text-sm" style={{ color: "#4fc3f7" }}>

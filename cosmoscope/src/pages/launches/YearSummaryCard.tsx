@@ -18,7 +18,7 @@ export function YearSummaryCard({ summary }: Props) {
     >
       <div className="flex items-center gap-2 mb-3">
         <TrendingUp className="w-3 h-3 text-[#4fc3f7]" />
-        <div className="text-[10px] tracking-[0.3em] uppercase text-[#4fc3f7]/80 font-['Orbitron']">
+        <div className="text-[10px] tracking-[0.3em] uppercase text-[#4fc3f7]/80 font-sans">
           This Year in Launches · {summary.year}
         </div>
       </div>
@@ -42,7 +42,7 @@ export function YearSummaryCard({ summary }: Props) {
 function Stat({ label, value, color }: { label: string; value: number; color: string }) {
   return (
     <div className="text-center">
-      <div className="text-xl font-['Orbitron'] font-medium tabular-nums" style={{ color }}>{value}</div>
+      <div className="text-xl font-sans font-medium tabular-nums" style={{ color }}>{value}</div>
       <div className="text-[9px] tracking-wider uppercase text-white/40 mt-0.5">{label}</div>
     </div>
   );

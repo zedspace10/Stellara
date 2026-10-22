@@ -145,7 +145,7 @@ function TimeDilationCalc() {
 
   return (
     <div className="mt-4 rounded-xl p-4" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-      <p className="text-xs font-semibold mb-3" style={{ color: "#4fc3f7", fontFamily: "Orbitron, sans-serif" }}>
+      <p className="text-xs font-semibold mb-3" style={{ color: "#4fc3f7", fontFamily: "Inter, sans-serif" }}>
         GRAVITATIONAL TIME DILATION
       </p>
       <div className="space-y-3">
@@ -179,7 +179,7 @@ function TimeDilationCalc() {
         </div>
         <div className="text-center pt-2">
           <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>Time runs at</p>
-          <p className="text-2xl font-bold" style={{ color: "#ffd54f", fontFamily: "Orbitron, sans-serif" }}>
+          <p className="text-2xl font-bold" style={{ color: "#ffd54f", fontFamily: "Inter, sans-serif" }}>
             {(dilation * 100).toFixed(4)}%
           </p>
           <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>of normal speed at this location</p>
@@ -195,7 +195,7 @@ function SchwarzchildCalc() {
   const rskm = rs / 1000;
   return (
     <div className="mt-4 rounded-xl p-4" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-      <p className="text-xs font-semibold mb-3" style={{ color: "#4fc3f7", fontFamily: "Orbitron, sans-serif" }}>
+      <p className="text-xs font-semibold mb-3" style={{ color: "#4fc3f7", fontFamily: "Inter, sans-serif" }}>
         SCHWARZSCHILD RADIUS CALCULATOR
       </p>
       <div>
@@ -214,7 +214,7 @@ function SchwarzchildCalc() {
       </div>
       <div className="text-center mt-3">
         <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>Event horizon radius</p>
-        <p className="text-2xl font-bold" style={{ color: "#4fc3f7", fontFamily: "Orbitron, sans-serif" }}>
+        <p className="text-2xl font-bold" style={{ color: "#4fc3f7", fontFamily: "Inter, sans-serif" }}>
           {rskm < 1 ? `${(rskm * 1000).toFixed(0)} m` : `${rskm.toFixed(1)} km`}
         </p>
         <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>
@@ -251,7 +251,7 @@ function TopicCard({ topic, onClick }: { topic: typeof TOPICS[0]; onClick: () =>
         <div className="flex-1 min-w-0">
           <h3
             className="text-sm font-bold mb-1"
-            style={{ fontFamily: "Orbitron, sans-serif", color: topic.color, letterSpacing: "0.06em" }}
+            style={{ fontFamily: "Inter, sans-serif", color: topic.color, letterSpacing: "0.06em" }}
           >
             {topic.title}
           </h3>
@@ -290,7 +290,7 @@ function TopicDetail({ topic, onBack }: { topic: typeof TOPICS[0]; onBack: () =>
         <span className="text-4xl">{topic.icon}</span>
         <h1
           className="text-2xl font-bold"
-          style={{ fontFamily: "Orbitron, sans-serif", color: topic.color, letterSpacing: "0.06em" }}
+          style={{ fontFamily: "Inter, sans-serif", color: topic.color, letterSpacing: "0.06em" }}
         >
           {topic.title}
         </h1>
@@ -304,7 +304,7 @@ function TopicDetail({ topic, onBack }: { topic: typeof TOPICS[0]; onBack: () =>
         className="rounded-xl p-4 mb-8"
         style={{ background: `${topic.color}10`, border: `1px solid ${topic.color}25` }}
       >
-        <p className="text-xs font-semibold mb-3" style={{ color: topic.color, fontFamily: "Orbitron, sans-serif" }}>
+        <p className="text-xs font-semibold mb-3" style={{ color: topic.color, fontFamily: "Inter, sans-serif" }}>
           KEY FACTS
         </p>
         <div className="grid grid-cols-2 gap-3">
@@ -451,7 +451,7 @@ export default function BlackHoles() {
         >
           <h1
             className="text-3xl md:text-5xl font-bold tracking-widest mb-3"
-            style={{ fontFamily: "Orbitron, sans-serif", color: "white", textShadow: "0 0 40px rgba(79,195,247,0.4)" }}
+            style={{ fontFamily: "Inter, sans-serif", color: "white", textShadow: "0 0 40px rgba(79,195,247,0.4)" }}
           >
             BLACK HOLES &amp; RELATIVITY
           </h1>
@@ -484,7 +484,7 @@ export default function BlackHoles() {
               background: "rgba(156,39,176,0.15)",
               border: "1px solid rgba(156,39,176,0.35)",
               color: "#ce93d8",
-              fontFamily: "Orbitron, sans-serif",
+              fontFamily: "Inter, sans-serif",
               fontSize: "11px",
               letterSpacing: "0.08em",
             }}

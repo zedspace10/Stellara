@@ -42,7 +42,7 @@ export function LaunchStrip() {
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <div className="text-[9px] uppercase tracking-wider text-[#ffd54f]/70 font-['Orbitron']">
+              <div className="text-[9px] uppercase tracking-wider text-[#ffd54f]/70 font-sans">
                 Next launch
               </div>
               <span className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded"

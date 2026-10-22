@@ -8,7 +8,7 @@ const PHASES: SimPhase[] = [
   { id: "singularity", label: "Singularity & Event Horizon", timecode: "t = milliseconds", description: "The Schwarzschild radius defines the event horizon — the point of no return. Inside, escape velocity exceeds the speed of light. The singularity: infinite density, zero volume.", scienceDetail: "Schwarzschild radius: r_s = 2GM/c². For a 10 solar mass black hole, r_s ≈ 30 km. The singularity is a mathematical construct where general relativity predicts infinite curvature — most physicists believe quantum gravity will resolve this divergence.", color: "#4a0080" },
   { id: "accretion", label: "Accretion Disc", timecode: "Early evolution", description: "Gas from a companion star spirals inward. Conservation of angular momentum forms a disc. Friction heats the inner edge to millions of Kelvin — hotter than any star's surface, glowing blue-white.", scienceDetail: "The innermost stable circular orbit (ISCO) for a Schwarzschild BH is at 3× the Schwarzschild radius. Material inside this orbit spirals inward in milliseconds. The temperature follows T ∝ r^(-3/4), reaching 10⁷ K near the ISCO for stellar-mass BHs — emitting X-rays.", color: "#ff6b35" },
   { id: "lensing", label: "Gravitational Lensing", timecode: "Photon sphere: 1.5× r_s", description: "Mass warps spacetime. Light bends around the black hole — background stars appear duplicated, stretched into rings. At the photon sphere, light can orbit indefinitely.", scienceDetail: "The photon sphere exists at 1.5× the Schwarzschild radius where photons can travel in unstable circular orbits. Gravitational lensing follows the Schwarzschild metric. An Einstein ring forms when source, lens, and observer are perfectly aligned.", color: "#4fc3f7" },
-  { id: "merger", label: "Black Hole Merger", timecode: "Inspiraling binary", description: "Two black holes spiral together, emitting gravitational waves that stretch and squeeze spacetime itself. The final merger — the universe's most violent event since the Big Bang.", scienceDetail: "Binary black hole mergers were first detected by LIGO on September 14, 2015 (GW150914). The two BHs (36 and 29 solar masses) merged at ~150 Mpc distance, releasing 3 solar masses worth of energy as gravitational waves in 0.2 seconds. Peak luminosity: 3.6 × 10⁴⁹ watts.", color: "#a78bfa" },
+  { id: "merger", label: "Black Hole Merger", timecode: "Inspiraling binary", description: "Two black holes spiral together, emitting gravitational waves that stretch and squeeze spacetime itself. The final merger is one of the most powerful events in the universe.", scienceDetail: "Binary black hole mergers were first detected by LIGO on September 14, 2015 (GW150914). The two BHs (36 and 29 solar masses) merged at ~150 Mpc distance, releasing 3 solar masses worth of energy as gravitational waves in 0.2 seconds. Peak luminosity: 3.6 × 10⁴⁹ watts.", color: "#a78bfa" },
 ];
 
 const N = 6000;
@@ -28,7 +28,7 @@ export default function BlackHoleSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "Black Hole Formation — STELLARA Simulations";
+    document.title = "Black Hole Formation · PALE";
     const el = mountRef.current;
     if (!el) return;
     const W = el.clientWidth, H = el.clientHeight;

@@ -43,7 +43,7 @@ export function CountdownTimer({ target, size = "hero" }: Props) {
 
   if (size === "compact") {
     return (
-      <div className="flex items-baseline gap-1.5 font-['Orbitron']">
+      <div className="flex items-baseline gap-1.5 font-sans">
         {parts.past && <span className="text-[10px] text-white/40 mr-1">T+</span>}
         {!parts.past && <span className="text-[10px] text-white/40 mr-1">T-</span>}
         <span className="text-sm tabular-nums" style={{ color: "#ffd54f" }}>
@@ -64,7 +64,7 @@ export function CountdownTimer({ target, size = "hero" }: Props) {
           <div key={c.label} className="flex items-center">
             <div className="flex flex-col items-center">
               <div
-                className="relative font-['Orbitron'] font-bold tabular-nums leading-none"
+                className="relative font-sans font-bold tabular-nums leading-none"
                 style={{
                   fontSize: "clamp(2.5rem, 11vw, 4rem)",
                   color: "#ffd54f",
@@ -92,7 +92,7 @@ export function CountdownTimer({ target, size = "hero" }: Props) {
             </div>
             {i < cells.length - 1 && (
               <div
-                className="font-['Orbitron'] font-bold text-white/20 self-start mt-0 mx-0"
+                className="font-sans font-bold text-white/20 self-start mt-0 mx-0"
                 style={{ fontSize: "clamp(2rem, 9vw, 3.2rem)", lineHeight: 1 }}
               >
                 :

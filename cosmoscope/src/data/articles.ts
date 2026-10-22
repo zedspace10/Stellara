@@ -58,7 +58,7 @@ When hydrogen is depleted, stars expand into red giants. For medium stars like o
     slug: "exploring-moons-of-jupiter",
     title: "Exploring the Moons of Jupiter",
     category: "Planets",
-    excerpt: "Jupiter has 95 known moons. The four largest, the Galilean moons, are fascinating worlds of their own.",
+    excerpt: "Jupiter has 101 known moons. The four largest, the Galilean moons, are fascinating worlds of their own.",
     content: `
 Jupiter is a mini solar system in its own right. The four largest moons—Io, Europa, Ganymede, and Callisto—were discovered by Galileo Galilei in 1610.
 

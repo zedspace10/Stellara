@@ -43,7 +43,7 @@ export default function BigBangSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "The Big Bang — STELLARA Simulations";
+    document.title = "The Big Bang · PALE";
     const el = mountRef.current;
     if (!el) return;
 

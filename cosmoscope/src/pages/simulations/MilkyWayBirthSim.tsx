@@ -10,7 +10,7 @@ const PHASES: SimPhase[] = [
   { id: "mergers", label: "Dwarf Galaxy Mergers", timecode: "t = 12 — 10 Bya", description: "Hundreds of small dwarf galaxies form and collide in slow-motion cosmic choreography, merging to build the young Milky Way.", scienceDetail: "Hierarchical structure formation: small structures merged into larger ones. The Milky Way grew primarily through mergers. Evidence includes stellar streams (Sagittarius Stream) and the multi-metallicity populations in the halo.", color: "#818cf8" },
   { id: "disc", label: "Galactic Disc Forms", timecode: "t ≈ 10 Bya", description: "Gas cools, loses energy, and flattens into a rotating plane. Conservation of angular momentum transforms a sphere into a disc.", scienceDetail: "Gas dissipates energy through radiative cooling but conserves angular momentum. It collapses along the rotation axis but not radially, creating the characteristic thin disc (~1000 ly thick, ~100,000 ly wide).", color: "#60a5fa" },
   { id: "arms", label: "Spiral Arms Emerge", timecode: "t = 8 — 4 Bya", description: "Density waves propagate through the disc, triggering star formation in sweeping spiral arms. The Milky Way takes its iconic form.", scienceDetail: "Spiral arms are density waves, not fixed structures — stars move through them like cars through a traffic jam. The Milky Way has 4 major arms: Sagittarius, Perseus, Orion-Cygnus (our arm), and Norma-Cygnus.", color: "#a78bfa" },
-  { id: "now", label: "The Milky Way Today", timecode: "t = 13.8 Bya (now)", description: "A barred spiral galaxy, 100,000 light-years wide, 400 billion stars, with Sagittarius A* — 4 million solar masses — at its heart. This is home.", scienceDetail: "The Milky Way will collide with Andromeda in ~4.5 billion years, eventually merging into an elliptical galaxy astronomers call 'Milkomeda'. Our Sun will likely be ejected to a wider orbit.", color: "#ffd54f" },
+  { id: "now", label: "The Milky Way Today", timecode: "t = 13.8 Bya (now)", description: "A barred spiral galaxy, 100,000 light years wide, with between 100 and 400 billion stars and Sagittarius A*, 4 million times the mass of the Sun, at its heart. This is home.", scienceDetail: "The Milky Way will collide with Andromeda in ~4.5 billion years, eventually merging into an elliptical galaxy astronomers call 'Milkomeda'. Our Sun will likely be ejected to a wider orbit.", color: "#ffd54f" },
 ];
 
 const N = 7000;
@@ -30,7 +30,7 @@ export default function MilkyWayBirthSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "Birth of the Milky Way — STELLARA Simulations";
+    document.title = "Birth of the Milky Way · PALE";
     const el = mountRef.current;
     if (!el) return;
     const W = el.clientWidth, H = el.clientHeight;

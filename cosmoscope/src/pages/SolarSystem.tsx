@@ -80,7 +80,7 @@ function WebGLFallback() {
             <circle cx="109" cy="64" r="4" fill="#c88b3a" />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-[#ffd54f] mb-3" style={{fontFamily: 'Orbitron, sans-serif'}}>
+        <h2 className="text-2xl font-bold text-[#ffd54f] mb-3" style={{fontFamily: 'Inter, sans-serif'}}>
           Interactive Universe
         </h2>
         <p className="text-[#e0e0e0]/70 max-w-md mx-auto leading-relaxed mb-2">
@@ -179,12 +179,12 @@ export default function SolarSystem() {
 
   // Rotating universe facts
   const UNIVERSE_FACTS = [
-    "There are more galaxies in the observable universe than grains of sand on Earth.",
-    "The cosmic web formed from quantum fluctuations in the first second after the Big Bang.",
+    "There are more stars in the observable universe than grains of sand on all of Earth's beaches.",
+    "The cosmic web grew from tiny ripples present in the first fraction of a second after the Big Bang.",
     "The voids between filaments are so large that light takes hundreds of millions of years to cross them.",
     "Dark matter forms the invisible scaffolding of every filament you can see.",
-    "The Boötes Void is so empty that if the Milky Way were inside it, we would not have known other galaxies existed until the late 20th century.",
-    "The observable universe is 93 billion light years across — yet the full universe may be infinite.",
+    "The Boötes Void is so empty that if the Milky Way sat at its centre, we would probably not have known other galaxies existed until the 1960s.",
+    "The observable universe is 93 billion light years across, yet the full universe may be infinite.",
   ];
   useEffect(() => {
     if (zoomLevel !== 3) return;
@@ -274,7 +274,7 @@ export default function SolarSystem() {
   }, [triggerTransition]);
 
   useEffect(() => {
-    document.title = "Interactive Universe — STELLARA";
+    document.title = "Interactive Universe · PALE";
     if (!webglSupported || !mountRef.current || !labelMountRef.current) return;
 
     // Setup Scene
@@ -347,7 +347,7 @@ export default function SolarSystem() {
     const sunLabelDiv = document.createElement('div');
     sunLabelDiv.textContent = 'The Sun';
     sunLabelDiv.style.color = '#ffd54f';
-    sunLabelDiv.style.fontFamily = 'Space Grotesk, sans-serif';
+    sunLabelDiv.style.fontFamily = 'Inter, sans-serif';
     sunLabelDiv.style.fontSize = '12px';
     sunLabelDiv.style.pointerEvents = 'auto';
     sunLabelDiv.style.cursor = 'pointer';
@@ -493,7 +493,7 @@ export default function SolarSystem() {
       labelDiv.className = 'planet-label';
       labelDiv.textContent = p.name;
       labelDiv.style.color = '#ffffff';
-      labelDiv.style.fontFamily = 'Space Grotesk, sans-serif';
+      labelDiv.style.fontFamily = 'Inter, sans-serif';
       labelDiv.style.fontSize = '12px';
       labelDiv.style.pointerEvents = 'auto';
       labelDiv.style.cursor = 'pointer';
@@ -561,7 +561,7 @@ export default function SolarSystem() {
       cDiv.className = 'planet-label';
       cDiv.textContent = c.name;
       cDiv.style.color = '#ffffff';
-      cDiv.style.fontFamily = 'Space Grotesk, sans-serif';
+      cDiv.style.fontFamily = 'Inter, sans-serif';
       cDiv.style.fontSize = '10px';
       cDiv.style.pointerEvents = 'auto';
       cDiv.style.cursor = 'pointer';
@@ -608,7 +608,7 @@ export default function SolarSystem() {
     const sagADiv = document.createElement('div');
     sagADiv.textContent = 'Sagittarius A*';
     sagADiv.style.color = '#ffffff';
-    sagADiv.style.fontFamily = 'Space Grotesk, sans-serif';
+    sagADiv.style.fontFamily = 'Inter, sans-serif';
     sagADiv.style.fontSize = '12px';
     sagADiv.style.pointerEvents = 'auto';
     sagADiv.style.cursor = 'pointer';
@@ -707,7 +707,7 @@ export default function SolarSystem() {
       const nDiv = document.createElement('div');
       nDiv.textContent = n.name;
       nDiv.style.color = '#ffffff';
-      nDiv.style.fontFamily = 'Space Grotesk, sans-serif';
+      nDiv.style.fontFamily = 'Inter, sans-serif';
       nDiv.style.fontSize = '12px';
       nDiv.style.pointerEvents = 'auto';
       nDiv.style.cursor = 'pointer';
@@ -727,7 +727,7 @@ export default function SolarSystem() {
     const yahDiv = document.createElement('div');
     yahDiv.textContent = 'Solar System (You Are Here)';
     yahDiv.style.color = '#4fc3f7';
-    yahDiv.style.fontFamily = 'Space Grotesk, sans-serif';
+    yahDiv.style.fontFamily = 'Inter, sans-serif';
     yahDiv.style.fontSize = '12px';
     const yahLabel = new CSS2DObject(yahDiv);
     yahLabel.position.set(0, 100, 0);
@@ -755,7 +755,7 @@ export default function SolarSystem() {
       const cDiv = document.createElement('div');
       cDiv.textContent = c.name;
       cDiv.style.color = '#ffffff';
-      cDiv.style.fontFamily = 'Space Grotesk, sans-serif';
+      cDiv.style.fontFamily = 'Inter, sans-serif';
       cDiv.style.fontSize = '12px';
       cDiv.style.pointerEvents = 'auto';
       cDiv.style.cursor = 'pointer';
@@ -912,19 +912,19 @@ export default function SolarSystem() {
     const VOIDS = [
       {
         id: 'bootes-void', name: 'Boötes Void', pos: [80000, 5000, -60000] as [number,number,number], radius: 38000,
-        info: 'One of the largest known voids — 330 million light years across. Only 60 galaxies found where thousands were expected.',
+        info: 'One of the largest known voids, about 330 million light years across. Only around 60 galaxies found where thousands were expected.',
       },
       {
         id: 'local-void', name: 'Local Void', pos: [-20000, -3000, 30000] as [number,number,number], radius: 18000,
-        info: 'The void our Local Group sits on the boundary of — spanning roughly 150 million light years.',
+        info: 'The void at whose edge our Local Group sits, spanning roughly 150 million light years.',
       },
       {
         id: 'eridanus-void', name: 'Eridanus Supervoid', pos: [-100000, -8000, 80000] as [number,number,number], radius: 52000,
-        info: 'The largest known void — nearly 1 billion light years across. Associated with the CMB Cold Spot.',
+        info: 'One of the largest known voids, possibly up to 1.8 billion light years across. Linked to the CMB Cold Spot.',
       },
       {
         id: 'sculptor-void', name: 'Sculptor Void', pos: [50000, 4000, 90000] as [number,number,number], radius: 22000,
-        info: 'One of the first cosmic voids ever discovered, in 1981.',
+        info: 'A large, nearly empty region in the direction of the constellation Sculptor.',
       },
     ];
 
@@ -961,8 +961,8 @@ export default function SolarSystem() {
       const vDiv = document.createElement('div');
       vDiv.textContent = v.name;
       vDiv.style.cssText = voidTier === 2
-        ? 'color:rgba(79,195,247,0.75);font-size:12px;font-family:Space Grotesk,sans-serif;pointer-events:auto;cursor:pointer;letter-spacing:0.05em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);'
-        : 'color:rgba(79,195,247,0.5);font-size:10px;font-family:Space Grotesk,sans-serif;pointer-events:auto;cursor:pointer;letter-spacing:0.05em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);';
+        ? 'color:rgba(79,195,247,0.75);font-size:12px;font-family:Inter,sans-serif;pointer-events:auto;cursor:pointer;letter-spacing:0.05em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);'
+        : 'color:rgba(79,195,247,0.5);font-size:10px;font-family:Inter,sans-serif;pointer-events:auto;cursor:pointer;letter-spacing:0.05em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);';
       vDiv.onclick = (e) => {
         e.stopPropagation();
         if (clickGuardRef.current) return;
@@ -1029,7 +1029,7 @@ export default function SolarSystem() {
       };
       const uDiv = document.createElement('div');
       uDiv.textContent = u.name;
-      uDiv.style.cssText = `${tierCss[u.tier] ?? tierCss[2]}font-family:Space Grotesk,sans-serif;pointer-events:auto;cursor:pointer;letter-spacing:0.04em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);`;
+      uDiv.style.cssText = `${tierCss[u.tier] ?? tierCss[2]}font-family:Inter,sans-serif;pointer-events:auto;cursor:pointer;letter-spacing:0.04em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);`;
       uDiv.onclick = (e) => {
         e.stopPropagation();
         if (clickGuardRef.current) return;
@@ -1485,11 +1485,17 @@ export default function SolarSystem() {
     <div className="relative w-full h-screen bg-black overflow-hidden">
       <div ref={mountRef} className="absolute inset-0 z-0" />
       <div ref={labelMountRef} className="absolute inset-0 z-10 pointer-events-none" />
+
+      {!screenshotMode && (
+        <p className="absolute right-4 bottom-24 md:bottom-4 z-20 m-0 text-[11px] pointer-events-none" style={{ color: "rgba(245,250,255,0.45)" }}>
+          Sizes and distances are not to scale
+        </p>
+      )}
       
       {paleBlueDot && <PaleBlueDotSequence onComplete={() => setPaleBlueDot(false)} />}
       
       {exploreToast && (
-        <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 bg-black/80 border border-[#4fc3f7] text-white px-6 py-3 rounded-full text-sm font-['Orbitron'] shadow-[0_0_15px_rgba(79,195,247,0.3)] animate-in fade-in zoom-in duration-300">
+        <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 bg-black/80 border border-[#4fc3f7] text-white px-6 py-3 rounded-full text-sm font-sans shadow-[0_0_15px_rgba(79,195,247,0.3)] animate-in fade-in zoom-in duration-300">
           {exploreToast}
         </div>
       )}
@@ -1505,7 +1511,7 @@ export default function SolarSystem() {
       {showUniverseText && !screenshotMode && (
         <div className="absolute inset-0 z-50 flex items-center justify-center pointer-events-none transition-opacity duration-1000 bg-black/40 backdrop-blur-sm">
           <h1 className="text-4xl md:text-6xl font-light tracking-widest text-white animate-pulse">
-            The Observable Universe <br/><span className="text-2xl text-white/60">93 billion light years across · 2 trillion galaxies</span>
+            The Observable Universe <br/><span className="text-2xl text-white/60">93 billion light years across · hundreds of billions of galaxies</span>
           </h1>
         </div>
       )}
@@ -1515,11 +1521,11 @@ export default function SolarSystem() {
         <>
           {/* Top-left */}
           <div className="absolute top-20 left-4 z-20 pointer-events-none">
-            <p className="text-xs font-bold tracking-widest" style={{ fontFamily: "Orbitron, sans-serif", color: "#ffd54f", letterSpacing: "0.12em" }}>
+            <p className="text-xs font-bold tracking-widest" style={{ fontFamily: "Inter, sans-serif", color: "#ffd54f", letterSpacing: "0.12em" }}>
               OBSERVABLE UNIVERSE
             </p>
-            <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "Space Grotesk, sans-serif" }}>
-              93 billion light years · 2 trillion galaxies
+            <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "Inter, sans-serif" }}>
+              93 billion light years · hundreds of billions of galaxies
             </p>
           </div>
 
@@ -1529,7 +1535,7 @@ export default function SolarSystem() {
             key={universeFact}
             style={{ animation: "fadeIn 1s ease-out" }}
           >
-            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "Space Grotesk, sans-serif", fontStyle: "italic" }}>
+            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.4)", fontFamily: "Inter, sans-serif", fontStyle: "italic" }}>
               "{UNIVERSE_FACTS[universeFact]}"
             </p>
           </div>
@@ -1548,7 +1554,7 @@ export default function SolarSystem() {
             style={{ background: "rgba(6,6,20,0.98)", border: "1px solid rgba(79,195,247,0.2)" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="text-sm font-bold text-white mb-4" style={{ fontFamily: "Orbitron, sans-serif", letterSpacing: "0.1em" }}>
+            <h2 className="text-sm font-bold text-white mb-4" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "0.1em" }}>
               KEYBOARD SHORTCUTS
             </h2>
             <div className="space-y-2">
@@ -1639,7 +1645,7 @@ export default function SolarSystem() {
               borderRadius: "12px",
               padding: "10px 16px",
               color: "#ff6060",
-              fontFamily: "Space Grotesk, sans-serif",
+              fontFamily: "Inter, sans-serif",
               fontSize: "13px",
             }}
           >
@@ -1676,7 +1682,7 @@ export default function SolarSystem() {
                   key={label}
                   onClick={(e) => { e.stopPropagation(); set((v: boolean) => !v); }}
                   style={{
-                    fontFamily: "Space Grotesk, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                     background: state ? "rgba(79,195,247,0.12)" : "transparent",
                     color: state ? "#4fc3f7" : "rgba(255,255,255,0.5)",
                     border: "none",
@@ -1702,7 +1708,7 @@ export default function SolarSystem() {
           <button
             onClick={(e) => { e.stopPropagation(); setPaleBlueDot(true); }}
             style={{
-              fontFamily: "Space Grotesk, sans-serif",
+              fontFamily: "Inter, sans-serif",
               background: "rgba(255,213,79,0.06)",
               color: "#ffd54f",
               border: "none",
@@ -1735,7 +1741,7 @@ export default function SolarSystem() {
               }
             }}
             style={{
-              fontFamily: "Space Grotesk, sans-serif",
+              fontFamily: "Inter, sans-serif",
               background: isObservatory ? "rgba(220,38,38,0.15)" : "transparent",
               color: isObservatory ? "#f87171" : "rgba(255,255,255,0.5)",
               border: "none",
@@ -1757,7 +1763,7 @@ export default function SolarSystem() {
             <button
               onClick={(e) => { e.stopPropagation(); setIsTelescopeMode(t => !t); }}
               style={{
-                fontFamily: "Space Grotesk, sans-serif",
+                fontFamily: "Inter, sans-serif",
                 background: isTelescopeMode ? "rgba(251,146,60,0.15)" : "transparent",
                 color: isTelescopeMode ? "#fb923c" : "rgba(255,200,150,0.6)",
                 border: "none",
@@ -1780,7 +1786,7 @@ export default function SolarSystem() {
           <button
             onClick={(e) => { e.stopPropagation(); setScreenshotMode(true); }}
             style={{
-              fontFamily: "Space Grotesk, sans-serif",
+              fontFamily: "Inter, sans-serif",
               background: "transparent",
               color: "rgba(255,255,255,0.5)",
               border: "none",

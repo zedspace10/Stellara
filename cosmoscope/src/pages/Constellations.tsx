@@ -322,7 +322,7 @@ function ConstellationCard({ data, onClick }: { data: ConstellationData; onClick
           <ConstellationSVG data={data} size={72} />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-sm text-white mb-0.5" style={{ fontFamily: "Orbitron, sans-serif", color: "#ffd54f" }}>
+          <h3 className="font-bold text-sm text-white mb-0.5" style={{ fontFamily: "Inter, sans-serif", color: "#ffd54f" }}>
             {data.name}
           </h3>
           <p className="text-xs mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>{data.abbr} · {data.months}</p>
@@ -362,7 +362,7 @@ function ConstellationDetail({ data, onBack }: { data: ConstellationData; onBack
           <ConstellationSVG data={data} size={180} />
         </div>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "Orbitron, sans-serif", color: "#ffd54f" }}>
+          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "Inter, sans-serif", color: "#ffd54f" }}>
             {data.name}
           </h1>
           <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
@@ -405,7 +405,7 @@ function ConstellationDetail({ data, onBack }: { data: ConstellationData; onBack
         className="text-center text-[11px] mt-2"
         style={{ color: "rgba(255,255,255,0.25)" }}
       >
-        Star designations: International Astronomical Union · Written by STELLARA
+        Star designations: International Astronomical Union · Written by PALE
       </p>
     </div>
   );
@@ -438,7 +438,7 @@ export default function Constellations() {
         <div className="text-center mb-10">
           <h1
             className="text-3xl md:text-4xl font-bold tracking-widest mb-3"
-            style={{ fontFamily: "Orbitron, sans-serif", color: "#ffd54f" }}
+            style={{ fontFamily: "Inter, sans-serif", color: "#ffd54f" }}
           >
             CONSTELLATION GUIDE
           </h1>
@@ -469,7 +469,7 @@ export default function Constellations() {
                 onClick={() => setHemisphere(h)}
                 className="px-4 py-2 text-xs font-semibold transition-colors"
                 style={{
-                  fontFamily: "Orbitron, sans-serif",
+                  fontFamily: "Inter, sans-serif",
                   background: hemisphere === h ? "rgba(79,195,247,0.15)" : "transparent",
                   color: hemisphere === h ? "#4fc3f7" : "rgba(255,255,255,0.4)",
                 }}

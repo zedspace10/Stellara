@@ -165,10 +165,10 @@ function AnimatedCard({ sim, index }: { sim: typeof SIMS[0]; index: number }) {
 
       {/* Content */}
       <div className="p-5">
-        <div className="text-xs text-gray-500 font-['Orbitron'] tracking-widest mb-1">
+        <div className="text-xs text-gray-500 font-sans tracking-widest mb-1">
           {String(SIMS.indexOf(sim) + 1).padStart(2, "0")}
         </div>
-        <h3 className="text-lg font-bold text-white mb-2 font-['Orbitron']">{sim.title}</h3>
+        <h3 className="text-lg font-bold text-white mb-2 font-sans">{sim.title}</h3>
         <p className="text-sm text-gray-400 leading-relaxed mb-4">{sim.description}</p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 text-xs text-gray-500">
@@ -189,7 +189,7 @@ function AnimatedCard({ sim, index }: { sim: typeof SIMS[0]; index: number }) {
 
 export default function SimulationsLanding() {
   useEffect(() => {
-    document.title = "Simulations — STELLARA";
+    document.title = "Simulations · PALE";
   }, []);
 
   return (
@@ -201,12 +201,12 @@ export default function SimulationsLanding() {
         transition={{ duration: 0.8 }}
         className="text-center mb-16"
       >
-        <div className="inline-flex items-center gap-2 text-xs text-[#9c27b0] font-['Orbitron'] tracking-widest uppercase mb-4 px-4 py-2 rounded-full border border-[#9c27b0]/30 bg-[#9c27b0]/10">
+        <div className="inline-flex items-center gap-2 text-xs text-[#9c27b0] font-sans tracking-widest uppercase mb-4 px-4 py-2 rounded-full border border-[#9c27b0]/30 bg-[#9c27b0]/10">
           <BarChart2 className="w-3.5 h-3.5" />
           Interactive Cosmic Simulations
         </div>
-        <h1 className="text-4xl md:text-6xl font-['Orbitron'] font-bold text-white mb-4">
-          STELLARA <span className="text-[#4fc3f7]">Simulations</span>
+        <h1 className="text-4xl md:text-6xl font-sans font-bold text-white mb-4">
+          PALE <span className="text-[#8DEBFF]">Simulations</span>
         </h1>
         <p className="text-gray-400 text-lg max-w-xl mx-auto leading-relaxed">
           Witness the most profound events in cosmic history — scientifically accurate, visually cinematic.
@@ -243,10 +243,10 @@ export default function SimulationsLanding() {
                 <Sliders className="w-8 h-8" style={{ color: "#ce93d8" }} />
               </div>
               <div className="flex-1 text-center md:text-left">
-                <div className="text-[10px] font-bold tracking-widest mb-1" style={{ fontFamily: "Orbitron, sans-serif", color: "#ce93d8" }}>
+                <div className="text-[10px] font-bold tracking-widest mb-1" style={{ fontFamily: "Inter, sans-serif", color: "#ce93d8" }}>
                   INTERACTIVE SANDBOX
                 </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2" style={{ fontFamily: "Orbitron, sans-serif" }}>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2" style={{ fontFamily: "Inter, sans-serif" }}>
                   Build Your Own Universe
                 </h2>
                 <p className="text-sm md:text-base leading-relaxed max-w-2xl" style={{ color: "rgba(255,255,255,0.6)" }}>
@@ -255,7 +255,7 @@ export default function SimulationsLanding() {
               </div>
               <div className="shrink-0">
                 <div className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all group-hover:scale-105"
-                  style={{ background: "linear-gradient(135deg, #9c27b0, #4fc3f7)", color: "#fff", fontFamily: "Orbitron, sans-serif", letterSpacing: "0.05em" }}>
+                  style={{ background: "linear-gradient(135deg, #9c27b0, #4fc3f7)", color: "#fff", fontFamily: "Inter, sans-serif", letterSpacing: "0.05em" }}>
                   <Play className="w-4 h-4 fill-white" />
                   BEGIN
                 </div>
@@ -279,7 +279,7 @@ export default function SimulationsLanding() {
         transition={{ delay: 0.8 }}
         className="mt-12 p-6 rounded-2xl border border-[#ffd54f]/20 bg-[#ffd54f]/5 text-center"
       >
-        <div className="text-[#ffd54f] font-['Orbitron'] text-sm mb-2">Recommended Order for New Explorers</div>
+        <div className="text-[#ffd54f] font-sans text-sm mb-2">Recommended Order for New Explorers</div>
         <div className="text-gray-400 text-sm">
           Big Bang → Solar System Formation → Star Birth → Star Death → Black Hole → Milky Way Birth → Inside a Black Hole
         </div>
