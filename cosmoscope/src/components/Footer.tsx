@@ -29,7 +29,6 @@ export default function Footer() {
               { href: "/blog", label: "Blog" },
               { href: "/education", label: "Education" },
               { href: "/observatory", label: "Tonight's Sky" },
-              { href: "/ask", label: "Ask the Universe" },
             ].map((item) => (
               <Link
                 key={item.href}

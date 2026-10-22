@@ -1,4 +1,3 @@
-import { useLocation } from 'wouter';
 
 interface UniverseInfoPanelProps {
   objectId: string | null;
@@ -146,7 +145,6 @@ const UNIVERSE_DATA: Record<string, {
 };
 
 export default function UniverseInfoPanel({ objectId, onClose }: UniverseInfoPanelProps) {
-  const [, navigate] = useLocation();
   if (!objectId) return null;
 
   const data = UNIVERSE_DATA[objectId];
@@ -312,24 +310,6 @@ export default function UniverseInfoPanel({ objectId, onClose }: UniverseInfoPan
             </p>
           </div>
 
-          <button
-            onClick={() => { navigate('/ask'); onClose(); }}
-            style={{
-              width: '100%',
-              padding: '11px 16px',
-              background: 'rgba(255,213,79,0.08)',
-              border: '1px solid rgba(255,213,79,0.25)',
-              borderRadius: 10,
-              color: '#ffd54f',
-              fontSize: 13,
-              fontFamily: 'Space Grotesk, sans-serif',
-              cursor: 'pointer',
-              textAlign: 'left',
-              letterSpacing: '0.02em',
-            }}
-          >
-            Ask about {data.name} →
-          </button>
         </div>
       </div>
     </>
