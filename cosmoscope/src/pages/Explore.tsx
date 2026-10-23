@@ -6,7 +6,7 @@ const GROUPS = [
   {
     title: "The universe",
     items: [
-      { href: "/universe", name: "Interactive universe", body: "Fly from the planets out to the cosmic web in 3D." },
+      { href: "/", name: "Interactive universe", body: "Fly from the planets out to the cosmic web in 3D." },
       { href: "/galaxy", name: "Our galaxy", body: "The Milky Way and the things that live in it." },
       { href: "/scale", name: "Scale of the universe", body: "From the Planck length to everything we can see." },
       { href: "/exoplanets", name: "Exoplanet explorer", body: "Thousands of worlds orbiting other stars." },
