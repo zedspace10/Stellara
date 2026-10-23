@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -11,14 +11,12 @@ import WelcomeScreen from "@/components/WelcomeScreen";
 
 // Pages
 import NotFound from "@/pages/not-found";
-import Blog from "@/pages/Blog";
-import BlogPost from "@/pages/BlogPost";
-import APOD from "@/pages/APOD";
 import SolarSystem from "@/pages/SolarSystem";
-import Explore from "@/pages/Explore";
-import Education from "@/pages/Education";
-import TonightsSky from "@/pages/TonightsSky";
-import OurGalaxy from "@/pages/OurGalaxy";
+import Tonight from "@/pages/Tonight";
+import APOD from "@/pages/APOD";
+import Constellations from "@/pages/Constellations";
+import ScaleOfUniverse from "@/pages/ScaleOfUniverse";
+import ExoplanetExplorer from "@/pages/ExoplanetExplorer";
 import SimulationsLanding from "@/pages/simulations/SimulationsLanding";
 import BigBangSim from "@/pages/simulations/BigBangSim";
 import MilkyWayBirthSim from "@/pages/simulations/MilkyWayBirthSim";
@@ -27,29 +25,39 @@ import StarDeathSim from "@/pages/simulations/StarDeathSim";
 import BlackHoleSim from "@/pages/simulations/BlackHoleSim";
 import InsideBlackHoleSim from "@/pages/simulations/InsideBlackHoleSim";
 import SolarSystemFormationSim from "@/pages/simulations/SolarSystemFormationSim";
-import ScaleOfUniverse from "@/pages/ScaleOfUniverse";
-import ExoplanetExplorer from "@/pages/ExoplanetExplorer";
-import LaunchTracker from "@/pages/LaunchTracker";
-import SpaceNews from "@/pages/SpaceNews";
-import Discover from "@/pages/Discover";
-import Observatory from "@/pages/Observatory";
 import About from "@/pages/About";
 import Privacy from "@/pages/Privacy";
-import BlackHoles from "@/pages/BlackHoles";
-import Constellations from "@/pages/Constellations";
-import Glossary from "@/pages/Glossary";
-import BuildYourOwnUniverse from "@/pages/BuildYourOwnUniverse";
 
 const queryClient = new QueryClient();
+
+// Pages that have been retired, and where their old links now go.
+const RETIRED: [string, string][] = [
+  ["/universe", "/"],
+  ["/galaxy", "/"],
+  ["/explore", "/"],
+  ["/observatory", "/tonight"],
+  ["/history", "/tonight"],
+  ["/discover", "/tonight"],
+  ["/news", "/tonight"],
+  ["/launches", "/tonight"],
+  ["/blackholes", "/simulations/black-hole"],
+  ["/build-universe", "/simulations"],
+  ["/education", "/"],
+  ["/glossary", "/"],
+  ["/blog", "/"],
+  ["/blog/:slug", "/"],
+];
 
 function Router() {
   return (
     <AnimatePresence mode="wait">
       <Switch>
         <Route path="/" component={SolarSystem} />
-        <Route path="/explore" component={Explore} />
-        <Route path="/universe" component={SolarSystem} />
-        <Route path="/galaxy" component={OurGalaxy} />
+        <Route path="/tonight" component={Tonight} />
+        <Route path="/apod" component={APOD} />
+        <Route path="/constellations" component={Constellations} />
+        <Route path="/scale" component={ScaleOfUniverse} />
+        <Route path="/exoplanets" component={ExoplanetExplorer} />
         <Route path="/simulations" component={SimulationsLanding} />
         <Route path="/simulations/big-bang" component={BigBangSim} />
         <Route path="/simulations/milky-way-birth" component={MilkyWayBirthSim} />
@@ -58,24 +66,13 @@ function Router() {
         <Route path="/simulations/black-hole" component={BlackHoleSim} />
         <Route path="/simulations/inside-black-hole" component={InsideBlackHoleSim} />
         <Route path="/simulations/solar-system-formation" component={SolarSystemFormationSim} />
-        <Route path="/blog" component={Blog} />
-        <Route path="/blog/:slug" component={BlogPost} />
-        <Route path="/education" component={Education} />
-        <Route path="/apod" component={APOD} />
-        <Route path="/tonight" component={TonightsSky} />
-        <Route path="/scale" component={ScaleOfUniverse} />
-        <Route path="/exoplanets" component={ExoplanetExplorer} />
-        <Route path="/launches" component={LaunchTracker} />
-        <Route path="/news" component={SpaceNews} />
-        <Route path="/discover" component={Discover} />
-        <Route path="/observatory" component={Observatory} />
         <Route path="/about" component={About} />
         <Route path="/privacy" component={Privacy} />
-        <Route path="/blackholes" component={BlackHoles} />
-        <Route path="/constellations" component={Constellations} />
-        <Route path="/glossary" component={Glossary} />
-        <Route path="/history" component={Discover} />
-        <Route path="/build-universe" component={BuildYourOwnUniverse} />
+        {RETIRED.map(([from, to]) => (
+          <Route key={from} path={from}>
+            <Redirect to={to} replace />
+          </Route>
+        ))}
         <Route component={NotFound} />
       </Switch>
     </AnimatePresence>
@@ -84,18 +81,31 @@ function Router() {
 
 function App() {
   // Ensure dark mode is active
-  if (typeof document !== 'undefined') {
-    document.documentElement.classList.add('dark');
+  if (typeof document !== "undefined") {
+    document.documentElement.classList.add("dark");
   }
 
   const [welcomed, setWelcomed] = useState(() => {
-    try { return localStorage.getItem('stellara_welcomed') === '1'; } catch { return true; }
+    try {
+      return localStorage.getItem("stellara_welcomed") === "1";
+    } catch {
+      return true;
+    }
   });
 
   if (!welcomed) {
     return (
       <AnimatePresence>
-        <WelcomeScreen onComplete={() => { try { localStorage.setItem('stellara_welcomed', '1'); } catch { /* storage blocked */ } setWelcomed(true); }} />
+        <WelcomeScreen
+          onComplete={() => {
+            try {
+              localStorage.setItem("stellara_welcomed", "1");
+            } catch {
+              /* storage blocked */
+            }
+            setWelcomed(true);
+          }}
+        />
       </AnimatePresence>
     );
   }
@@ -104,9 +114,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <motion.div 
-            initial={{ opacity: 0 }} 
-            animate={{ opacity: 1 }} 
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
             className="relative min-h-screen font-sans selection:bg-primary/30"
           >

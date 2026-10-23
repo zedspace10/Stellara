@@ -4,8 +4,10 @@ import MailingListForm from "./MailingListForm";
 import { CONTACT_EMAIL } from "@/lib/links";
 
 const LINKS = [
-  { href: "/explore", label: "Explore" },
+  { href: "/", label: "Universe" },
   { href: "/tonight", label: "Tonight" },
+  { href: "/scale", label: "Scale" },
+  { href: "/simulations", label: "Simulations" },
   { href: "/about", label: "About" },
   { href: "/privacy", label: "Privacy" },
 ];

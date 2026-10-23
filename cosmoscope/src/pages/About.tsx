@@ -75,7 +75,7 @@ export default function About() {
         </div>
 
         <div className="mt-10 text-center">
-          <Link href="/universe" className="inline-flex items-center gap-2 text-[15px] no-underline" style={{ color: "#8DEBFF" }}>
+          <Link href="/" className="inline-flex items-center gap-2 text-[15px] no-underline" style={{ color: "#8DEBFF" }}>
             Open the interactive universe <ChevronRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>

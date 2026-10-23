@@ -1,114 +1,62 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "wouter";
 import { X } from "lucide-react";
 import { APP_STORE_URL } from "@/lib/links";
-
-const NAV_ITEMS = [
-  {
-    id: "explore",
-    label: "Explore",
-    items: [
-      { id: "explore-all", label: "Everything to explore", path: "/explore" },
-      { id: "universe", label: "Interactive universe", path: "/universe" },
-      { id: "galaxy", label: "Our galaxy", path: "/galaxy" },
-      { id: "scale", label: "Scale of the universe", path: "/scale" },
-      { id: "simulations", label: "Simulations", path: "/simulations" },
-      { id: "exoplanets", label: "Exoplanet explorer", path: "/exoplanets" },
-    ],
-  },
-  {
-    id: "tonight",
-    label: "Tonight",
-    items: [
-      { id: "tonight-sky", label: "Tonight's sky", path: "/tonight" },
-      { id: "observatory", label: "The Observatory", path: "/observatory" },
-      { id: "apod", label: "Picture of the day", path: "/apod" },
-      { id: "launches", label: "Launch tracker", path: "/launches" },
-      { id: "news", label: "Space news", path: "/news" },
-      { id: "history", label: "This week in space history", path: "/history" },
-    ],
-  },
-  {
-    id: "learn",
-    label: "Learn",
-    items: [
-      { id: "constellations", label: "Constellation guide", path: "/constellations" },
-      { id: "blackholes", label: "Black holes and relativity", path: "/blackholes" },
-      { id: "build-universe", label: "Build your own universe", path: "/build-universe" },
-      { id: "glossary", label: "Space glossary", path: "/glossary" },
-      { id: "education", label: "Education centre", path: "/education" },
-      { id: "blog", label: "Blog", path: "/blog" },
-    ],
-  },
-];
 
 const TINT = "#8DEBFF";
 const TEXT = "#F5FAFF";
 const MUTED = "#A7B6C6";
 
+const MAIN = [
+  { path: "/", label: "Universe" },
+  { path: "/tonight", label: "Tonight" },
+  { path: "/scale", label: "Scale" },
+  { path: "/simulations", label: "Simulations" },
+  { path: "/exoplanets", label: "Other worlds" },
+  { path: "/about", label: "About" },
+];
+
+// On phones the bar holds four places; the rest sit behind More.
+const PHONE_BAR = MAIN.slice(0, 4);
+const PHONE_MORE = [
+  { path: "/exoplanets", label: "Other worlds" },
+  { path: "/constellations", label: "Constellation guide" },
+  { path: "/apod", label: "Picture of the day" },
+  { path: "/about", label: "About" },
+];
+
+function isActive(location: string, path: string) {
+  if (path === "/") return location === "/";
+  return location === path || location.startsWith(path + "/");
+}
+
 function Wordmark({ size = 20 }: { size?: number }) {
-  return (
-    <span style={{ fontSize: size, fontWeight: 700, letterSpacing: "0.32em", color: TEXT }}>PALE</span>
-  );
+  return <span style={{ fontSize: size, fontWeight: 700, letterSpacing: "0.32em", color: TEXT }}>PALE</span>;
 }
 
 export default function Navigation() {
   const [location, navigate] = useLocation();
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [mobileDrawer, setMobileDrawer] = useState<string | null>(null);
-  const navRef = useRef<HTMLDivElement>(null);
-  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (closeTimer.current) clearTimeout(closeTimer.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (!navRef.current?.contains(e.target as Node)) setActiveDropdown(null);
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  const [moreOpen, setMoreOpen] = useState(false);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setActiveDropdown(null);
-        setMobileDrawer(null);
-      }
+      if (e.key === "Escape") setMoreOpen(false);
     };
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, []);
 
-  const go = (path: string) => {
-    setActiveDropdown(null);
-    setMobileDrawer(null);
-    navigate(path);
-  };
+  const moreActive = PHONE_MORE.some((l) => isActive(location, l.path));
 
   return (
     <>
       <style>{`
-        @keyframes dropdownIn {
-          from { opacity: 0; transform: translateY(-6px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes slideUp {
-          from { transform: translateY(100%); }
-          to   { transform: translateY(0); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .pale-anim { animation: none !important; }
-        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @media (prefers-reduced-motion: reduce) { .pale-anim { animation: none !important; } }
       `}</style>
 
       {/* Desktop header */}
       <header
-        ref={navRef}
         className="hidden md:flex fixed top-0 left-0 right-0 z-50 h-16 items-center justify-between px-6"
         style={{
           background: "rgba(5,7,12,0.88)",
@@ -121,88 +69,21 @@ export default function Navigation() {
           <Wordmark />
         </Link>
 
-        <nav aria-label="Main" className="flex items-center gap-6">
-          {NAV_ITEMS.map((item) => {
-            const isActive = item.items.some((l) => location === l.path);
-            const isOpen = activeDropdown === item.id;
+        <nav aria-label="Main" className="flex items-center gap-7">
+          {MAIN.map((item) => {
+            const active = isActive(location, item.path);
             return (
-              <div
-                key={item.id}
-                className="relative"
-                onMouseEnter={() => {
-                  if (closeTimer.current) clearTimeout(closeTimer.current);
-                  setActiveDropdown(item.id);
-                }}
-                onMouseLeave={() => {
-                  closeTimer.current = setTimeout(() => setActiveDropdown(null), 120);
-                }}
+              <Link
+                key={item.path}
+                href={item.path}
+                aria-current={active ? "page" : undefined}
+                className="py-2 no-underline transition-colors duration-150 hover:text-white"
+                style={{ fontSize: 15, fontWeight: 500, color: active ? TINT : MUTED }}
               >
-                <button
-                  type="button"
-                  aria-expanded={isOpen}
-                  aria-haspopup="true"
-                  onClick={() => setActiveDropdown(isOpen ? null : item.id)}
-                  className="flex items-center gap-1 py-2 px-1 transition-colors duration-150"
-                  style={{ fontSize: 15, fontWeight: 500, color: isActive || isOpen ? TINT : MUTED }}
-                >
-                  {item.label}
-                  <svg
-                    className="w-3 h-3 transition-transform duration-200"
-                    style={{ transform: isOpen ? "rotate(180deg)" : "none", opacity: 0.6 }}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    aria-hidden="true"
-                  >
-                    <path d="M6 9l6 6 6-6" />
-                  </svg>
-                </button>
-
-                {isOpen && (
-                  <div
-                    className="pale-anim absolute top-full left-0 mt-1 z-[100]"
-                    style={{
-                      background: "rgba(13,21,32,0.98)",
-                      backdropFilter: "blur(20px)",
-                      WebkitBackdropFilter: "blur(20px)",
-                      border: "1px solid #1D3040",
-                      borderRadius: 14,
-                      boxShadow: "0 12px 32px rgba(0,0,0,0.5)",
-                      padding: 8,
-                      minWidth: 240,
-                      animation: "dropdownIn 150ms ease-out",
-                    }}
-                  >
-                    {item.items.map((link) => {
-                      const current = location === link.path;
-                      return (
-                        <button
-                          key={link.id}
-                          type="button"
-                          onClick={() => go(link.path)}
-                          aria-current={current ? "page" : undefined}
-                          className="flex items-center w-full px-4 py-2.5 rounded-lg text-left transition-colors duration-150 hover:bg-[rgba(141,235,255,0.08)]"
-                          style={{ fontSize: 14, color: current ? TINT : TEXT }}
-                        >
-                          {link.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
+                {item.label}
+              </Link>
             );
           })}
-
-          <Link
-            href="/about"
-            className="py-2 px-1 transition-colors duration-150 no-underline"
-            style={{ fontSize: 15, fontWeight: 500, color: location === "/about" ? TINT : MUTED }}
-          >
-            About
-          </Link>
-
           {APP_STORE_URL && (
             <a
               href={APP_STORE_URL}
@@ -254,70 +135,65 @@ export default function Navigation() {
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        {NAV_ITEMS.map((item) => {
-          const isActive = item.items.some((l) => location === l.path);
+        {PHONE_BAR.map((item) => {
+          const active = isActive(location, item.path);
           return (
-            <button
-              key={item.id}
-              type="button"
-              aria-expanded={mobileDrawer === item.id}
-              onClick={() => setMobileDrawer(mobileDrawer === item.id ? null : item.id)}
-              className="flex-1 flex items-center justify-center py-3.5 transition-colors"
-              style={{ fontSize: 13, fontWeight: 500, color: isActive ? TINT : MUTED }}
+            <Link
+              key={item.path}
+              href={item.path}
+              aria-current={active ? "page" : undefined}
+              className="flex-1 flex items-center justify-center py-3.5 no-underline"
+              style={{ fontSize: 13, fontWeight: 500, color: active ? TINT : MUTED }}
             >
               {item.label}
-            </button>
+            </Link>
           );
         })}
-        <Link
-          href="/about"
-          className="flex-1 flex items-center justify-center py-3.5 transition-colors no-underline"
-          style={{ fontSize: 13, fontWeight: 500, color: location === "/about" ? TINT : MUTED }}
+        <button
+          type="button"
+          aria-expanded={moreOpen}
+          onClick={() => setMoreOpen((o) => !o)}
+          className="flex-1 flex items-center justify-center py-3.5"
+          style={{ fontSize: 13, fontWeight: 500, color: moreActive || moreOpen ? TINT : MUTED }}
         >
-          About
-        </Link>
+          More
+        </button>
       </nav>
 
-      {/* Mobile drawer */}
-      {mobileDrawer && (
+      {moreOpen && (
         <div className="fixed inset-0 z-[200] flex flex-col justify-end md:hidden">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileDrawer(null)} />
+          <div className="absolute inset-0 bg-black/60" onClick={() => setMoreOpen(false)} />
           <div
             role="dialog"
-            aria-label={NAV_ITEMS.find((i) => i.id === mobileDrawer)?.label}
+            aria-label="More"
             className="pale-anim relative rounded-t-2xl p-6 pb-10"
             style={{
               background: "rgba(13,21,32,0.99)",
-              backdropFilter: "blur(24px)",
               border: "1px solid #1D3040",
               borderBottom: "none",
               animation: "slideUp 250ms ease-out",
             }}
           >
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-base font-semibold" style={{ color: TINT }}>
-                {NAV_ITEMS.find((i) => i.id === mobileDrawer)?.label}
-              </h2>
-              <button
-                type="button"
-                aria-label="Close menu"
-                onClick={() => setMobileDrawer(null)}
-                className="p-2 rounded-full hover:bg-white/10"
-              >
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="m-0 text-base font-semibold" style={{ color: TINT }}>More</h2>
+              <button type="button" aria-label="Close" onClick={() => setMoreOpen(false)} className="p-2 rounded-full hover:bg-white/10">
                 <X className="w-5 h-5" style={{ color: MUTED }} />
               </button>
             </div>
             <div className="space-y-1">
-              {NAV_ITEMS.find((i) => i.id === mobileDrawer)?.items.map((link) => {
-                const current = location === link.path;
+              {PHONE_MORE.map((link) => {
+                const active = isActive(location, link.path);
                 return (
                   <button
-                    key={link.id}
+                    key={link.path}
                     type="button"
-                    onClick={() => go(link.path)}
-                    aria-current={current ? "page" : undefined}
-                    className="flex items-center w-full px-4 py-3 rounded-xl text-base transition-colors text-left"
-                    style={{ color: current ? TINT : TEXT, background: current ? "rgba(141,235,255,0.06)" : "transparent" }}
+                    onClick={() => {
+                      setMoreOpen(false);
+                      navigate(link.path);
+                    }}
+                    aria-current={active ? "page" : undefined}
+                    className="flex items-center w-full px-4 py-3 rounded-xl text-base text-left"
+                    style={{ color: active ? TINT : TEXT, background: active ? "rgba(141,235,255,0.06)" : "transparent" }}
                   >
                     {link.label}
                   </button>

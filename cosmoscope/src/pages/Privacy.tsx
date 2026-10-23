@@ -23,7 +23,7 @@ export default function Privacy() {
     <div className="min-h-screen px-6 pt-28 pb-20" style={{ background: "#05070C", color: "#F5FAFF" }}>
       <div className="max-w-2xl mx-auto">
         <h1 className="m-0 text-4xl font-bold tracking-[-0.01em]">Privacy policy</h1>
-        <p className="mt-2 mb-12 text-sm" style={{ color: "#7C8C9C" }}>Last updated: 23 October 2026</p>
+        <p className="mt-2 mb-12 text-sm" style={{ color: "#7C8C9C" }}>Last updated: 24 October 2026</p>
 
         <P>
           Stellara runs the PALE mobile app and the PALE website at stellaraspace.com. This page explains what
@@ -45,12 +45,12 @@ export default function Privacy() {
           You do not need an account to use the website, and we do not use advertising, analytics or tracking.
         </P>
         <P>
-          If you allow it, Tonight's Sky uses your browser's location to work out what is above you. This happens in
-          your browser and is not sent to us.
+          Tonight does not ask for your location.
         </P>
         <P>
-          Some pages load public data directly from other services, including NASA (partly through the corsproxy.io
-          relay), The Space Devs and the Spaceflight News API, and the site loads its typeface from Google Fonts. As with any website, those
+          Picture of the day loads from NASA, the exoplanet pages load NASA's exoplanet archive (partly through the
+          corsproxy.io relay), and the site loads its typeface from Google Fonts. Tonight is worked out entirely in your
+          browser. As with any website, those
           services can see your IP address when your browser contacts them.
         </P>
 

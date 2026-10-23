@@ -337,7 +337,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button
-              onClick={() => { navigate('/blackholes'); onClose(); }}
+              onClick={() => { navigate('/simulations/black-hole'); onClose(); }}
               style={{
                 width: '100%',
                 padding: '11px 16px',
@@ -352,7 +352,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
                 letterSpacing: '0.02em',
               }}
             >
-              View Black Holes &amp; Relativity →
+              Watch a black hole form
             </button>
           </div>
         </div>
