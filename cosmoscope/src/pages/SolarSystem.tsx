@@ -10,7 +10,7 @@ import SunInfoPanel from '@/components/SunInfoPanel';
 import SagittariusPanel from '@/components/SagittariusPanel';
 import UniverseInfoPanel from '@/components/UniverseInfoPanel';
 import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
+import { heliocentric, EPHEMERIS_MIN, EPHEMERIS_MAX } from '@/lib/ephemeris';
 import { Card } from '@/components/ui/card';
 import { Camera, Dice1, Compass as Compass2, Star } from 'lucide-react';
 
@@ -20,10 +20,21 @@ const COMETS = [
   { id: 'neowise', name: "NEOWISE", orbitRadius: 28, orbitSpeed: 0.012, color: 0xffeedd, tailLength: 6, phase: Math.PI * 1.3 },
 ];
 
-const EXPLORE_DESTINATIONS = [
-  { name: "Saturn's rings", level: 1, cameraPos: [42, 8, 15], target: [40, 0, 0] },
-  { name: "Jupiter close-up", level: 1, cameraPos: [30, 6, 12], target: [28, 0, 0] },
-  { name: "Earth and Moon", level: 1, cameraPos: [14, 4, 8], target: [12, 0, 0] },
+// How fast time runs in the solar system view. Planet positions are real for whatever date is shown.
+const TIME_RATES = [
+  { label: "Live", daysPerSecond: 1 / 86400 },
+  { label: "1 hour per second", daysPerSecond: 1 / 24 },
+  { label: "1 day per second", daysPerSecond: 1 },
+  { label: "1 week per second", daysPerSecond: 7 },
+  { label: "1 month per second", daysPerSecond: 30.44 },
+  { label: "1 year per second", daysPerSecond: 365.25 },
+];
+const DEFAULT_RATE = 0;
+
+const EXPLORE_DESTINATIONS: { name: string; level: number; cameraPos: [number, number, number]; target: [number, number, number]; planetId?: string; offset?: [number, number, number] }[] = [
+  { name: "Saturn's rings", level: 1, cameraPos: [42, 8, 15], target: [40, 0, 0], planetId: "saturn", offset: [2, 8, 15] },
+  { name: "Jupiter close-up", level: 1, cameraPos: [30, 6, 12], target: [28, 0, 0], planetId: "jupiter", offset: [2, 6, 12] },
+  { name: "Earth and Moon", level: 1, cameraPos: [14, 4, 8], target: [12, 0, 0], planetId: "earth", offset: [2, 4, 8] },
   { name: "Asteroid Belt", level: 1, cameraPos: [0, 20, 30], target: [0, 0, 0] },
   { name: "The Galactic Core", level: 2, cameraPos: [0, 3000, 6000], target: [0, 0, 0] },
   { name: "Eagle Nebula", level: 2, cameraPos: [-3000, 2000, 5000], target: [-3000, 50, 2000] },
@@ -103,8 +114,11 @@ export default function SolarSystem() {
   const [selectedSagittarius, setSelectedSagittarius] = useState(false);
   const [selectedUniverseObject, setSelectedUniverseObject] = useState<string | null>(null);
   
-  const [speedMultiplier, setSpeedMultiplier] = useState(1);
+  const [rateIndex, setRateIndex] = useState(DEFAULT_RATE);
   const [isPaused, setIsPaused] = useState(false);
+  const simTimeRef = useRef(Date.now());
+  const rateRef = useRef(DEFAULT_RATE);
+  const [simTime, setSimTime] = useState(() => Date.now());
   const [webglSupported] = useState(() => checkWebGLSupport());
   
   const speedRef = useRef(1);
@@ -131,7 +145,6 @@ export default function SolarSystem() {
   const sunMeshRef = useRef<THREE.Mesh | null>(null);
   const planetHitMeshesRef = useRef<Record<string, THREE.Mesh>>({});
   const planetSpeedFactorsRef = useRef<Record<string, number>>({});
-  const planetAnglesRef = useRef<Record<string, number>>({});
   const mousePosScreenRef = useRef<{ x: number; y: number }>({ x: -9999, y: -9999 });
   const observatoryTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const universeFilamentGroupRef = useRef<THREE.Group | null>(null);
@@ -163,8 +176,21 @@ export default function SolarSystem() {
   const [universeFact, setUniverseFact] = useState(0);
 
   useEffect(() => {
-    speedRef.current = speedMultiplier;
-  }, [speedMultiplier]);
+    rateRef.current = rateIndex;
+    // Visual speed for things that are illustrative only (sun rays, asteroid belt, comets).
+    speedRef.current = Math.min(100, Math.max(0.02, TIME_RATES[rateIndex].daysPerSecond / 36));
+  }, [rateIndex]);
+
+  // Keep the date readout in step with the simulation clock.
+  useEffect(() => {
+    const id = setInterval(() => setSimTime(simTimeRef.current), 250);
+    return () => clearInterval(id);
+  }, []);
+
+  const jumpToNow = () => {
+    simTimeRef.current = Date.now();
+    setSimTime(simTimeRef.current);
+  };
 
   // Universe HUD visibility sync
   useEffect(() => {
@@ -449,6 +475,7 @@ export default function SolarSystem() {
     // Create Planets
     planets.forEach(p => {
       const pivot = new THREE.Object3D();
+      pivot.rotation.y = heliocentric(p.id, simTimeRef.current)?.lon ?? 0;
       solarSystemGroup.add(pivot);
 
       const geo = new THREE.SphereGeometry(p.radiusScale, 32, 32);
@@ -514,9 +541,8 @@ export default function SolarSystem() {
       pivot.add(hitMesh);
       planetHitMeshesRef.current[p.id] = hitMesh;
 
-      // Init per-planet speed factors and accumulated angles
+      // Init per-planet hover factors
       planetSpeedFactorsRef.current[p.id] = 1.0;
-      planetAnglesRef.current[p.id] = 0;
     });
 
     const asteroidCount = 2000;
@@ -1148,7 +1174,6 @@ export default function SolarSystem() {
       }
 
       if (!isPausedRef.current && zoomLevelRef.current === 1) {
-        time += 0.01 * speedRef.current;
 
         // Hover-to-slow: update per-planet speed factors from screen-space distances
         if (cameraRef.current) {
@@ -1173,13 +1198,24 @@ export default function SolarSystem() {
           });
         }
         
-        // Per-planet accumulated angles (supports individual speed factors)
+        // One shared clock keeps every planet in its real place. Hovering a planet slows the
+        // clock so it is easy to click, except in Live mode, which always runs at real time.
+        const isLive = rateRef.current === 0;
+        const hoverFactor = isLive ? 1 : Math.min(1, ...planets.map(p => planetSpeedFactorsRef.current[p.id] ?? 1));
+        const daysPerSecond = TIME_RATES[rateRef.current].daysPerSecond;
+        // Cap each step so time does not leap ahead after the tab has been in the background.
+        const stepMs = isLive ? dt : Math.min(dt, 100);
+        simTimeRef.current += stepMs * daysPerSecond * 86400 * hoverFactor;
+        if (simTimeRef.current > EPHEMERIS_MAX || simTimeRef.current < EPHEMERIS_MIN) {
+          simTimeRef.current = Date.now();
+        }
+        time += 0.01 * speedRef.current * hoverFactor;
+
         planets.forEach(p => {
           const { pivot, mesh } = planetMeshesRef.current[p.id];
-          const factor = planetSpeedFactorsRef.current[p.id] ?? 1.0;
-          planetAnglesRef.current[p.id] = (planetAnglesRef.current[p.id] ?? 0) + 0.01 * speedRef.current * factor * (365 / p.orbitalPeriod);
-          pivot.rotation.y = planetAnglesRef.current[p.id];
-          mesh.rotation.y += 0.05 * speedRef.current * factor;
+          const pos = heliocentric(p.id, simTimeRef.current);
+          if (pos) pivot.rotation.y = pos.lon;
+          mesh.rotation.y += 0.01 * hoverFactor;
         });
         
         asteroidMesh.rotation.y += 0.0005 * speedRef.current;
@@ -1362,8 +1398,20 @@ export default function SolarSystem() {
     
     // Give transition time to start then move camera
     setTimeout(() => {
-      cameraTargetRef.current = new THREE.Vector3(...dest.cameraPos);
-      lookAtTargetRef.current = new THREE.Vector3(...dest.target);
+      const planetMesh = dest.planetId ? planetMeshesRef.current[dest.planetId]?.mesh : undefined;
+      if (planetMesh && dest.offset) {
+        // Planets move, so aim at where this one actually is right now.
+        const pos = new THREE.Vector3();
+        planetMesh.getWorldPosition(pos);
+        const dir = pos.clone().setY(0).normalize();
+        const side = new THREE.Vector3(-dir.z, 0, dir.x);
+        const [, up, back] = dest.offset;
+        cameraTargetRef.current = pos.clone().addScaledVector(dir, back * 0.6).addScaledVector(side, back * 0.8).add(new THREE.Vector3(0, up, 0));
+        lookAtTargetRef.current = pos;
+      } else {
+        cameraTargetRef.current = new THREE.Vector3(...dest.cameraPos);
+        lookAtTargetRef.current = new THREE.Vector3(...dest.target);
+      }
       transitioningRef.current = true;
     }, 100);
   };
@@ -1838,16 +1886,34 @@ export default function SolarSystem() {
                 >
                   {isPaused ? "Resume" : "Pause"}
                 </Button>
-                <div className="w-32 md:w-48 flex items-center gap-2">
-                  <span className="text-xs text-muted-foreground w-12 text-right">{speedMultiplier}x</span>
-                  <Slider 
-                    value={[speedMultiplier]} 
-                    min={1} 
-                    max={100} 
-                    step={1} 
-                    onValueChange={(val) => setSpeedMultiplier(val[0])}
-                    className="flex-1"
-                  />
+                <div className="flex items-center gap-2 flex-wrap">
+                  <div className="min-w-[9.5rem]" aria-live="polite">
+                    <div className="text-sm font-semibold text-white tabular-nums">
+                      {new Date(simTime).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      {rateIndex <= 1 && (
+                        <span className="ml-1.5 font-normal text-white/60">
+                          {new Date(simTime).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-[11px] text-white/50">
+                      {Math.abs(simTime - Date.now()) < 3600000 ? 'Planets where they are right now' : 'Planets where they were or will be'}
+                    </div>
+                  </div>
+                  <label className="sr-only" htmlFor="time-rate">Speed of time</label>
+                  <select
+                    id="time-rate"
+                    value={rateIndex}
+                    onChange={(e) => setRateIndex(Number(e.target.value))}
+                    className="h-8 rounded-md bg-black/50 border border-white/15 px-2 text-xs text-white"
+                  >
+                    {TIME_RATES.map((r, i) => (
+                      <option key={r.label} value={i}>{r.label}</option>
+                    ))}
+                  </select>
+                  <Button variant="outline" size="sm" onClick={jumpToNow}>
+                    Now
+                  </Button>
                 </div>
               </div>
               <div className="flex items-center gap-3">
