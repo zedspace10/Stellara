@@ -25,16 +25,16 @@ export default function Discover() {
 
   return (
     <div className="relative w-full min-h-screen bg-[#020209] flex flex-col"
-      style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+      style={{ fontFamily: "Inter, sans-serif" }}>
 
       {/* Top bar */}
       <div className="sticky top-0 z-30 flex items-center justify-between px-4 py-3"
         style={{ background: "rgba(2,2,9,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(79,195,247,0.1)" }}>
         <Link href="/" className="flex items-center gap-2 text-[#4fc3f7] hover:text-white transition-colors text-sm">
-          <ArrowLeft className="w-4 h-4" /> STELLARA
+          <ArrowLeft className="w-4 h-4" /> PALE
         </Link>
         <div className="text-center">
-          <div className="text-xs font-['Orbitron'] text-white/70 tracking-[0.15em]">DISCOVER</div>
+          <div className="text-xs font-sans text-white/70 tracking-[0.15em]">DISCOVER</div>
           <div className="text-[9px] text-white/25">
             {now.toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" })}
           </div>
@@ -77,7 +77,7 @@ export default function Discover() {
         <section className="space-y-4">
           <div className="flex items-center gap-2 px-1">
             <Newspaper className="w-3 h-3 text-white/45" />
-            <div className="text-[10px] tracking-[0.3em] uppercase text-white/45 font-['Orbitron']">
+            <div className="text-[10px] tracking-[0.3em] uppercase text-white/45 font-sans">
               Latest space news
             </div>
             <div className="flex-1 h-px" style={{ background: "linear-gradient(to right, rgba(255,255,255,0.1), transparent)" }} />
@@ -142,7 +142,7 @@ function DiscoverCard({ href, icon, label, title, description, tint, border, acc
       >
         <div className="flex items-center gap-2 mb-2">
           <span style={{ color: accent }}>{icon}</span>
-          <div className="text-[10px] uppercase tracking-[0.25em] font-['Orbitron']" style={{ color: accent }}>
+          <div className="text-[10px] uppercase tracking-[0.25em] font-sans" style={{ color: accent }}>
             {label}
           </div>
         </div>

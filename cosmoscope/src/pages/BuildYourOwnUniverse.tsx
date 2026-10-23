@@ -662,7 +662,7 @@ export default function BuildYourOwnUniverse() {
   const changedCount = PARAM_CONFIGS.filter(c => Math.abs((params[c.key] as number) - 1) / (c.max - c.min) > 0.05).length
     + (params.dimensions !== 3 ? 1 : 0);
 
-  useEffect(() => { document.title = "Build Your Own Universe — STELLARA"; }, []);
+  useEffect(() => { document.title = "Build Your Own Universe · PALE"; }, []);
 
   return (
     <div className="flex flex-col md:flex-row h-screen pt-14 md:pt-16 overflow-hidden" style={{ background: "#000" }}>
@@ -672,7 +672,7 @@ export default function BuildYourOwnUniverse() {
 
         {/* Header */}
         <div className="px-4 py-3 border-b shrink-0" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-          <h1 className="text-sm font-bold tracking-widest text-white" style={{ fontFamily: "Orbitron, sans-serif" }}>
+          <h1 className="text-sm font-bold tracking-widest text-white" style={{ fontFamily: "Inter, sans-serif" }}>
             BUILD YOUR OWN UNIVERSE
           </h1>
           <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)" }}>
@@ -766,13 +766,13 @@ export default function BuildYourOwnUniverse() {
 
         {/* Stage label */}
         <div className="absolute top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-[10px] font-bold tracking-widest"
-          style={{ fontFamily: "Orbitron, sans-serif", background: "rgba(0,0,0,0.6)", border: "1px solid rgba(79,195,247,0.2)", color: "#4fc3f7" }}>
+          style={{ fontFamily: "Inter, sans-serif", background: "rgba(0,0,0,0.6)", border: "1px solid rgba(79,195,247,0.2)", color: "#4fc3f7" }}>
           {stageLabels[currentStage].toUpperCase()}
         </div>
 
         {/* Universe age */}
         <div className="absolute top-3 right-3 text-right">
-          <div className="text-xs font-bold tabular-nums" style={{ fontFamily: "Orbitron, sans-serif", color: "#ffd54f" }}>
+          <div className="text-xs font-bold tabular-nums" style={{ fontFamily: "Inter, sans-serif", color: "#ffd54f" }}>
             {simTime < 0.01 ? "t = 0" : simTime < 1 ? `${(simTime * 1000).toFixed(0)} Myr` : `${simTime.toFixed(1)} Gyr`}
           </div>
           <div className="text-[10px]" style={{ color: "rgba(255,255,255,0.3)" }}>cosmic time</div>
@@ -793,7 +793,7 @@ export default function BuildYourOwnUniverse() {
                 {cinematicPhase === 1 && (
                   <motion.div key="c1" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.9 }} className="text-center max-w-sm">
-                    <p className="text-base md:text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.85)", fontFamily: "Orbitron, sans-serif", fontWeight: 300, letterSpacing: "0.04em" }}>
+                    <p className="text-base md:text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.85)", fontFamily: "Inter, sans-serif", fontWeight: 300, letterSpacing: "0.04em" }}>
                       In our universe, every fundamental constant sits at a precise value.
                     </p>
                     <p className="text-sm mt-4 leading-relaxed" style={{ color: "rgba(255,255,255,0.45)" }}>
@@ -804,13 +804,13 @@ export default function BuildYourOwnUniverse() {
                 {cinematicPhase === 2 && (
                   <motion.div key="c2" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
                     transition={{ duration: 0.9 }} className="text-center max-w-sm">
-                    <p className="text-2xl md:text-3xl font-bold" style={{ fontFamily: "Orbitron, sans-serif", color: "#ffd54f" }}>
+                    <p className="text-2xl md:text-3xl font-bold" style={{ fontFamily: "Inter, sans-serif", color: "#ffd54f" }}>
                       You changed
                     </p>
-                    <p className="text-5xl font-bold mt-2" style={{ fontFamily: "Orbitron, sans-serif", color: "#fff" }}>
+                    <p className="text-5xl font-bold mt-2" style={{ fontFamily: "Inter, sans-serif", color: "#fff" }}>
                       {changedCount}
                     </p>
-                    <p className="text-lg mt-1" style={{ fontFamily: "Orbitron, sans-serif", color: "rgba(255,255,255,0.5)" }}>
+                    <p className="text-lg mt-1" style={{ fontFamily: "Inter, sans-serif", color: "rgba(255,255,255,0.5)" }}>
                       parameter{changedCount !== 1 ? "s" : ""}.
                     </p>
                   </motion.div>
@@ -818,7 +818,7 @@ export default function BuildYourOwnUniverse() {
                 {cinematicPhase === 3 && (
                   <motion.div key="c3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
                     transition={{ duration: 0.6 }} className="text-center">
-                    <p className="text-sm tracking-widest" style={{ fontFamily: "Orbitron, sans-serif", color: "rgba(255,255,255,0.3)" }}>
+                    <p className="text-sm tracking-widest" style={{ fontFamily: "Inter, sans-serif", color: "rgba(255,255,255,0.3)" }}>
                       Calculating your universe…
                     </p>
                   </motion.div>
@@ -872,7 +872,7 @@ export default function BuildYourOwnUniverse() {
                     borderColor: speed === s ? "#4fc3f7" : "rgba(255,255,255,0.15)",
                     color: speed === s ? "#4fc3f7" : "rgba(255,255,255,0.4)",
                     background: speed === s ? "rgba(79,195,247,0.1)" : "transparent",
-                    fontFamily: "Orbitron, sans-serif",
+                    fontFamily: "Inter, sans-serif",
                   }}
                 >{s}×</button>
               ))}

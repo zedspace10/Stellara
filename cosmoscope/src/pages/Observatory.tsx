@@ -65,7 +65,7 @@ export default function Observatory() {
         <p className="text-sm mb-1" style={{ color: "rgba(255,255,255,0.3)", letterSpacing: "0.05em" }}>{dateStr}</p>
         <h1
           className="text-4xl md:text-5xl font-light text-white mb-2"
-          style={{ fontFamily: "Orbitron, sans-serif", letterSpacing: "0.05em" }}
+          style={{ fontFamily: "Inter, sans-serif", letterSpacing: "0.05em" }}
         >
           {greeting}.
         </h1>
@@ -153,7 +153,7 @@ export default function Observatory() {
             <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.35)" }}>
               Direction: South · Best time: After midnight · Magnitude: −2.2
             </p>
-            <Link href="/">
+            <Link href="/universe">
               <button
                 className="text-sm flex items-center gap-1 transition-colors"
                 style={{ color: "#ffd54f" }}
@@ -188,14 +188,14 @@ export default function Observatory() {
 
         {/* CTA */}
         <div className="pt-4 pb-8 flex justify-center">
-          <Link href="/">
+          <Link href="/universe">
             <Button
               size="lg"
               className="gap-2 px-8 font-semibold"
               style={{
                 background: "linear-gradient(135deg, #ffd54f 0%, #ff8f00 100%)",
                 color: "#0a0a1a",
-                fontFamily: "Orbitron, sans-serif",
+                fontFamily: "Inter, sans-serif",
                 fontSize: "13px",
                 letterSpacing: "0.05em",
                 boxShadow: "0 0 30px rgba(255,213,79,0.3)",

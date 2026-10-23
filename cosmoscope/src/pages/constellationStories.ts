@@ -143,7 +143,7 @@ Andromeda was chained to a sea-cliff as a sacrifice for her mother Cassiopeia's 
 
 **From the UK.** Very well placed on autumn evenings, October to December, high in the south-east.
 
-**One extraordinary fact.** Andromeda and our Milky Way are falling toward each other at about 110 km every second. In roughly 4.5 billion years they will collide and merge into a single giant galaxy — astronomers have already nicknamed it "Milkomeda."
+**One extraordinary fact.** Andromeda and our Milky Way are falling toward each other at about 110 km every second. A 2025 study found roughly even odds that they merge within the next 10 billion years. If they do, astronomers already have a name for the result: "Milkomeda".
 `,
 
   "canis-major": `

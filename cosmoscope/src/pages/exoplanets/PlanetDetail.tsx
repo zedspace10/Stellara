@@ -109,7 +109,7 @@ export default function PlanetDetail({ planet, allPlanets, onClose, onNavigate }
         </button>
         <PlanetCanvas planet={planet} size={140} animated />
         <div className="mt-5 text-center">
-          <h1 className="text-2xl font-bold font-['Orbitron'] text-white leading-tight">{planet.name}</h1>
+          <h1 className="text-2xl font-bold font-sans text-white leading-tight">{planet.name}</h1>
           <div className="text-sm text-white/40 mt-1">{planet.starName}</div>
           <div className="flex items-center justify-center gap-2 mt-3 flex-wrap">
             <span className="text-xs px-3 py-1 rounded-full border font-medium"

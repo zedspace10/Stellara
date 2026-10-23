@@ -27,13 +27,13 @@ export function ThisWeekInSpace() {
       <div className="relative">
         <div className="flex items-center gap-2 mb-3">
           <Clock className="w-3 h-3 text-[#ffd54f]/70" />
-          <div className="text-[10px] tracking-[0.3em] uppercase text-[#ffd54f]/70 font-['Orbitron']">
+          <div className="text-[10px] tracking-[0.3em] uppercase text-[#ffd54f]/70 font-sans">
             On this day in space
           </div>
         </div>
 
         <div className="flex items-baseline gap-3 flex-wrap mb-2">
-          <span className="text-3xl font-['Orbitron'] font-medium text-[#ffd54f]">
+          <span className="text-3xl font-sans font-medium text-[#ffd54f]">
             {event.year}
           </span>
           <span className="text-xs uppercase tracking-[0.2em] text-white/40">{dateLabel}</span>

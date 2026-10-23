@@ -62,7 +62,7 @@ function IntroScreen({ onDone }: { onDone: () => void }) {
 
       {/* Text lines */}
       <div className="relative z-10 text-center">
-        <div className="text-[10px] tracking-[0.4em] text-[#4fc3f7] mb-10 uppercase">STELLARA · Exoplanet Explorer</div>
+        <div className="text-[10px] tracking-[0.4em] text-[#4fc3f7] mb-10 uppercase">PALE · Exoplanet Explorer</div>
         <div className="space-y-4 min-h-[120px] flex flex-col items-center justify-center">
           {INTRO_LINES.map((line, i) => (
             <AnimatePresence key={line}>
@@ -70,7 +70,7 @@ function IntroScreen({ onDone }: { onDone: () => void }) {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-2xl md:text-4xl font-['Orbitron'] text-white"
+                  className="text-2xl md:text-4xl font-sans text-white"
                   style={{ color: i === 2 ? "rgba(255,255,255,0.6)" : "white" }}
                 >
                   {line}
@@ -120,7 +120,7 @@ function LoadingState({ progress, statusMsg }: { progress: number; statusMsg: st
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
-            className="text-sm font-['Orbitron'] text-white/70 mb-8 h-5"
+            className="text-sm font-sans text-white/70 mb-8 h-5"
           >
             {statusMsg}
           </motion.div>
@@ -195,7 +195,7 @@ export default function ExoplanetExplorer() {
   const isLoading = loading && planets.length === 0;
 
   return (
-    <div className="relative w-full h-screen bg-[#020209] overflow-hidden flex flex-col" style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+    <div className="relative w-full h-screen bg-[#020209] overflow-hidden flex flex-col" style={{ fontFamily: "Inter, sans-serif" }}>
 
       {/* Intro */}
       <AnimatePresence>
@@ -211,12 +211,12 @@ export default function ExoplanetExplorer() {
       <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 z-30" style={{ background: "rgba(2,2,9,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(79,195,247,0.1)" }}>
         <Link href="/">
           <button className="flex items-center gap-2 text-[#4fc3f7] hover:text-white transition-colors text-sm">
-            <ArrowLeft className="w-4 h-4" /> STELLARA
+            <ArrowLeft className="w-4 h-4" /> PALE
           </button>
         </Link>
 
         <div className="text-center">
-          <div className="text-xs font-['Orbitron'] text-white/70 tracking-[0.15em]">EXOPLANET EXPLORER</div>
+          <div className="text-xs font-sans text-white/70 tracking-[0.15em]">EXOPLANET EXPLORER</div>
           {fromFallback ? (
             <button onClick={() => window.location.reload()} className="text-[9px] text-[#ffd54f]/60 hover:text-[#ffd54f] transition-colors">
               Featured worlds · Tap to retry live data

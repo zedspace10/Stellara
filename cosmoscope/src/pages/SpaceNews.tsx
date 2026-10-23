@@ -31,7 +31,7 @@ function OrbitLoader({ label }: { label: string }) {
             style={{ background: "#4fc3f7", boxShadow: "0 0 8px #4fc3f7" }} />
         </motion.div>
       </div>
-      <div className="text-[10px] tracking-[0.3em] uppercase text-white/40 font-['Orbitron']">{label}</div>
+      <div className="text-[10px] tracking-[0.3em] uppercase text-white/40 font-sans">{label}</div>
     </div>
   );
 }
@@ -84,16 +84,16 @@ export default function SpaceNews() {
 
   return (
     <div className="relative w-full min-h-screen bg-[#020209] flex flex-col"
-      style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+      style={{ fontFamily: "Inter, sans-serif" }}>
 
       {/* Top bar */}
       <div className="sticky top-0 z-30 flex items-center justify-between px-4 py-3"
         style={{ background: "rgba(2,2,9,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(79,195,247,0.1)" }}>
         <Link href="/" className="flex items-center gap-2 text-[#4fc3f7] hover:text-white transition-colors text-sm">
-          <ArrowLeft className="w-4 h-4" /> STELLARA
+          <ArrowLeft className="w-4 h-4" /> PALE
         </Link>
         <div className="text-center">
-          <div className="text-xs font-['Orbitron'] text-white/70 tracking-[0.15em]">SPACE NEWS</div>
+          <div className="text-xs font-sans text-white/70 tracking-[0.15em]">SPACE NEWS</div>
           {fromCache && cacheDate && !fromFallback && (
             <div className="text-[9px] text-white/25">Updated · {cacheDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>
           )}

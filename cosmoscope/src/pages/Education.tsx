@@ -9,24 +9,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 
 const SPACE_FACTS = [
-  "A day on Venus is longer than a year on Venus — it takes 243 Earth days to rotate, but only 225 days to orbit the Sun.",
-  "Neutron stars are so dense that a teaspoon of their material would weigh about 10 million tonnes on Earth.",
-  "The Milky Way is on a collision course with the Andromeda Galaxy, set to merge in approximately 4.5 billion years.",
+  "A day on Venus is longer than a year on Venus. It takes 243 Earth days to spin once, but only 225 days to orbit the Sun.",
+  "Neutron stars are so dense that a teaspoon of their material would weigh around a billion tonnes on Earth.",
+  "The Milky Way and the Andromeda Galaxy are moving towards each other, with roughly even odds of merging in the next 10 billion years.",
   "There are more stars in the observable universe than grains of sand on all of Earth's beaches combined.",
   "Saturn's moon Titan is the only moon in our Solar System with a thick atmosphere and liquid lakes on its surface.",
-  "The Sun's core reaches temperatures of 15 million degrees Celsius — hot enough to drive nuclear fusion reactions.",
-  "Light from the Sun takes 8 minutes and 20 seconds to reach Earth, but takes 100,000 years to travel from the core to the surface.",
-  "Jupiter's Great Red Spot is a storm that has been raging for at least 350 years — it's wider than Earth itself.",
+  "The Sun's core reaches about 15 million degrees Celsius, hot enough to drive nuclear fusion.",
+  "Light from the Sun takes about 8 minutes and 20 seconds to reach Earth, but energy from the core can take over 100,000 years to reach the surface.",
+  "Jupiter's Great Red Spot is a storm wider than Earth that has lasted for at least 190 years.",
   "The observable universe is 93 billion light years across, but the universe itself may be infinite.",
-  "Black holes don't suck — an object must cross the event horizon to be captured, just like any other gravitational body.",
-  "Mars has the tallest volcano in the Solar System: Olympus Mons, standing 21km high — nearly 3 times the height of Everest.",
-  "The Voyager 1 probe, launched in 1977, is now over 23 billion kilometres from Earth — in interstellar space.",
-  "Europa, one of Jupiter's moons, likely has a liquid water ocean beneath its icy surface — a prime candidate for extraterrestrial life.",
-  "The Big Bang didn't happen at a single point — it was an expansion of space itself from an extremely hot, dense state.",
-  "Pulsars are spinning neutron stars that emit beams of radiation — some spin over 700 times per second.",
-  "The James Webb Space Telescope can see galaxies from just 300 million years after the Big Bang.",
-  "One million Earths could fit inside the Sun, yet the Sun is considered an average-sized star.",
-  "Sound cannot travel through space — it requires a medium like air or water to propagate.",
+  "Black holes do not suck things in. From a safe distance, their gravity behaves like that of any other object with the same mass.",
+  "Mars has the tallest volcano in the Solar System: Olympus Mons, about 22 km high, more than twice the height of Everest.",
+  "Voyager 1, launched in 1977, is now more than 25 billion kilometres from Earth, in interstellar space.",
+  "Europa, one of Jupiter's moons, likely has a liquid water ocean beneath its icy surface, making it a prime place to search for life.",
+  "The Big Bang did not happen at a single point. It was an expansion of space itself from an extremely hot, dense state.",
+  "Pulsars are spinning neutron stars that sweep beams of radiation across space. Some spin over 700 times a second.",
+  "The James Webb Space Telescope has seen galaxies from less than 300 million years after the Big Bang.",
+  "About 1.3 million Earths could fit inside the Sun, yet some stars are more than a thousand times wider.",
+  "Sound cannot travel through the near vacuum of space. It needs something like air or water to move through.",
   "The cosmic microwave background radiation is the faint glow from the Big Bang, still detectable today at -270.4°C.",
   "Astronauts grow up to 3% taller in space due to the decompression of spinal discs in microgravity."
 ];
@@ -38,7 +38,7 @@ export default function Education() {
   const [showQuizResults, setShowQuizResults] = useState(false);
 
   useEffect(() => {
-    document.title = "Learn — STELLARA";
+    document.title = "Learn · PALE";
     const saved = localStorage.getItem("cosmoscope_completed_lessons");
     if (saved) {
       try {
@@ -90,14 +90,14 @@ export default function Education() {
           </Button>
           
           <Badge className="mb-4">{activeLesson.level}</Badge>
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-8 font-['Orbitron']">{activeLesson.title}</h1>
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-8 font-sans">{activeLesson.title}</h1>
           
           <div className="space-y-6 text-lg text-gray-300 mb-12 leading-relaxed">
             {activeLesson.content.map((p, i) => <p key={i}>{p}</p>)}
           </div>
 
           <Card className="bg-primary/5 border-primary/20 mb-12">
-            <CardHeader className="text-xl font-semibold text-primary font-['Orbitron'] border-b border-primary/10 pb-4">
+            <CardHeader className="text-xl font-semibold text-primary font-sans border-b border-primary/10 pb-4">
               Key Facts
             </CardHeader>
             <CardContent className="pt-6">
@@ -113,7 +113,7 @@ export default function Education() {
           </Card>
 
           <div className="border-t border-white/10 pt-12">
-            <h2 className="text-2xl font-bold text-white mb-8 font-['Orbitron']">Knowledge Check</h2>
+            <h2 className="text-2xl font-bold text-white mb-8 font-sans">Knowledge Check</h2>
             <div className="space-y-10">
               {activeLesson.quiz.map((q, qIndex) => (
                 <div key={qIndex} className="bg-white/5 p-6 rounded-xl border border-white/10">
@@ -180,7 +180,7 @@ export default function Education() {
   return (
     <div className="min-h-screen pt-24 pb-16 px-4 md:px-8 max-w-6xl mx-auto">
       <div className="text-center mb-10 space-y-4">
-        <h1 className="text-4xl md:text-6xl font-bold font-['Orbitron'] text-white">Learn</h1>
+        <h1 className="text-4xl md:text-6xl font-bold font-sans text-white">Learn</h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Structured learning modules from basic planetary science to advanced astrophysics.</p>
       </div>
 
@@ -237,7 +237,7 @@ export default function Education() {
                         </div>
                         <div>
                           <div className="text-sm text-muted-foreground mb-1">Module {idx + 1}</div>
-                          <h3 className="text-xl font-bold text-white font-['Orbitron'] leading-tight mb-2 group-hover:text-primary transition-colors">{lesson.title}</h3>
+                          <h3 className="text-xl font-bold text-white font-sans leading-tight mb-2 group-hover:text-primary transition-colors">{lesson.title}</h3>
                           <p className="text-sm text-gray-400 line-clamp-2">{lesson.content[0]}</p>
                         </div>
                       </CardContent>

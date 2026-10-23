@@ -37,7 +37,7 @@ export default function BlogPost() {
       }
       if (paragraph.startsWith('###')) {
         return (
-          <h3 key={idx} className="text-2xl font-bold text-white mt-10 mb-4 font-['Orbitron']">
+          <h3 key={idx} className="text-2xl font-bold text-white mt-10 mb-4 font-sans">
             {paragraph.replace(/^###\s*/, '')}
           </h3>
         );
@@ -69,7 +69,7 @@ export default function BlogPost() {
             </Button>
           </Link>
           <Badge className="mb-4 bg-primary text-primary-foreground">{article.category}</Badge>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 font-['Orbitron'] leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 font-sans leading-tight">
             {article.title}
           </h1>
           <div className="flex items-center gap-6 text-sm text-gray-300">

@@ -15,7 +15,7 @@ export const galaxyObjects = [
     distance: "Variable (orbits Sun)",
     size: "40-60 km",
     discovery: "1995 (Alan Hale, Thomas Bopp)",
-    description: "Orbital period ~2,500 years. Passed closest to Earth in 1997, visible to naked eye for 18 months — a record."
+    description: "Orbital period ~2,500 years. Passed closest to Earth in 1997, visible to the naked eye for a record 18 months."
   },
   {
     id: "neowise",
@@ -24,7 +24,7 @@ export const galaxyObjects = [
     distance: "Variable (orbits Sun)",
     size: "5 km",
     discovery: "2020 (NEOWISE telescope)",
-    description: "Orbital period ~6,800 years. Discovered March 2020, last visible July 2020 — the brightest comet visible from Earth since Hale-Bopp."
+    description: "Orbital period ~6,800 years. Discovered in March 2020 and best seen that July, it was the brightest comet seen from the Northern Hemisphere since Hale-Bopp."
   },
   {
     id: "sagittarius-a",
@@ -33,16 +33,16 @@ export const galaxyObjects = [
     distance: "26,000 light years",
     size: "4 million solar masses",
     discovery: "1974 (Bruce Balick, Robert Brown)",
-    description: "Supermassive black hole at our galaxy's centre, 4 million solar masses, 26,000 light years from Earth. It anchors the Milky Way."
+    description: "Supermassive black hole at our galaxy's centre, 4 million solar masses, 26,000 light years from Earth, at the heart of the Milky Way."
   },
   {
     id: "eagle-nebula",
     name: "Eagle Nebula",
     type: "Stellar Nursery",
-    distance: "7,000 light years",
+    distance: "About 6,500 light years",
     size: "70x55 light years",
     discovery: "1745 (Jean-Philippe de Chéseaux)",
-    description: "A stellar nursery 7,000 light years away, home to the iconic Pillars of Creation, where new stars are being born."
+    description: "A stellar nursery about 6,500 light years away, home to the iconic Pillars of Creation, where new stars are being born."
   },
   {
     id: "orion-nebula",
@@ -59,17 +59,17 @@ export const galaxyObjects = [
     type: "Supernova Remnant",
     distance: "6,523 light years",
     size: "11 light years",
-    discovery: "1054 (Chinese Astronomers)",
+    discovery: "1731 (John Bevis). The supernova was recorded in 1054",
     description: "The remnant of a supernova explosion witnessed in 1054 AD, 6,523 light years away, containing a rapidly rotating pulsar."
   },
   {
     id: "lagoon-nebula",
     name: "Lagoon Nebula",
     type: "Emission Nebula",
-    distance: "5,200 light years",
+    distance: "About 4,100 light years",
     size: "110x50 light years",
     discovery: "1654 (Giovanni Hodierna)",
-    description: "A giant interstellar cloud 5,200 light years away, glowing from the radiation of hot young stars."
+    description: "A giant interstellar cloud about 4,100 light years away, glowing from the radiation of hot young stars."
   },
   {
     id: "omega-centauri",
@@ -139,7 +139,7 @@ export const galaxyObjects = [
     name: "Virgo Cluster",
     type: "Galaxy Cluster",
     distance: "53.8 million light years",
-    size: "15 million light years",
+    size: "About 7 million light years",
     discovery: "1781 (Charles Messier)",
     description: "A massive cluster of galaxies forming the heart of the Virgo Supercluster, of which our Local Group is a part."
   },
@@ -150,7 +150,7 @@ export const galaxyObjects = [
     distance: "2.537 million light years",
     size: "220,000 light years",
     discovery: "964 (Abd al-Rahman al-Sufi)",
-    description: "The nearest major galaxy to the Milky Way, expected to collide with our galaxy in about 4.5 billion years."
+    description: "The nearest major galaxy to the Milky Way. A 2025 study found roughly even odds that the two galaxies merge within the next 10 billion years."
   },
   {
     id: "coma-cluster",

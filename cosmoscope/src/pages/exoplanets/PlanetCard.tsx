@@ -57,7 +57,7 @@ export const PlanetCard = memo(function PlanetCard({ planet, onClick, featured =
       </div>
 
       {/* Name */}
-      <div className="text-sm font-['Orbitron'] text-white/90 leading-tight mb-0.5 truncate group-hover:text-[#ffd54f] transition-colors">
+      <div className="text-sm font-sans text-white/90 leading-tight mb-0.5 truncate group-hover:text-[#ffd54f] transition-colors">
         {planet.name}
       </div>
       <div className="text-[10px] text-white/35 mb-3 truncate">{planet.starName}</div>

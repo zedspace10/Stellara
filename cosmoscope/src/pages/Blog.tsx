@@ -21,7 +21,7 @@ export default function Blog() {
   });
 
   useEffect(() => {
-    document.title = "Blog — STELLARA";
+    document.title = "Blog · PALE";
   }, []);
 
   return (
@@ -32,7 +32,7 @@ export default function Blog() {
         transition={{ duration: 0.5 }}
       >
         <div className="text-center mb-16 space-y-4">
-          <h1 className="text-4xl md:text-6xl font-bold font-['Orbitron'] text-white">Cosmic <span className="text-primary">Journal</span></h1>
+          <h1 className="text-4xl md:text-6xl font-bold font-sans text-white">Cosmic <span className="text-primary">Journal</span></h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">Discoveries, deep dives, and discussions from the edge of the known universe.</p>
         </div>
 

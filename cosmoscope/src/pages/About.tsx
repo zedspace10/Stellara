@@ -1,103 +1,82 @@
+import { useEffect } from "react";
 import { Link } from "wouter";
 import { Heart, Star, Globe, BookOpen, ChevronRight, Mail } from "lucide-react";
 import Footer from "@/components/Footer";
 import MailingListForm from "@/components/MailingListForm";
 
 export default function About() {
+  useEffect(() => {
+    document.title = "About · PALE";
+  }, []);
+
   return (
-    <div className="min-h-screen pt-20 pb-16" style={{ background: "linear-gradient(180deg, #020208 0%, #05050f 100%)" }}>
+    <div className="min-h-screen pt-20" style={{ background: "#05070C" }}>
       <div className="max-w-2xl mx-auto px-5 py-10">
 
         <div className="text-center mb-14">
-          <h1
-            className="text-4xl md:text-5xl font-bold text-white mb-3"
-            style={{ fontFamily: "Orbitron, sans-serif", letterSpacing: "0.08em" }}
-          >
-            STELLARA
+          <h1 className="m-0 text-4xl md:text-5xl font-bold" style={{ color: "#F5FAFF", letterSpacing: "0.32em" }}>
+            PALE
           </h1>
-          <p className="text-base" style={{ color: "rgba(255,255,255,0.45)" }}>
-            Explore the Universe, One Star at a Time
-          </p>
+          <p className="mt-3 mb-0 text-base" style={{ color: "#A7B6C6" }}>A calm space to think</p>
         </div>
 
-        <Section icon={<Globe className="w-4 h-4" />} title="What is STELLARA?" color="#4fc3f7">
-          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
-            STELLARA is a free, open astronomy and cosmology platform built for everyone — from curious
-            ten-year-olds to seasoned stargazers. We believe that the universe belongs to everyone, and that
-            access to genuine scientific wonder should never cost anything.
+        <Section icon={<Globe className="w-4 h-4" />} title="What is PALE?" color="#8DEBFF">
+          <p className="m-0 text-[15px] leading-relaxed" style={{ color: "#C9D4DF" }}>
+            PALE uses astronomy and cosmology as a way to find perspective. Seeing how vast the universe is, and how
+            small and rare our world is within it, can make a hard day feel a little lighter.
           </p>
-          <p className="text-sm leading-relaxed mt-3" style={{ color: "rgba(255,255,255,0.7)" }}>
-            You can explore our Solar System in 3D, journey from the Planck length to the Observable Universe,
-            discover tonight's sky, and read daily imagery from NASA.
-          </p>
-        </Section>
-
-        <Section icon={<Star className="w-4 h-4" />} title="Why we built it" color="#ffd54f">
-          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
-            Space exploration tools have historically been locked behind expensive software, paywalled journals,
-            or cluttered with ads. STELLARA was built because we thought that was wrong.
-          </p>
-          <p className="text-sm leading-relaxed mt-3" style={{ color: "rgba(255,255,255,0.7)" }}>
-            The universe is the greatest story ever told. It deserves a beautiful, free, accessible platform
-            to explore it. That's what we're building.
+          <p className="mt-3 mb-0 text-[15px] leading-relaxed" style={{ color: "#C9D4DF" }}>
+            On the website you can fly through the solar system in 3D, journey from the Planck length to the edge of
+            the observable universe, watch stars form and die, and find out what is in your sky tonight. The PALE app
+            brings the same calm space to your phone.
           </p>
         </Section>
 
-        <Section icon={<Heart className="w-4 h-4" />} title="Our mission" color="#9c27b0">
-          <ul className="space-y-2">
+        <Section icon={<Star className="w-4 h-4" />} title="Why we built it" color="#F3DDB0">
+          <p className="m-0 text-[15px] leading-relaxed" style={{ color: "#C9D4DF" }}>
+            Space tools have often been locked behind expensive software or paywalls, or cluttered with ads. We think
+            the universe belongs to everyone, and that a moment of wonder should never cost anything.
+          </p>
+        </Section>
+
+        <Section icon={<Heart className="w-4 h-4" />} title="Our mission" color="#A995FF">
+          <ul className="m-0 p-0 list-none space-y-2">
             {[
               "Make space science accessible to everyone, everywhere",
+              "Help people find perspective, calm and meaning by looking up",
               "Inspire the next generation of astronomers and scientists",
               "Donate telescopes to UK schools and community groups",
-              "Keep STELLARA free, forever — no ads, no premium tiers",
-              "Build with scientific accuracy and genuine wonder",
-            ].map((item, i) => (
-              <li key={i} className="flex items-start gap-2 text-sm" style={{ color: "rgba(255,255,255,0.65)" }}>
-                <span style={{ color: "#9c27b0" }}>·</span> {item}
+              "Keep PALE free, with no ads and no premium tiers",
+              "Check every fact against its source, and keep reflection clearly separate from science",
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-2 text-[15px]" style={{ color: "#C9D4DF" }}>
+                <span aria-hidden="true" style={{ color: "#A995FF" }}>·</span> {item}
               </li>
             ))}
           </ul>
         </Section>
 
-        <Section icon={<BookOpen className="w-4 h-4" />} title="Technology" color="#4fc3f7">
-          <div className="space-y-1.5">
-            {[
-              ["3D Universe", "Three.js — real-time solar system, galaxy, and cosmic web rendering"],
-              ["Imagery", "NASA APOD API · ESA · Webb Space Telescope"],
-              ["Space data", "SpaceX · launch trackers · live ISS data"],
-            ].map(([name, desc]) => (
-              <div key={name} className="flex gap-3 text-sm">
-                <span className="shrink-0 font-semibold" style={{ color: "#4fc3f7", minWidth: "120px" }}>{name}</span>
-                <span style={{ color: "rgba(255,255,255,0.5)" }}>{desc}</span>
-              </div>
-            ))}
-          </div>
+        <Section icon={<BookOpen className="w-4 h-4" />} title="Who makes it" color="#8DEBFF">
+          <p className="m-0 text-[15px] leading-relaxed" style={{ color: "#C9D4DF" }}>
+            PALE is made by Stellara, a not for profit space education project based in the UK. The 3D universe is
+            built with Three.js, and imagery comes from NASA, ESA and the James Webb Space Telescope.
+          </p>
         </Section>
 
-        <div
-          className="rounded-2xl p-6 mb-4"
-          style={{ background: "rgba(79,195,247,0.04)", border: "1px solid rgba(79,195,247,0.12)" }}
-        >
+        <div className="rounded-2xl p-6 mb-4" style={{ background: "#0D1520", border: "1px solid #1D3040" }}>
           <div className="flex items-center gap-2 mb-1">
-            <Mail className="w-4 h-4" style={{ color: "#4fc3f7" }} />
-            <h2 className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
-              Stay in the loop
-            </h2>
+            <Mail className="w-4 h-4" style={{ color: "#8DEBFF" }} aria-hidden="true" />
+            <h2 className="m-0 text-sm font-semibold" style={{ color: "#F5FAFF" }}>Stay in touch</h2>
           </div>
-          <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.55)" }}>
-            Get updates on new features, upcoming space events, and cosmic discoveries — straight to your inbox. No spam, ever.
+          <p className="mt-1 mb-4 text-[15px]" style={{ color: "#A7B6C6" }}>
+            Occasional notes about meteor showers, eclipses and new things on PALE. No spam, ever.
           </p>
           <MailingListForm />
         </div>
 
         <div className="mt-10 text-center">
-          <Link href="/">
-            <button
-              className="flex items-center gap-2 mx-auto text-sm transition-colors"
-              style={{ color: "#4fc3f7" }}
-            >
-              Open Interactive Universe <ChevronRight className="w-4 h-4" />
-            </button>
+          <Link href="/universe" className="inline-flex items-center gap-2 text-[15px] no-underline" style={{ color: "#8DEBFF" }}>
+            Open the interactive universe <ChevronRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
 
@@ -108,25 +87,19 @@ export default function About() {
 }
 
 function Section({
-  icon, title, color, accent, children,
+  icon, title, color, children,
 }: {
-  icon: React.ReactNode; title: string; color: string; accent?: boolean; children: React.ReactNode;
+  icon: React.ReactNode; title: string; color: string; children: React.ReactNode;
 }) {
   return (
-    <div
-      className="rounded-2xl p-5 mb-4"
-      style={{
-        background: accent ? "rgba(255,213,79,0.03)" : "rgba(255,255,255,0.03)",
-        border: `1px solid ${accent ? "rgba(255,213,79,0.12)" : "rgba(255,255,255,0.07)"}`,
-      }}
-    >
+    <section className="rounded-2xl p-5 mb-4" style={{ background: "#0D1520", border: "1px solid #1D3040" }}>
       <div className="flex items-center gap-2 mb-4">
-        <span style={{ color }}>{icon}</span>
-        <h2 className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
+        <span aria-hidden="true" style={{ color }}>{icon}</span>
+        <h2 className="m-0 text-sm font-semibold uppercase tracking-[0.12em]" style={{ color: "#A7B6C6" }}>
           {title}
         </h2>
       </div>
       {children}
-    </div>
+    </section>
   );
 }

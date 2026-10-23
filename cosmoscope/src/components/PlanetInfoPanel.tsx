@@ -13,56 +13,56 @@ interface PlanetInfoPanelProps {
 
 const NOTABLE_FACTS: Record<string, string[]> = {
   mercury: [
-    "Mercury has no atmosphere to trap heat — temperatures swing 600°C between day and night.",
-    "A day on Mercury (sunrise to sunrise) lasts 176 Earth days — longer than its year.",
-    "Despite being closest to the Sun, Mercury is not the hottest planet — Venus is.",
+    "Mercury has almost no atmosphere to trap heat, so temperatures swing by about 600°C between day and night.",
+    "A day on Mercury (sunrise to sunrise) lasts 176 Earth days, longer than its year.",
+    "Despite being closest to the Sun, Mercury is not the hottest planet. Venus is.",
   ],
   venus: [
-    "Venus spins backwards — the Sun rises in the west and sets in the east.",
-    "Atmospheric pressure on Venus is 90× that of Earth — equivalent to 900 metres underwater.",
+    "Venus spins backwards, so the Sun rises in the west and sets in the east.",
+    "Atmospheric pressure on Venus is about 90 times Earth's, like being 900 metres underwater.",
     "Venus is the brightest natural object in the night sky after the Moon.",
   ],
   earth: [
-    "Earth is the only planet known to harbour life — and liquid water on its surface.",
+    "Earth is the only planet known to harbour life, and the only one with liquid water on its surface.",
     "Our Moon is unusually large relative to Earth, stabilising our axial tilt.",
-    "Earth's magnetic field shields us from solar wind that would otherwise strip our atmosphere.",
+    "Earth's magnetic field deflects most of the solar wind, helping to protect our atmosphere.",
   ],
   mars: [
-    "Mars hosts Olympus Mons — the largest volcano in the Solar System at 21 km high.",
-    "A Martian day (sol) is 24 hours 37 minutes — almost identical to Earth's.",
+    "Mars hosts Olympus Mons, the largest volcano in the Solar System, about 22 km high.",
+    "A Martian day, called a sol, lasts 24 hours 40 minutes, almost the same as Earth's.",
     "Mars has the longest canyon in the Solar System: Valles Marineris, 4,000 km long.",
   ],
   jupiter: [
-    "Jupiter's Great Red Spot is a storm that has raged for over 350 years.",
-    "Jupiter's gravity acts as a shield, deflecting many asteroids away from the inner planets.",
-    "Jupiter has 95 known moons — more than any other planet in our Solar System.",
+    "Jupiter's Great Red Spot is a storm wider than Earth that has lasted at least 190 years.",
+    "Jupiter's gravity shapes the orbits of asteroids and comets across the Solar System.",
+    "Jupiter has 101 known moons, but Saturn now has even more.",
   ],
   saturn: [
-    "Saturn's rings are made of ice and rock, extending 282,000 km but only 10–100 metres thick.",
-    "Saturn is the least dense planet — it would float in water if you had a big enough ocean.",
+    "Saturn's main rings stretch about 280,000 km across, yet in many places are only about 10 metres thick.",
+    "Saturn is the least dense planet. It would float in water, if there were an ocean big enough.",
     "Titan, Saturn's largest moon, has liquid methane lakes and a thick nitrogen atmosphere.",
   ],
   uranus: [
-    "Uranus rotates on its side — its axial tilt is 98°, likely from an ancient collision.",
+    "Uranus rotates on its side, tilted by 98°, probably after an ancient collision.",
     "Uranus is the coldest planetary atmosphere in the Solar System at −224°C.",
     "Uranus has 13 known rings, faint and dark compared to Saturn's.",
   ],
   neptune: [
-    "Neptune has the fastest winds in the Solar System — reaching 2,100 km/h.",
+    "Neptune has the fastest winds in the Solar System, reaching about 2,100 km/h.",
     "Neptune was the first planet predicted mathematically before being observed.",
     "Triton, Neptune's moon, orbits backwards and is likely a captured Kuiper Belt object.",
   ],
 };
 
 const SCALE_COMPARISONS: Record<string, string> = {
-  mercury: "If the Sun were a front door, Mercury would be a grape seed 3 metres away.",
-  venus: "If the Sun were a front door, Venus would be a blueberry 5 metres away.",
-  earth: "If the Sun were a front door, Earth would be a blueberry 7 metres away.",
-  mars: "If the Sun were a front door, Mars would be a small pea 10 metres away.",
-  jupiter: "If the Sun were a front door, Jupiter would be a softball 36 metres away.",
-  saturn: "If the Sun were a front door, Saturn would be an orange 67 metres away.",
-  uranus: "If the Sun were a front door, Uranus would be a golf ball 134 metres away.",
-  neptune: "If the Sun were a front door, Neptune would be a golf ball 210 metres away.",
+  mercury: "If the Sun were as tall as a front door, Mercury would be a lentil 83 metres away.",
+  venus: "If the Sun were as tall as a front door, Venus would be a grape 155 metres away.",
+  earth: "If the Sun were as tall as a front door, Earth would be a grape 215 metres away.",
+  mars: "If the Sun were as tall as a front door, Mars would be a pea 330 metres away.",
+  jupiter: "If the Sun were as tall as a front door, Jupiter would be a football 1.1 km away.",
+  saturn: "If the Sun were as tall as a front door, Saturn would be a small melon 2 km away.",
+  uranus: "If the Sun were as tall as a front door, Uranus would be a tennis ball 4 km away.",
+  neptune: "If the Sun were as tall as a front door, Neptune would be a tennis ball 6.5 km away.",
 };
 
 export default function PlanetInfoPanel({ planetId, onClose, onViewInFocus }: PlanetInfoPanelProps) {
@@ -173,7 +173,7 @@ function PanelContent({ planet, colorHex, isFav, facts, scale, planetId, onClose
             <div className="flex items-center gap-2">
               <h2
                 className="text-2xl font-bold"
-                style={{ fontFamily: "Orbitron, sans-serif", color: colorHex }}
+                style={{ fontFamily: "Inter, sans-serif", color: colorHex }}
               >
                 {(planet as any).name}
               </h2>
@@ -258,7 +258,7 @@ function PanelContent({ planet, colorHex, isFav, facts, scale, planetId, onClose
                 { icon: <Orbit className="w-3.5 h-3.5" />, label: "Distance from Sun", value: (planet as any).distance },
                 { icon: <Clock className="w-3.5 h-3.5" />, label: "Orbital Period", value: `${(planet as any).orbitalPeriod} days` },
                 { icon: <Thermometer className="w-3.5 h-3.5" />, label: "Length of Day", value: (planet as any).day },
-                { icon: <Sparkles className="w-3.5 h-3.5" />, label: "Moons", value: String((planet as any).moons) },
+                { icon: <Sparkles className="w-3.5 h-3.5" />, label: "Known moons", value: String((planet as any).moons) },
               ].map((row) => (
                 <div
                   key={row.label}

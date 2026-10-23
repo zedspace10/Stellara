@@ -15,7 +15,7 @@ export function FeaturedStory({ article, isSaved, onToggleSave }: Props) {
 
   const onShare = async () => {
     try {
-      if (navigator.share) await navigator.share({ title: article.title, text: article.title + " — via STELLARA", url: article.url });
+      if (navigator.share) await navigator.share({ title: article.title, text: article.title + " (via PALE)", url: article.url });
       else await navigator.clipboard.writeText(article.url);
     } catch { /* cancelled */ }
   };
@@ -57,11 +57,11 @@ export function FeaturedStory({ article, isSaved, onToggleSave }: Props) {
           </span>
           <span className="text-[10px] text-white/40">·</span>
           <span className="text-[10px] text-white/55">{formatRelativeTime(article.publishedDate)}</span>
-          <span className="ml-auto text-[10px] tracking-[0.3em] uppercase text-[#ffd54f]/70 font-['Orbitron']">
+          <span className="ml-auto text-[10px] tracking-[0.3em] uppercase text-[#ffd54f]/70 font-sans">
             Featured
           </span>
         </div>
-        <h2 className="text-xl sm:text-2xl text-white font-['Orbitron'] font-medium leading-tight mb-2 line-clamp-2">
+        <h2 className="text-xl sm:text-2xl text-white font-sans font-medium leading-tight mb-2 line-clamp-2">
           {article.title}
         </h2>
         <p className="text-sm text-white/65 leading-relaxed line-clamp-2 max-w-3xl">

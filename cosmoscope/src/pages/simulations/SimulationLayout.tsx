@@ -56,8 +56,8 @@ export default function SimulationLayout({
           </button>
         </Link>
         <div className="text-center">
-          <div className="text-xs text-[#9c27b0] font-['Orbitron'] tracking-widest uppercase">STELLARA Simulations</div>
-          <div className="text-sm font-bold font-['Orbitron'] text-white">{title}</div>
+          <div className="text-xs text-[#9c27b0] font-sans tracking-widest uppercase">PALE Simulations</div>
+          <div className="text-sm font-bold font-sans text-white">{title}</div>
         </div>
         <button
           onClick={onScienceModeToggle}
@@ -90,7 +90,7 @@ export default function SimulationLayout({
           className="absolute top-4 left-4 max-w-xs pointer-events-none"
         >
           <div className="rounded-2xl p-4" style={{ background: 'rgba(10,10,26,0.72)', backdropFilter: 'blur(20px)', border: '1px solid rgba(79,195,247,0.18)' }}>
-            <div className="text-xs font-['Orbitron'] tracking-widest mb-1" style={{ color: phase.color }}>
+            <div className="text-xs font-sans tracking-widest mb-1" style={{ color: phase.color }}>
               PHASE {currentPhaseIndex + 1}/{phases.length}
             </div>
             <div className="text-base font-bold text-white mb-1">{phase.label}</div>
@@ -138,7 +138,7 @@ export default function SimulationLayout({
                 key={p.id}
                 onClick={() => onPhaseJump(i)}
                 title={p.label}
-                className={`text-[10px] font-['Orbitron'] transition-all ${
+                className={`text-[10px] font-sans transition-all ${
                   i === currentPhaseIndex ? "text-[#ffd54f]" : "text-gray-600 hover:text-gray-400"
                 }`}
                 style={{ flex: 1, textAlign: "center" }}

@@ -226,7 +226,7 @@ function FineTuningMeter({ params }: { params: Params }) {
 
   return (
     <div className="rounded-2xl p-5" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)" }}>
-      <h3 className="text-xs font-bold tracking-widest text-white mb-4" style={{ fontFamily: "Orbitron, sans-serif" }}>
+      <h3 className="text-xs font-bold tracking-widest text-white mb-4" style={{ fontFamily: "Inter, sans-serif" }}>
         LIFE POSSIBILITY METER
       </h3>
       <div className="space-y-3">
@@ -346,7 +346,7 @@ export default function BuildUniverseResults({ params, outcome, onRebuild }: Pro
         {/* Hero */}
         <div className="text-center mb-8">
           <OutcomeIcon outcome={outcome} />
-          <div className="text-2xl md:text-3xl font-bold mb-2" style={{ fontFamily: "Orbitron, sans-serif", color: meta.color }}>
+          <div className="text-2xl md:text-3xl font-bold mb-2" style={{ fontFamily: "Inter, sans-serif", color: meta.color }}>
             {meta.label}
           </div>
           <p className="text-sm leading-relaxed max-w-sm mx-auto" style={{ color: "rgba(255,255,255,0.6)" }}>
@@ -360,7 +360,7 @@ export default function BuildUniverseResults({ params, outcome, onRebuild }: Pro
             <button key={t} onClick={() => setTab(t)}
               className="flex-1 text-[10px] py-1.5 rounded-lg transition-all font-bold tracking-wide capitalize"
               style={{
-                fontFamily: "Orbitron, sans-serif",
+                fontFamily: "Inter, sans-serif",
                 background: tab === t ? meta.bg : "transparent",
                 color: tab === t ? meta.color : "rgba(255,255,255,0.35)",
                 border: tab === t ? `1px solid ${meta.color}44` : "1px solid transparent",
@@ -381,7 +381,7 @@ export default function BuildUniverseResults({ params, outcome, onRebuild }: Pro
                   style={{ background: ev.good ? "rgba(76,175,80,0.3)" : "rgba(229,57,53,0.3)", border: `1px solid ${ev.good ? "#4caf50" : "#e53935"}` }}>
                   {ev.good ? "✓" : "✗"}
                 </div>
-                <div className="text-[10px] mb-0.5" style={{ color: ev.good ? "#4caf50" : "#e53935", fontFamily: "Orbitron, sans-serif" }}>
+                <div className="text-[10px] mb-0.5" style={{ color: ev.good ? "#4caf50" : "#e53935", fontFamily: "Inter, sans-serif" }}>
                   t = {ev.time}
                 </div>
                 <div className="text-xs" style={{ color: "rgba(255,255,255,0.75)" }}>{ev.icon} {ev.label}</div>
@@ -406,7 +406,7 @@ export default function BuildUniverseResults({ params, outcome, onRebuild }: Pro
 
             {/* Decisive parameter */}
             <div className="rounded-xl p-4 mt-2" style={{ background: "rgba(255,213,79,0.05)", border: "1px solid rgba(255,213,79,0.25)" }}>
-              <div className="text-[10px] font-bold tracking-widest mb-2" style={{ color: "#ffd54f", fontFamily: "Orbitron, sans-serif" }}>
+              <div className="text-[10px] font-bold tracking-widest mb-2" style={{ color: "#ffd54f", fontFamily: "Inter, sans-serif" }}>
                 THE DECISIVE FACTOR
               </div>
               <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
@@ -435,7 +435,7 @@ export default function BuildUniverseResults({ params, outcome, onRebuild }: Pro
         {/* Tab: Compare */}
         {tab === "compare" && (
           <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
-            <div className="grid grid-cols-3 text-[10px] font-bold tracking-widest px-4 py-2.5" style={{ fontFamily: "Orbitron, sans-serif", background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)" }}>
+            <div className="grid grid-cols-3 text-[10px] font-bold tracking-widest px-4 py-2.5" style={{ fontFamily: "Inter, sans-serif", background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.4)" }}>
               <span>PARAMETER</span><span className="text-center" style={{ color: meta.color }}>YOURS</span><span className="text-right">OURS</span>
             </div>
             {paramKeys.map((k, i) => {
@@ -464,7 +464,7 @@ export default function BuildUniverseResults({ params, outcome, onRebuild }: Pro
 
         {/* What next */}
         <div className="mt-6 space-y-2">
-          <div className="text-[10px] font-bold tracking-widest mb-3" style={{ fontFamily: "Orbitron, sans-serif", color: "rgba(255,255,255,0.3)" }}>
+          <div className="text-[10px] font-bold tracking-widest mb-3" style={{ fontFamily: "Inter, sans-serif", color: "rgba(255,255,255,0.3)" }}>
             WHAT NEXT
           </div>
           <div className="grid grid-cols-1 gap-2">
@@ -503,7 +503,7 @@ export default function BuildUniverseResults({ params, outcome, onRebuild }: Pro
         {/* Rebuild button */}
         <button onClick={onRebuild}
           className="w-full mt-5 py-4 rounded-2xl font-bold text-sm tracking-widest flex items-center justify-center gap-3 transition-all hover:opacity-80 active:scale-95"
-          style={{ fontFamily: "Orbitron, sans-serif", background: "linear-gradient(135deg, rgba(255,213,79,0.15), rgba(79,195,247,0.1))", border: "1px solid rgba(255,213,79,0.4)", color: "#ffd54f" }}>
+          style={{ fontFamily: "Inter, sans-serif", background: "linear-gradient(135deg, rgba(255,213,79,0.15), rgba(79,195,247,0.1))", border: "1px solid rgba(255,213,79,0.4)", color: "#ffd54f" }}>
           <RotateCcw className="w-4 h-4" />
           BUILD ANOTHER UNIVERSE
         </button>

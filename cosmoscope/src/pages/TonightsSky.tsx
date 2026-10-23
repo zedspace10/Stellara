@@ -68,7 +68,7 @@ export default function TonightsSky() {
 
   // Simple star map drawing
   useEffect(() => {
-    document.title = "Tonight's Sky — STELLARA";
+    document.title = "Tonight's Sky · PALE";
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -98,7 +98,7 @@ export default function TonightsSky() {
 
     // Cardinal directions
     ctx.fillStyle = "rgba(79,195,247,0.8)";
-    ctx.font = "14px Orbitron";
+    ctx.font = "14px Inter, sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText("N", cx, cy - radius + 15);
@@ -162,7 +162,7 @@ export default function TonightsSky() {
   return (
     <div className="min-h-screen pt-24 pb-16 px-4 md:px-8 max-w-6xl mx-auto">
       <div className="text-center mb-12 space-y-4">
-        <h1 className="text-4xl md:text-5xl font-bold font-['Orbitron'] text-white">Tonight's Sky</h1>
+        <h1 className="text-4xl md:text-5xl font-bold font-sans text-white">Tonight's Sky</h1>
         <p className="text-xl text-muted-foreground">Your personalized guide to what's visible overhead tonight.</p>
       </div>
 
@@ -171,7 +171,7 @@ export default function TonightsSky() {
           <CardContent className="space-y-6">
             <Compass className="w-12 h-12 text-primary mx-auto" />
             <h3 className="text-xl font-bold text-white">Enable Location</h3>
-            <p className="text-sm text-gray-400">To calculate precise visibility times and object positions, STELLARA needs your rough location.</p>
+            <p className="text-sm text-gray-400">To calculate precise visibility times and object positions, PALE needs your rough location.</p>
             <Button onClick={requestLocation} className="w-full">
               <MapPin className="w-4 h-4 mr-2" /> Allow Location
             </Button>
@@ -192,7 +192,7 @@ export default function TonightsSky() {
             <Card className="bg-card/40 backdrop-blur-md border-white/10 overflow-hidden">
               <CardHeader className="border-b border-white/5 pb-4">
                 <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold text-white font-['Orbitron']">Local Sky Map</h3>
+                  <h3 className="text-xl font-bold text-white font-sans">Local Sky Map</h3>
                   {location && (
                     <span className="text-xs bg-white/10 px-2 py-1 rounded text-primary flex items-center gap-1">
                       <MapPin className="w-3 h-3" />
@@ -251,7 +251,7 @@ export default function TonightsSky() {
           <div className="space-y-6">
             <Card className="bg-card/40 backdrop-blur-md border-white/10">
               <CardHeader className="border-b border-white/5 pb-4">
-                <h3 className="text-xl font-bold text-white font-['Orbitron'] flex items-center gap-2">
+                <h3 className="text-xl font-bold text-white font-sans flex items-center gap-2">
                   <Moon className="w-5 h-5 text-primary" /> The Moon
                 </h3>
               </CardHeader>
@@ -265,7 +265,7 @@ export default function TonightsSky() {
 
             <Card className="bg-card/40 backdrop-blur-md border-white/10">
               <CardHeader className="border-b border-white/5 pb-4">
-                <h3 className="text-xl font-bold text-white font-['Orbitron']">Visible Planets</h3>
+                <h3 className="text-xl font-bold text-white font-sans">Visible Planets</h3>
               </CardHeader>
               <CardContent className="pt-4 space-y-4 text-sm">
                 <div className="flex justify-between items-center border-b border-white/5 pb-2">
@@ -292,7 +292,7 @@ export default function TonightsSky() {
         <div className="mt-12 space-y-12">
           {/* Upcoming Events */}
           <div>
-            <h2 className="text-3xl font-bold font-['Orbitron'] text-white mb-6 flex items-center gap-3">
+            <h2 className="text-3xl font-bold font-sans text-white mb-6 flex items-center gap-3">
               <Calendar className="w-8 h-8 text-[#4fc3f7]" /> Upcoming Celestial Events
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -324,7 +324,7 @@ export default function TonightsSky() {
 
           {/* Constellation Explorer */}
           <div>
-            <h2 className="text-3xl font-bold font-['Orbitron'] text-white mb-6 flex items-center gap-3">
+            <h2 className="text-3xl font-bold font-sans text-white mb-6 flex items-center gap-3">
               <Stars className="w-8 h-8 text-[#ffd54f]" /> Constellation Explorer
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

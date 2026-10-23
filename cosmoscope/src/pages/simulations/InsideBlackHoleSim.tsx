@@ -29,7 +29,7 @@ export default function InsideBlackHoleSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "Inside a Black Hole — STELLARA Simulations";
+    document.title = "Inside a Black Hole · PALE";
     const el = mountRef.current;
     if (!el) return;
     const W = el.clientWidth, H = el.clientHeight;

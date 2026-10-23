@@ -11,11 +11,11 @@ export default function PaleBlueDotSequence({ onComplete, onStart }: PaleBlueDot
   const [step, setStep] = useState(0);
 
   const texts = [
-    "Zoom out... zoom out...",
-    "Somewhere in that vast, cosmic arena...",
-    "There is a pale blue dot.",
-    "That dot is home. That is us. That is every human being who ever lived.",
-    "On it, everyone you love, everyone you know, everyone you have ever heard of...",
+    "Keep zooming out.",
+    "Past the planets. Past the edge of the Sun's wind.",
+    "Now look back. That faint point of light is Earth.",
+    "Every story there has ever been happened on that point.",
+    "Whatever you are carrying today, it is happening there too.",
     "This is home."
   ];
 
@@ -45,7 +45,7 @@ export default function PaleBlueDotSequence({ onComplete, onStart }: PaleBlueDot
           transition={{ duration: 1.5 }}
           className="text-center max-w-4xl"
         >
-          <h2 className="text-3xl md:text-5xl font-light text-white leading-relaxed tracking-wide font-['Orbitron']">
+          <h2 className="text-3xl md:text-5xl font-light text-white leading-relaxed tracking-wide font-sans">
             {texts[step]}
           </h2>
           

@@ -15,13 +15,13 @@ type Tab = "upcoming" | "previous";
 function LoadingState() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-6 py-20">
-      <div className="text-xs tracking-[0.35em] text-[#4fc3f7]/50 uppercase mb-5 font-['Orbitron']">
+      <div className="text-xs tracking-[0.35em] text-[#4fc3f7]/50 uppercase mb-5 font-sans">
         The Space Devs · Launch Library
       </div>
       <motion.div animate={{ rotate: 360 }} transition={{ duration: 8, repeat: Infinity, ease: "linear" }}>
         <Rocket className="w-7 h-7" style={{ color: "#ffd54f" }} />
       </motion.div>
-      <div className="text-sm font-['Orbitron'] text-white/60 mt-5">Scanning for upcoming launches…</div>
+      <div className="text-sm font-sans text-white/60 mt-5">Scanning for upcoming launches…</div>
     </div>
   );
 }
@@ -29,7 +29,7 @@ function LoadingState() {
 function EmptyState({ message }: { message: string }) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-6 py-20">
-      <div className="text-lg font-['Orbitron'] text-white/50 mb-3">No launches found.</div>
+      <div className="text-lg font-sans text-white/50 mb-3">No launches found.</div>
       <p className="text-sm text-white/30 text-center max-w-sm">{message}</p>
       <button onClick={() => window.location.reload()}
         className="mt-6 px-6 py-2.5 rounded-full text-sm border border-[#4fc3f7]/30 text-[#4fc3f7]/70 hover:text-[#4fc3f7] transition-colors">
@@ -53,16 +53,16 @@ export default function LaunchTracker() {
 
   return (
     <div className="relative w-full min-h-screen bg-[#020209] flex flex-col"
-      style={{ fontFamily: "Space Grotesk, sans-serif" }}>
+      style={{ fontFamily: "Inter, sans-serif" }}>
 
       {/* Top bar */}
       <div className="sticky top-0 z-30 flex items-center justify-between px-4 py-3"
         style={{ background: "rgba(2,2,9,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(79,195,247,0.1)" }}>
         <Link href="/" className="flex items-center gap-2 text-[#4fc3f7] hover:text-white transition-colors text-sm">
-          <ArrowLeft className="w-4 h-4" /> STELLARA
+          <ArrowLeft className="w-4 h-4" /> PALE
         </Link>
         <div className="text-center">
-          <div className="text-xs font-['Orbitron'] text-white/70 tracking-[0.15em]">LAUNCH TRACKER</div>
+          <div className="text-xs font-sans text-white/70 tracking-[0.15em]">LAUNCH TRACKER</div>
           {fromCache && cacheDate && (
             <div className="text-[9px] text-white/25">Updated · {cacheDate.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</div>
           )}
@@ -91,7 +91,7 @@ export default function LaunchTracker() {
                 key={t}
                 onClick={() => setTab(t)}
                 aria-pressed={tab === t}
-                className="px-5 py-1.5 text-[11px] uppercase tracking-[0.25em] rounded-full font-['Orbitron'] transition-all"
+                className="px-5 py-1.5 text-[11px] uppercase tracking-[0.25em] rounded-full font-sans transition-all"
                 style={{
                   background: tab === t ? "rgba(79,195,247,0.15)" : "transparent",
                   color: tab === t ? "#4fc3f7" : "rgba(255,255,255,0.4)",
@@ -148,7 +148,7 @@ export default function LaunchTracker() {
 function SectionHeader({ label, count }: { label: string; count: string }) {
   return (
     <div className="flex items-center gap-2 px-1">
-      <div className="text-[10px] tracking-[0.3em] uppercase text-white/45 font-['Orbitron']">{label}</div>
+      <div className="text-[10px] tracking-[0.3em] uppercase text-white/45 font-sans">{label}</div>
       <div className="flex-1 h-px" style={{ background: "linear-gradient(to right, rgba(255,255,255,0.1), transparent)" }} />
       <div className="text-[10px] text-white/35">{count}</div>
     </div>

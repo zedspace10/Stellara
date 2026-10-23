@@ -131,7 +131,7 @@ export default function ComparisonView({ planets, onSelect }: Props) {
                   <div className="relative">
                     <PlanetCanvas planet={planet} size={displaySize} />
                   </div>
-                  <div className="text-[9px] text-white/60 mt-1 max-w-[80px] text-center truncate font-['Orbitron']">{planet.name}</div>
+                  <div className="text-[9px] text-white/60 mt-1 max-w-[80px] text-center truncate font-sans">{planet.name}</div>
                   <div className="text-[8px] text-white/30">{getPlanetTypeLabel(planet.planetType)}</div>
                   <div className="mt-1 rounded-full w-1.5" style={{ height: h, background: "rgba(255,213,79,0.25)" }} />
                   <button onClick={() => removePlanet(planet.id)} className="mt-2 text-[9px] text-white/25 hover:text-white/60 transition-colors">✕</button>
@@ -148,7 +148,7 @@ export default function ComparisonView({ planets, onSelect }: Props) {
             </div>
             {selected.map(({ planet }) => (
               <div key={planet.id} className="grid grid-cols-4 px-4 py-2.5 text-xs" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                <span className="text-white/70 truncate font-['Orbitron'] text-[10px]">{planet.name}</span>
+                <span className="text-white/70 truncate font-sans text-[10px]">{planet.name}</span>
                 <span className="text-[#ffd54f] font-mono">{planet.radius != null ? `${planet.radius.toFixed(1)}×` : "—"}</span>
                 <span className="text-white/50 font-mono">{planet.temp ? `${planet.temp.toFixed(0)} K` : "—"}</span>
                 <span className="text-white/50 font-mono">{formatDistanceLY(planet.distanceLY)}</span>
@@ -166,7 +166,7 @@ export default function ComparisonView({ planets, onSelect }: Props) {
             <button key={p.id} onClick={() => onSelect(p)} className="w-full flex items-center gap-3 py-1.5 hover:bg-white/5 rounded-lg px-2 transition-colors">
               <div className="text-[10px] text-white/25 w-5 text-right flex-shrink-0">#{i + 1}</div>
               <div className="flex-1 min-w-0 text-left">
-                <div className="text-xs text-white/80 truncate font-['Orbitron']">{p.name}</div>
+                <div className="text-xs text-white/80 truncate font-sans">{p.name}</div>
                 <div className="text-[9px] text-white/30">{formatDistanceLY(p.distanceLY)} · {getPlanetTypeLabel(p.planetType)}</div>
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
@@ -224,7 +224,7 @@ export default function ComparisonView({ planets, onSelect }: Props) {
               <button key={p.id} onClick={() => onSelect(p)}
                 className="w-full flex items-center justify-between py-1.5 hover:bg-white/5 rounded-lg px-2 transition-colors">
                 <div className="text-left">
-                  <div className="text-xs text-white/75 font-['Orbitron']">{p.name}</div>
+                  <div className="text-xs text-white/75 font-sans">{p.name}</div>
                   <div className="text-[9px] text-white/30">{getPlanetTypeLabel(p.planetType)}{p.potentiallyHabitable ? " · 🟢 HZ" : ""}</div>
                 </div>
                 <div className="text-right">
