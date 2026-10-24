@@ -56,7 +56,7 @@ export default function APOD() {
       setData(json);
       localStorage.setItem(cacheKey, JSON.stringify({ data: json, timestamp: Date.now() }));
     } catch (err: any) {
-      setError(err.message || "An error occurred");
+      setError("NASA's picture of the day could not be loaded just now. Please try again in a little while.");
     } finally {
       setLoading(false);
     }
@@ -109,21 +109,22 @@ export default function APOD() {
   }, []);
 
   return (
-    <div className="min-h-screen pt-20 pb-12 px-4 md:px-8 max-w-6xl mx-auto">
+    <div className="min-h-screen pt-16 pb-12 px-6 max-w-[1100px] mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="mb-8">
-          <Badge variant="outline" className="mb-4 text-primary border-primary">Astronomy Picture of the Day</Badge>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">NASA's Daily Cosmos</h1>
-          <p className="text-muted-foreground text-lg">A different astronomy and space science image featured each day.</p>
+        <div className="pt-14 pb-10">
+          <h1 className="m-0 text-4xl md:text-5xl font-bold tracking-[-0.02em] text-white">Picture of the day</h1>
+          <p className="mt-3 mb-0 text-lg leading-relaxed max-w-[620px]" style={{ color: "#A7B6C6" }}>
+            A new view of the universe every day, chosen and explained by astronomers at NASA.
+          </p>
         </div>
 
         {error && (
-          <Card className="p-8 text-center bg-red-950/20 border-red-500/50">
-            <p className="text-red-400">{error}</p>
+          <Card className="p-8 text-center">
+            <p className="m-0" style={{ color: "#A7B6C6" }}>{error}</p>
           </Card>
         )}
 
@@ -193,9 +194,10 @@ export default function APOD() {
           </div>
         )}
 
-        {/* Archive Section */}
+        {/* Archive Section, only when there is something to show */}
+        {(loadingArchive || archive.length > 0) && (
         <div className="mt-16 pt-12 border-t border-white/10">
-          <h3 className="text-2xl font-bold text-white font-sans mb-6">Recent Archives</h3>
+          <h2 className="text-2xl font-bold text-white mb-6">The last few days</h2>
           {loadingArchive ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[...Array(4)].map((_, i) => (
@@ -227,6 +229,7 @@ export default function APOD() {
             <p className="text-muted-foreground">No recent archives found.</p>
           )}
         </div>
+        )}
       </motion.div>
     </div>
   );

@@ -15,7 +15,7 @@ const UNIVERSE_DATA: Record<string, {
   'bootes-void': {
     name: 'Boötes Void',
     category: 'Cosmic Void',
-    categoryColor: '#4fc3f7',
+    categoryColor: '#8DEBFF',
     stats: [
       { label: 'Diameter', value: '~330 million light years' },
       { label: 'Distance', value: '700 million light years' },
@@ -28,7 +28,7 @@ const UNIVERSE_DATA: Record<string, {
   'local-void': {
     name: 'Local Void',
     category: 'Cosmic Void',
-    categoryColor: '#4fc3f7',
+    categoryColor: '#8DEBFF',
     stats: [
       { label: 'Diameter', value: '~150 million light years' },
       { label: 'Distance from Milky Way', value: 'Adjacent, we sit at its edge' },
@@ -41,7 +41,7 @@ const UNIVERSE_DATA: Record<string, {
   'eridanus-void': {
     name: 'Eridanus Supervoid',
     category: 'Cosmic Supervoid',
-    categoryColor: '#9c27b0',
+    categoryColor: '#A995FF',
     stats: [
       { label: 'Diameter', value: 'Up to ~1.8 billion light years' },
       { label: 'Distance', value: '~3 billion light years' },
@@ -54,7 +54,7 @@ const UNIVERSE_DATA: Record<string, {
   'sculptor-void': {
     name: 'Sculptor Void',
     category: 'Cosmic Void',
-    categoryColor: '#4fc3f7',
+    categoryColor: '#8DEBFF',
     stats: [
       { label: 'Sky location', value: 'Constellation of Sculptor' },
       { label: 'Hemisphere', value: 'Southern sky' },
@@ -66,7 +66,7 @@ const UNIVERSE_DATA: Record<string, {
   'milky-way-u': {
     name: 'The Milky Way',
     category: 'Spiral Galaxy · Our Home',
-    categoryColor: '#ffd54f',
+    categoryColor: '#F3DDB0',
     stats: [
       { label: 'Diameter', value: '~100,000 light years' },
       { label: 'Stars', value: '100–400 billion' },
@@ -79,7 +79,7 @@ const UNIVERSE_DATA: Record<string, {
   'andromeda-u': {
     name: 'Andromeda Galaxy',
     category: 'Spiral Galaxy',
-    categoryColor: '#4fc3f7',
+    categoryColor: '#8DEBFF',
     stats: [
       { label: 'Distance', value: '2.537 million light years' },
       { label: 'Diameter', value: '~220,000 light years' },
@@ -131,7 +131,7 @@ const UNIVERSE_DATA: Record<string, {
   'great-attractor': {
     name: 'The Great Attractor',
     category: 'Gravitational Anomaly',
-    categoryColor: '#9c27b0',
+    categoryColor: '#A995FF',
     stats: [
       { label: 'Distance', value: '650 million light years' },
       { label: 'Mass', value: 'Thousands of Milky Ways' },
@@ -162,7 +162,7 @@ export default function UniverseInfoPanel({ objectId, onClose }: UniverseInfoPan
           background: 'rgba(10,10,26,0.97)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(79,195,247,0.2)',
+          border: '1px solid rgba(141,235,255,0.2)',
           borderRadius: 16,
           boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
           overflowY: 'auto',
@@ -174,7 +174,7 @@ export default function UniverseInfoPanel({ objectId, onClose }: UniverseInfoPan
             top: 0,
             zIndex: 10,
             background: 'rgba(10,10,26,0.97)',
-            borderBottom: '1px solid rgba(79,195,247,0.08)',
+            borderBottom: '1px solid rgba(141,235,255,0.08)',
             padding: '20px 20px 16px',
             display: 'flex',
             alignItems: 'flex-start',
@@ -198,8 +198,8 @@ export default function UniverseInfoPanel({ objectId, onClose }: UniverseInfoPan
               display: 'inline-block',
               marginTop: 6,
               padding: '2px 10px',
-              background: 'rgba(79,195,247,0.08)',
-              border: '1px solid rgba(79,195,247,0.2)',
+              background: 'rgba(141,235,255,0.08)',
+              border: '1px solid rgba(141,235,255,0.2)',
               borderRadius: 20,
               color: 'rgba(255,255,255,0.55)',
               fontSize: 10,
@@ -283,14 +283,14 @@ export default function UniverseInfoPanel({ objectId, onClose }: UniverseInfoPan
 
           <div style={{
             padding: '14px 16px',
-            background: 'rgba(255,213,79,0.04)',
-            border: '1px solid rgba(255,213,79,0.15)',
+            background: 'rgba(243,221,176,0.04)',
+            border: '1px solid rgba(243,221,176,0.15)',
             borderRadius: 10,
             marginBottom: 20,
           }}>
             <div style={{
               fontSize: 10,
-              color: '#ffd54f',
+              color: '#F3DDB0',
               fontWeight: 700,
               letterSpacing: '0.1em',
               fontFamily: 'Inter, sans-serif',
@@ -301,7 +301,7 @@ export default function UniverseInfoPanel({ objectId, onClose }: UniverseInfoPan
             <p style={{
               fontSize: 12,
               lineHeight: 1.7,
-              color: 'rgba(255,213,79,0.8)',
+              color: 'rgba(243,221,176,0.8)',
               margin: 0,
               fontFamily: 'Inter, sans-serif',
             }}>

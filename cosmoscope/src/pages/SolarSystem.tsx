@@ -84,20 +84,20 @@ function WebGLFallback() {
       <div className="mb-8">
         <div className="w-32 h-32 mx-auto mb-6 relative">
           <svg viewBox="0 0 128 128" className="w-full h-full opacity-60">
-            <circle cx="64" cy="64" r="10" fill="#ffd54f" />
-            <ellipse cx="64" cy="64" rx="28" ry="8" fill="none" stroke="#4fc3f7" strokeWidth="1" opacity="0.5"/>
-            <circle cx="92" cy="64" r="3" fill="#4fc3f7" />
-            <ellipse cx="64" cy="64" rx="45" ry="14" fill="none" stroke="#9c27b0" strokeWidth="1" opacity="0.4"/>
+            <circle cx="64" cy="64" r="10" fill="#F3DDB0" />
+            <ellipse cx="64" cy="64" rx="28" ry="8" fill="none" stroke="#8DEBFF" strokeWidth="1" opacity="0.5"/>
+            <circle cx="92" cy="64" r="3" fill="#8DEBFF" />
+            <ellipse cx="64" cy="64" rx="45" ry="14" fill="none" stroke="#A995FF" strokeWidth="1" opacity="0.4"/>
             <circle cx="109" cy="64" r="4" fill="#c88b3a" />
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-[#ffd54f] mb-3" style={{fontFamily: 'Inter, sans-serif'}}>
+        <h2 className="text-2xl font-bold text-[#F3DDB0] mb-3" style={{fontFamily: 'Inter, sans-serif'}}>
           Interactive Universe
         </h2>
         <p className="text-[#e0e0e0]/70 max-w-md mx-auto leading-relaxed mb-2">
           The 3D solar system requires WebGL, which isn't available in this preview environment.
         </p>
-        <p className="text-[#4fc3f7]/80 text-sm max-w-md mx-auto">
+        <p className="text-[#8DEBFF]/80 text-sm max-w-md mx-auto">
           Open this app in a standard browser to experience the full interactive universe.
         </p>
       </div>
@@ -372,7 +372,7 @@ export default function SolarSystem() {
 
     const sunLabelDiv = document.createElement('div');
     sunLabelDiv.textContent = 'The Sun';
-    sunLabelDiv.style.color = '#ffd54f';
+    sunLabelDiv.style.color = '#F3DDB0';
     sunLabelDiv.style.fontFamily = 'Inter, sans-serif';
     sunLabelDiv.style.fontSize = '12px';
     sunLabelDiv.style.pointerEvents = 'auto';
@@ -752,7 +752,7 @@ export default function SolarSystem() {
 
     const yahDiv = document.createElement('div');
     yahDiv.textContent = 'Solar System (You Are Here)';
-    yahDiv.style.color = '#4fc3f7';
+    yahDiv.style.color = '#8DEBFF';
     yahDiv.style.fontFamily = 'Inter, sans-serif';
     yahDiv.style.fontSize = '12px';
     const yahLabel = new CSS2DObject(yahDiv);
@@ -987,8 +987,8 @@ export default function SolarSystem() {
       const vDiv = document.createElement('div');
       vDiv.textContent = v.name;
       vDiv.style.cssText = voidTier === 2
-        ? 'color:rgba(79,195,247,0.75);font-size:12px;font-family:Inter,sans-serif;pointer-events:auto;cursor:pointer;letter-spacing:0.05em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);'
-        : 'color:rgba(79,195,247,0.5);font-size:10px;font-family:Inter,sans-serif;pointer-events:auto;cursor:pointer;letter-spacing:0.05em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);';
+        ? 'color:rgba(141,235,255,0.75);font-size:12px;font-family:Inter,sans-serif;pointer-events:auto;cursor:pointer;letter-spacing:0.05em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);'
+        : 'color:rgba(141,235,255,0.5);font-size:10px;font-family:Inter,sans-serif;pointer-events:auto;cursor:pointer;letter-spacing:0.05em;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);';
       vDiv.onclick = (e) => {
         e.stopPropagation();
         if (clickGuardRef.current) return;
@@ -1017,7 +1017,7 @@ export default function SolarSystem() {
     universeGroup.add(labelGroup);
 
     const LANDMARKS = [
-      { id: 'milky-way-u', name: '🌌 You Are Here', pos: [0, 0, 0] as [number,number,number], col: 0xffd54f, s: 1800, labelOffset: [0, 3000, 0] as [number,number,number], tier: 1 },
+      { id: 'milky-way-u', name: 'You are here', pos: [0, 0, 0] as [number,number,number], col: 0xffd54f, s: 1800, labelOffset: [0, 3000, 0] as [number,number,number], tier: 1 },
       { id: 'andromeda-u', name: 'Andromeda', pos: [12000, -800, -5000] as [number,number,number], col: 0x4fc3f7, s: 1400, labelOffset: [0, -2000, 0] as [number,number,number], tier: 2 },
       { id: 'virgo-cluster', name: 'Virgo Cluster', pos: [-32000, 2500, -22000] as [number,number,number], col: 0xffffff, s: 2200, labelOffset: [2000, 0, 0] as [number,number,number], tier: 2 },
       { id: 'coma-cluster', name: 'Coma Cluster', pos: [65000, 6000, 32000] as [number,number,number], col: 0xffcc88, s: 2800, labelOffset: [0, 2000, 0] as [number,number,number], tier: 2 },
@@ -1049,7 +1049,7 @@ export default function SolarSystem() {
       labelGroup.add(glowMesh);
 
       const tierCss: Record<number, string> = {
-        1: 'color:#ffd54f;font-size:14px;font-weight:700;',
+        1: 'color:#F3DDB0;font-size:14px;font-weight:700;',
         2: 'color:rgba(255,255,255,0.85);font-size:12px;font-weight:400;',
         3: 'color:rgba(255,255,255,0.55);font-size:10px;font-weight:400;',
       };
@@ -1543,7 +1543,7 @@ export default function SolarSystem() {
       {paleBlueDot && <PaleBlueDotSequence onComplete={() => setPaleBlueDot(false)} />}
       
       {exploreToast && (
-        <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 bg-black/80 border border-[#4fc3f7] text-white px-6 py-3 rounded-full text-sm font-sans shadow-[0_0_15px_rgba(79,195,247,0.3)] animate-in fade-in zoom-in duration-300">
+        <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 bg-black/80 border border-[#8DEBFF] text-white px-6 py-3 rounded-full text-sm font-sans shadow-[0_0_15px_rgba(141,235,255,0.3)] animate-in fade-in zoom-in duration-300">
           {exploreToast}
         </div>
       )}
@@ -1569,7 +1569,7 @@ export default function SolarSystem() {
         <>
           {/* Top-left */}
           <div className="absolute top-20 left-4 z-20 pointer-events-none">
-            <p className="text-xs font-bold tracking-widest" style={{ fontFamily: "Inter, sans-serif", color: "#ffd54f", letterSpacing: "0.12em" }}>
+            <p className="text-xs font-bold tracking-widest" style={{ fontFamily: "Inter, sans-serif", color: "#F3DDB0", letterSpacing: "0.12em" }}>
               OBSERVABLE UNIVERSE
             </p>
             <p className="text-[10px] mt-0.5" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "Inter, sans-serif" }}>
@@ -1599,7 +1599,7 @@ export default function SolarSystem() {
         >
           <div
             className="rounded-2xl p-6 w-full max-w-sm mx-4"
-            style={{ background: "rgba(6,6,20,0.98)", border: "1px solid rgba(79,195,247,0.2)" }}
+            style={{ background: "rgba(6,6,20,0.98)", border: "1px solid rgba(141,235,255,0.2)" }}
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-sm font-bold text-white mb-4" style={{ fontFamily: "Inter, sans-serif", letterSpacing: "0.1em" }}>
@@ -1610,7 +1610,7 @@ export default function SolarSystem() {
                 ["P", "Pause / Resume"],
                 ["F", "Toggle Fullscreen"],
                 ["R", "Reset Camera"],
-                ["O", "Observatory Mode"],
+                ["O", "Night vision"],
                 ["0", "Focus the Sun"],
                 ["1 – 8", "Focus planet by order"],
                 ["ESC", "Close panels"],
@@ -1621,9 +1621,9 @@ export default function SolarSystem() {
                   <kbd
                     className="text-xs px-2 py-0.5 rounded"
                     style={{
-                      background: "rgba(79,195,247,0.1)",
-                      border: "1px solid rgba(79,195,247,0.25)",
-                      color: "#4fc3f7",
+                      background: "rgba(141,235,255,0.1)",
+                      border: "1px solid rgba(141,235,255,0.25)",
+                      color: "#8DEBFF",
                       fontFamily: "monospace",
                     }}
                   >
@@ -1697,8 +1697,8 @@ export default function SolarSystem() {
               fontSize: "13px",
             }}
           >
-            <div style={{ fontSize: "10px", opacity: 0.5, letterSpacing: "0.08em", marginBottom: 4 }}>OBSERVATORY MODE</div>
-            <div style={{ fontSize: "12px", opacity: 0.7 }}>🔴 Red light active</div>
+            <div style={{ fontSize: "11px", opacity: 0.6, letterSpacing: "0.08em", marginBottom: 4 }}>Night vision</div>
+            <div style={{ fontSize: "12px", opacity: 0.7 }}>Red light on to protect your dark adapted eyes</div>
             <div style={{ fontSize: "11px", opacity: 0.5, marginTop: 2 }}>Eyes adapting: {darkSkyMinutes}m</div>
           </div>
         </div>
@@ -1709,9 +1709,9 @@ export default function SolarSystem() {
         <div
           className="absolute bottom-20 top-auto right-4 z-[100] flex flex-col md:top-20 md:bottom-auto"
           style={{
-            background: "rgba(10,10,26,0.92)",
+            background: "rgba(13,21,32,0.92)",
             backdropFilter: "blur(16px)",
-            border: "1px solid rgba(79,195,247,0.2)",
+            border: "1px solid #1D3040",
             borderRadius: "12px",
             padding: "8px",
             minWidth: "160px",
@@ -1722,21 +1722,21 @@ export default function SolarSystem() {
           {zoomLevel === 3 && (
             <>
               {[
-                { label: "🌐 Labels", state: showUniverseLabels, set: setShowUniverseLabels },
-                { label: "🕸 Filaments", state: showUniverseFilaments, set: setShowUniverseFilaments },
-                { label: "⭕ Voids", state: showUniverseVoids, set: setShowUniverseVoids },
+                { label: "Labels", state: showUniverseLabels, set: setShowUniverseLabels },
+                { label: "Cosmic web", state: showUniverseFilaments, set: setShowUniverseFilaments },
+                { label: "Voids", state: showUniverseVoids, set: setShowUniverseVoids },
               ].map(({ label, state, set }) => (
                 <button
                   key={label}
                   onClick={(e) => { e.stopPropagation(); set((v: boolean) => !v); }}
                   style={{
                     fontFamily: "Inter, sans-serif",
-                    background: state ? "rgba(79,195,247,0.12)" : "transparent",
-                    color: state ? "#4fc3f7" : "rgba(255,255,255,0.5)",
+                    background: state ? "rgba(141,235,255,0.12)" : "transparent",
+                    color: state ? "#8DEBFF" : "rgba(255,255,255,0.5)",
                     border: "none",
                     borderRadius: "8px",
                     padding: "6px 10px",
-                    fontSize: "11px",
+                    fontSize: "13px",
                     fontWeight: 500,
                     cursor: "pointer",
                     textAlign: "left" as const,
@@ -1748,7 +1748,7 @@ export default function SolarSystem() {
                   {label}
                 </button>
               ))}
-              <div style={{ height: 1, background: "rgba(79,195,247,0.15)", margin: "4px 2px 6px" }} />
+              <div style={{ height: 1, background: "rgba(141,235,255,0.15)", margin: "4px 2px 6px" }} />
             </>
           )}
 
@@ -1757,12 +1757,12 @@ export default function SolarSystem() {
             onClick={(e) => { e.stopPropagation(); setPaleBlueDot(true); }}
             style={{
               fontFamily: "Inter, sans-serif",
-              background: "rgba(255,213,79,0.06)",
-              color: "#ffd54f",
+              background: "rgba(243,221,176,0.06)",
+              color: "#F3DDB0",
               border: "none",
               borderRadius: "8px",
               padding: "6px 10px",
-              fontSize: "11px",
+              fontSize: "13px",
               fontWeight: 500,
               cursor: "pointer",
               textAlign: "left" as const,
@@ -1771,7 +1771,7 @@ export default function SolarSystem() {
               marginBottom: "2px",
             }}
           >
-            ⭐ Pale Blue Dot
+            Pale Blue Dot
           </button>
 
           {/* Observatory */}
@@ -1795,7 +1795,7 @@ export default function SolarSystem() {
               border: "none",
               borderRadius: "8px",
               padding: "6px 10px",
-              fontSize: "11px",
+              fontSize: "13px",
               fontWeight: 500,
               cursor: "pointer",
               textAlign: "left" as const,
@@ -1804,7 +1804,7 @@ export default function SolarSystem() {
               marginBottom: "2px",
             }}
           >
-            🔭 {isObservatory ? "Exit Obs." : "Observatory"}
+            {isObservatory ? "Night vision off" : "Night vision"}
           </button>
 
           {isObservatory && (
@@ -1817,7 +1817,7 @@ export default function SolarSystem() {
                 border: "none",
                 borderRadius: "8px",
                 padding: "6px 10px",
-                fontSize: "11px",
+                fontSize: "13px",
                 fontWeight: 500,
                 cursor: "pointer",
                 textAlign: "left" as const,
@@ -1826,7 +1826,7 @@ export default function SolarSystem() {
                 marginBottom: "2px",
               }}
             >
-              🔬 {isTelescopeMode ? "Exit Eyepiece" : "Eyepiece"}
+              {isTelescopeMode ? "Leave eyepiece" : "Eyepiece view"}
             </button>
           )}
 
@@ -1840,7 +1840,7 @@ export default function SolarSystem() {
               border: "none",
               borderRadius: "8px",
               padding: "6px 10px",
-              fontSize: "11px",
+              fontSize: "13px",
               fontWeight: 500,
               cursor: "pointer",
               textAlign: "left" as const,
@@ -1848,7 +1848,7 @@ export default function SolarSystem() {
               letterSpacing: "0.03em",
             }}
           >
-            📷 Screenshot
+            Hide controls
           </button>
         </div>
       )}
@@ -1862,11 +1862,11 @@ export default function SolarSystem() {
             {zoomLevel === 3 && "OBSERVABLE UNIVERSE"}
           </div>
           <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${zoomLevel === 1 ? 'bg-[#4fc3f7]' : 'bg-white/20'}`} />
-            <div className={`w-2 h-2 rounded-full ${zoomLevel === 2 ? 'bg-[#4fc3f7]' : 'bg-white/20'}`} />
-            <div className={`w-2 h-2 rounded-full ${zoomLevel === 3 ? 'bg-[#4fc3f7]' : 'bg-white/20'}`} />
+            <div className={`w-2 h-2 rounded-full ${zoomLevel === 1 ? 'bg-[#8DEBFF]' : 'bg-white/20'}`} />
+            <div className={`w-2 h-2 rounded-full ${zoomLevel === 2 ? 'bg-[#8DEBFF]' : 'bg-white/20'}`} />
+            <div className={`w-2 h-2 rounded-full ${zoomLevel === 3 ? 'bg-[#8DEBFF]' : 'bg-white/20'}`} />
           </div>
-          <div className="text-[10px] text-[#4fc3f7]">You Are Here</div>
+          <div className="text-[10px] text-[#8DEBFF]">You Are Here</div>
         </div>
       )}
       
@@ -1917,7 +1917,7 @@ export default function SolarSystem() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <label className="text-xs text-white flex items-center gap-1 cursor-pointer hover:text-[#4fc3f7] transition-colors">
+                <label className="text-xs text-white flex items-center gap-1 cursor-pointer hover:text-[#8DEBFF] transition-colors">
                   <input type="checkbox" checked={showComets} onChange={(e) => setShowComets(e.target.checked)} className="rounded bg-black/50 border-white/20" /> Comets
                 </label>
                 <Button variant="secondary" size="sm" onClick={handleRandomExplore} className="gap-2">
@@ -1979,7 +1979,7 @@ export default function SolarSystem() {
                 background: 'rgba(10,10,26,0.9)',
                 backdropFilter: 'blur(12px)',
                 WebkitBackdropFilter: 'blur(12px)',
-                border: '1px solid rgba(79,195,247,0.2)',
+                border: '1px solid rgba(141,235,255,0.2)',
                 borderRadius: 10,
                 color: '#e0e0e0',
                 fontSize: 20,
@@ -1992,13 +1992,13 @@ export default function SolarSystem() {
                 lineHeight: 1,
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(79,195,247,0.1)';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(79,195,247,0.6)';
-                (e.currentTarget as HTMLButtonElement).style.color = '#4fc3f7';
+                (e.currentTarget as HTMLButtonElement).style.background = 'rgba(141,235,255,0.1)';
+                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(141,235,255,0.6)';
+                (e.currentTarget as HTMLButtonElement).style.color = '#8DEBFF';
               }}
               onMouseLeave={(e) => {
                 (e.currentTarget as HTMLButtonElement).style.background = 'rgba(10,10,26,0.9)';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(79,195,247,0.2)';
+                (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(141,235,255,0.2)';
                 (e.currentTarget as HTMLButtonElement).style.color = '#e0e0e0';
               }}
             >

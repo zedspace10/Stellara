@@ -82,12 +82,12 @@ export default function ComparisonView({ planets, onSelect }: Props) {
         <button
           onClick={() => setShowSearch(s => !s)}
           className="w-full py-3 rounded-xl text-sm border transition-colors text-white/50 hover:text-white"
-          style={{ border: "1px solid rgba(79,195,247,0.2)", background: "rgba(79,195,247,0.04)" }}
+          style={{ border: "1px solid rgba(141,235,255,0.2)", background: "rgba(141,235,255,0.04)" }}
         >
           + Add an exoplanet to compare
         </button>
         {showSearch && (
-          <div className="absolute top-full left-0 right-0 z-20 mt-1 rounded-xl overflow-hidden" style={{ background: "rgba(6,6,22,0.98)", border: "1px solid rgba(79,195,247,0.2)" }}>
+          <div className="absolute top-full left-0 right-0 z-20 mt-1 rounded-xl overflow-hidden" style={{ background: "rgba(6,6,22,0.98)", border: "1px solid rgba(141,235,255,0.2)" }}>
             <input
               autoFocus
               value={search}
@@ -112,8 +112,8 @@ export default function ComparisonView({ planets, onSelect }: Props) {
 
       {/* Selected exoplanets comparison */}
       {selected.length > 0 && (
-        <div className="rounded-2xl p-5" style={{ background: "rgba(255,213,79,0.03)", border: "1px solid rgba(255,213,79,0.15)" }}>
-          <div className="text-[10px] tracking-widest text-[#ffd54f]/60 uppercase mb-4">Exoplanet Comparison</div>
+        <div className="rounded-2xl p-5" style={{ background: "rgba(243,221,176,0.03)", border: "1px solid rgba(243,221,176,0.15)" }}>
+          <div className="text-[10px] tracking-widest text-[#F3DDB0]/60 uppercase mb-4">Exoplanet Comparison</div>
           <div className="flex items-end gap-4 overflow-x-auto pb-2">
             {/* Earth as reference */}
             <div className="flex flex-col items-center flex-shrink-0 opacity-40">
@@ -127,13 +127,13 @@ export default function ComparisonView({ planets, onSelect }: Props) {
               const h = getBarH(r);
               return (
                 <div key={planet.id} className="flex flex-col items-center flex-shrink-0">
-                  <div className="text-[9px] text-[#ffd54f]/80 mb-1">{formatRadius(planet.radius)}</div>
+                  <div className="text-[9px] text-[#F3DDB0]/80 mb-1">{formatRadius(planet.radius)}</div>
                   <div className="relative">
                     <PlanetCanvas planet={planet} size={displaySize} />
                   </div>
                   <div className="text-[9px] text-white/60 mt-1 max-w-[80px] text-center truncate font-sans">{planet.name}</div>
                   <div className="text-[8px] text-white/30">{getPlanetTypeLabel(planet.planetType)}</div>
-                  <div className="mt-1 rounded-full w-1.5" style={{ height: h, background: "rgba(255,213,79,0.25)" }} />
+                  <div className="mt-1 rounded-full w-1.5" style={{ height: h, background: "rgba(243,221,176,0.25)" }} />
                   <button onClick={() => removePlanet(planet.id)} className="mt-2 text-[9px] text-white/25 hover:text-white/60 transition-colors">✕</button>
                 </div>
               );
@@ -149,7 +149,7 @@ export default function ComparisonView({ planets, onSelect }: Props) {
             {selected.map(({ planet }) => (
               <div key={planet.id} className="grid grid-cols-4 px-4 py-2.5 text-xs" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
                 <span className="text-white/70 truncate font-sans text-[10px]">{planet.name}</span>
-                <span className="text-[#ffd54f] font-mono">{planet.radius != null ? `${planet.radius.toFixed(1)}×` : "—"}</span>
+                <span className="text-[#F3DDB0] font-mono">{planet.radius != null ? `${planet.radius.toFixed(1)}×` : "—"}</span>
                 <span className="text-white/50 font-mono">{planet.temp ? `${planet.temp.toFixed(0)} K` : "—"}</span>
                 <span className="text-white/50 font-mono">{formatDistanceLY(planet.distanceLY)}</span>
               </div>
@@ -171,9 +171,9 @@ export default function ComparisonView({ planets, onSelect }: Props) {
               </div>
               <div className="flex items-center gap-2 flex-shrink-0">
                 <div className="w-16 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-                  <div className="h-full rounded-full" style={{ width: `${p.esi * 100}%`, background: p.esi > 0.6 ? "#66bb6a" : "#4fc3f7" }} />
+                  <div className="h-full rounded-full" style={{ width: `${p.esi * 100}%`, background: p.esi > 0.6 ? "#66bb6a" : "#8DEBFF" }} />
                 </div>
-                <div className="text-[10px] font-mono" style={{ color: p.esi > 0.6 ? "#66bb6a" : "#4fc3f7", minWidth: 32 }}>
+                <div className="text-[10px] font-mono" style={{ color: p.esi > 0.6 ? "#66bb6a" : "#8DEBFF", minWidth: 32 }}>
                   {(p.esi * 100).toFixed(0)}%
                 </div>
               </div>
@@ -194,12 +194,12 @@ export default function ComparisonView({ planets, onSelect }: Props) {
             { year: 2014, note: "1,000 confirmed worlds" },
             { year: 2016, note: "TRAPPIST-1 announced" },
             { year: 2018, note: "TESS all-sky survey begins" },
-            { year: 2022, note: "5,000 milestone. Webb launches" },
-            { year: 2024, note: `5,600+ confirmed. Webb reads atmospheres` },
+            { year: 2022, note: "5,000 milestone. Webb begins science" },
+            { year: 2025, note: "6,000 milestone. Webb reads atmospheres" },
           ].map(({ year, note }) => (
             <div key={year} className="flex items-start gap-4 mb-3">
               <div className="text-[10px] text-white/30 font-mono w-12 flex-shrink-0 pt-0.5">{year}</div>
-              <div className="w-2 h-2 rounded-full flex-shrink-0 mt-1" style={{ background: year >= 2022 ? "#ffd54f" : year >= 2009 ? "#4fc3f7" : "#666" }} />
+              <div className="w-2 h-2 rounded-full flex-shrink-0 mt-1" style={{ background: year >= 2022 ? "#F3DDB0" : year >= 2009 ? "#8DEBFF" : "#666" }} />
               <div className="text-xs text-white/55 leading-relaxed">{note}</div>
             </div>
           ))}
@@ -213,8 +213,8 @@ export default function ComparisonView({ planets, onSelect }: Props) {
       </div>
 
       {/* Nearest worlds */}
-      <div className="mt-6 rounded-2xl p-5" style={{ background: "rgba(79,195,247,0.02)", border: "1px solid rgba(79,195,247,0.1)" }}>
-        <div className="text-[10px] tracking-widest text-[#4fc3f7]/60 uppercase mb-1">Within Reach — Nearest Confirmed Worlds</div>
+      <div className="mt-6 rounded-2xl p-5" style={{ background: "rgba(141,235,255,0.02)", border: "1px solid rgba(141,235,255,0.1)" }}>
+        <div className="text-[10px] tracking-widest text-[#8DEBFF]/60 uppercase mb-1">Within Reach — Nearest Confirmed Worlds</div>
         <div className="text-[10px] text-white/25 mb-3">Exoplanets within 100 light years — the ones future technology might one day visit</div>
         <div className="space-y-2">
           {planets.filter(p => p.distanceLY != null && p.distanceLY <= 100)
@@ -225,10 +225,10 @@ export default function ComparisonView({ planets, onSelect }: Props) {
                 className="w-full flex items-center justify-between py-1.5 hover:bg-white/5 rounded-lg px-2 transition-colors">
                 <div className="text-left">
                   <div className="text-xs text-white/75 font-sans">{p.name}</div>
-                  <div className="text-[9px] text-white/30">{getPlanetTypeLabel(p.planetType)}{p.potentiallyHabitable ? " · 🟢 HZ" : ""}</div>
+                  <div className="text-[9px] text-white/30">{getPlanetTypeLabel(p.planetType)}{p.potentiallyHabitable ? " · In the habitable zone" : ""}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs text-[#4fc3f7] font-mono">{formatDistanceLY(p.distanceLY)}</div>
+                  <div className="text-xs text-[#8DEBFF] font-mono">{formatDistanceLY(p.distanceLY)}</div>
                   {p.distanceLY != null && (
                     <div className="text-[9px] text-white/25">{(p.distanceLY * 10).toFixed(0)} yr at 10% c</div>
                   )}

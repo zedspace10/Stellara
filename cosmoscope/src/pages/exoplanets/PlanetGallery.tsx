@@ -42,21 +42,21 @@ export default function PlanetGallery({ planets, onSelect }: Props) {
       {/* Planet of the week */}
       {potwPlanet && (
         <div className="mb-8">
-          <div className="text-[10px] tracking-[0.25em] text-[#ffd54f]/60 uppercase mb-3 flex items-center gap-2">
+          <div className="text-[10px] tracking-[0.25em] text-[#F3DDB0]/60 uppercase mb-3 flex items-center gap-2">
             <span>★</span> Planet of the Week
           </div>
           <button
             onClick={() => onSelect(potwPlanet)}
             className="w-full rounded-2xl p-5 flex items-center gap-5 text-left transition-all"
-            style={{ background: "rgba(255,213,79,0.04)", border: "1px solid rgba(255,213,79,0.2)" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,213,79,0.45)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,213,79,0.2)"; }}
+            style={{ background: "rgba(243,221,176,0.04)", border: "1px solid rgba(243,221,176,0.2)" }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(243,221,176,0.45)"; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(243,221,176,0.2)"; }}
           >
             <div className="flex-shrink-0">
               <PlanetCanvas planet={potwPlanet} size={100} />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-[10px] tracking-widest text-[#ffd54f]/60 uppercase mb-1">Featured World</div>
+              <div className="text-[10px] tracking-widest text-[#F3DDB0]/60 uppercase mb-1">Featured World</div>
               <h2 className="text-xl font-sans text-white mb-1">{potwPlanet.name}</h2>
               <p className="text-sm text-white/50 leading-relaxed">
                 {potwPlanet.potentiallyHabitable

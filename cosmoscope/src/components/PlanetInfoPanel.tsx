@@ -236,7 +236,7 @@ function PanelContent({ planet, colorHex, isFav, facts, scale, planetId, onClose
                 variant="secondary"
                 className="flex-1 gap-2"
                 onClick={onViewInFocus}
-                style={{ background: "rgba(79,195,247,0.1)", border: "1px solid rgba(79,195,247,0.2)", color: "#4fc3f7" }}
+                style={{ background: "rgba(141,235,255,0.1)", border: "1px solid rgba(141,235,255,0.2)", color: "#8DEBFF" }}
               >
                 <Crosshair className="w-3.5 h-3.5" /> View in Focus
               </Button>
@@ -305,9 +305,9 @@ function PanelContent({ planet, colorHex, isFav, facts, scale, planetId, onClose
           {scale && (
             <div
               className="rounded-xl p-4"
-              style={{ background: "rgba(79,195,247,0.05)", border: "1px solid rgba(79,195,247,0.12)" }}
+              style={{ background: "rgba(141,235,255,0.05)", border: "1px solid rgba(141,235,255,0.12)" }}
             >
-              <div className="flex items-center gap-2 text-[#4fc3f7] mb-2 text-[10px] font-semibold uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-[#8DEBFF] mb-2 text-[10px] font-semibold uppercase tracking-wider">
                 <Ruler className="w-3.5 h-3.5" /> Scale Comparison
               </div>
               <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
