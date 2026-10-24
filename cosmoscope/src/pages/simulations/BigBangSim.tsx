@@ -12,7 +12,10 @@ const PHASES: SimPhase[] = [
   { id: "galaxies", label: "The first galaxies", short: "Galaxies", timecode: "A few hundred million years", description: "Stars gather into small galaxies that merge and grow. The James Webb Space Telescope has seen galaxies already shining less than 300 million years after the Big Bang.", scienceDetail: "Galaxies grew from the bottom up, small ones merging into larger ones inside haloes of dark matter. Black holes were already growing at the centres of some of them, earlier than many astronomers expected.", color: "#818cf8" },
   { id: "now", label: "Today", short: "Today", timecode: "13.8 billion years", description: "Hundreds of billions of galaxies. Trillions upon trillions of stars. And one pale blue dot, where you are reading this.", scienceDetail: "The observable universe is about 93 billion light years across. It is about 68% dark energy, 27% dark matter and 5% ordinary matter. Its expansion is speeding up, and star formation peaked around 10 billion years ago.", color: "#A9C3E0" },
 ];
-const FRAG = /* glsl */ `
+// Everything here that never changes is worked out once when the page loads (BAKE), so each
+// frame only has to look it up: the cosmic web, how galaxies clump along it, and the pattern
+// in the cosmic microwave background.
+const BAKE = /* glsl */ `
 vec2 worley(vec2 p) {
   vec2 g = floor(p), f = fract(p);
   float f1 = 8.0, f2 = 8.0;
@@ -34,7 +37,17 @@ float web(vec2 p) {
   float knots = smoothstep(0.25, 0.85, fbm(p * 1.3 + 2.0));
   return clamp((0.75 * a + 0.4 * b * a + 0.25 * b) * (0.35 + 0.9 * knots), 0.0, 1.0);
 }
+vec4 bakeField(vec2 p) {
+  return vec4(
+    web(p * 3.0),
+    fbm(p * 8.0),
+    smoothstep(0.42, 0.75, fbm(p * 2.2 + 1.3)),
+    fbm(p * 4.0 + 11.0) * 0.62 + fbm(p * 13.0 + 2.0) * 0.38
+  );
+}
+`;
 
+const FRAG = /* glsl */ `
 // Colours used for maps of the cosmic microwave background, cold blue to warm red.
 vec3 cmbmap(float x) {
   x = clamp(x, 0.0, 1.0);
@@ -52,33 +65,35 @@ vec3 fog(vec2 q, float t) {
 }
 
 vec3 firstStars(vec2 p, float dens, float t) {
-  // One star at most per cell, and only cells that pass the cheap tests check the web.
+  // One star at most per cell, and only cells that pass the cheap tests look up the web.
   vec2 cell = floor(p * dens);
   if (hash(cell + 1.1) > 0.45 || hash(cell + 7.7) > t) return vec3(0.0);
   vec2 cen = (cell + 0.25 + 0.5 * hash2(cell)) / dens;
-  if (hash(cell + 3.9) > web(cen * 3.0)) return vec3(0.0);
+  if (hash(cell + 3.9) > baked(cen).r) return vec3(0.0);
   float d = length(p - cen) * dens;
   return vec3(0.72, 0.84, 1.0) * (exp(-d * d * 300.0) * 2.0 + exp(-d * 9.0) * 0.12);
 }
 
-vec3 galaxies(vec2 p, float dens, float prob, float everywhere) {
+// Galaxies scattered along the web. The layer is drawn at p * k + off, but where they clump is
+// looked up in the same web, so small and large galaxies trace the same threads.
+vec3 galaxies(vec2 p, float k, vec2 off, float dens, float prob, float everywhere) {
   vec3 c = vec3(0.0);
-  vec2 g = floor(p * dens);
-  for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+  vec2 lp2 = p * k + off;
+  // A galaxy never reaches more than half a cell from its centre, so the four nearest cells are enough.
+  vec2 g = floor(lp2 * dens - 0.5);
+  for (int j = 0; j <= 1; j++) for (int i = 0; i <= 1; i++) {
     vec2 cell = g + vec2(float(i), float(j));
     vec2 cen = (cell + hash2(cell)) / dens;
-    // A cheap stand in for the web here, so galaxies cluster without costing too much on phones
-    float onweb = mix(smoothstep(0.42, 0.75, fbm(cen * 2.2 + 1.3)), 1.0, everywhere);
+    float onweb = mix(baked((cen - off) / k).b, 1.0, everywhere);
     if (hash(cell + 0.37) < prob * (0.1 + 0.9 * onweb)) {
-      vec2 d = p - cen;
+      vec2 d = lp2 - cen;
       float a = hash(cell + 5.1) * 6.283;
       d = vec2(cos(a) * d.x - sin(a) * d.y, sin(a) * d.x + cos(a) * d.y);
       float sz = (0.2 + 0.8 * hash(cell + 2.2)) * 0.32 / dens;
       float e = 0.25 + 0.75 * hash(cell + 8.8);
-      float m = exp(-(d.x * d.x + d.y * d.y / (e * e)) / (sz * sz) * 2.0);
-      float core = exp(-(d.x * d.x + d.y * d.y / (e * e)) / (sz * sz) * 14.0);
+      float rr = (d.x * d.x + d.y * d.y / (e * e)) / (sz * sz);
       vec3 gc = mix(vec3(1.0, 0.82, 0.58), vec3(0.62, 0.76, 1.0), hash(cell + 3.3));
-      c += gc * (m * 0.7 + core * 0.9) * (0.5 + 0.9 * hash(cell + 4.4));
+      c += gc * (exp(-rr * 2.0) * 0.7 + exp(-rr * 14.0) * 0.9) * (0.5 + 0.9 * hash(cell + 4.4));
     }
   }
   return c;
@@ -88,6 +103,8 @@ void main() {
   vec2 q = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
   float T = uTime;
   vec3 col = vec3(0.0);
+  // A slow drift across the web, which stops after a few minutes so it never runs off the baked area
+  vec2 drift = vec2(min(T, 220.0) * 0.003, 0.0);
 
   // 0. The first instant: unimaginably hot, with space itself flickering
   float w = ph(0.0);
@@ -104,44 +121,45 @@ void main() {
     vec3 c = mix(vec3(1.0, 0.98, 0.94) * 1.7, vec3(1.0, 0.8, 0.45) * 1.25, t);
     col += c * (0.55 + 0.75 * pat) * w;
   }
+  // The hot fog of the young universe, shared by the next three steps
+  float w2 = ph(2.0), w3 = ph(3.0), w4 = ph(4.0);
+  vec3 fg = vec3(0.0);
+  if (w2 + w3 + w4 > 0.001) fg = fog(q, T);
   // 2. A seething plasma of quarks and gluons
-  w = ph(2.0);
-  if (w > 0.001) col += fog(q, T) * 1.2 * w;
+  if (w2 > 0.001) col += fg * 1.2 * w2;
   // 3. The first nuclei form in the cooling fog
-  w = ph(3.0);
-  if (w > 0.001) {
+  if (w3 > 0.001) {
     float t = lp(3.0);
-    vec3 c = fog(q, T) * mix(1.1, 0.75, t) * vec3(1.0, 0.85, 0.75);
+    vec3 c = fg * mix(1.1, 0.75, t) * vec3(1.0, 0.85, 0.75);
     vec2 g = floor(q * 140.0);
     float spark = step(1.0 - 0.012 * t, hash(g)) * (0.6 + 0.4 * sin(T * 6.0 + hash(g + 2.0) * 6.28));
     c += vec3(1.0, 0.95, 0.8) * spark * 1.6;
-    col += c * w;
+    col += c * w3;
   }
   // 4. The fog lifts: light streams free, and the pattern we still see today is set
-  w = ph(4.0);
-  if (w > 0.001) {
+  if (w4 > 0.001) {
     float t = lp(4.0);
-    float m = fbm(q * 4.0 + 11.0) * 0.62 + fbm(q * 13.0 + 2.0) * 0.38;
-    vec3 cmb = cmbmap((m - 0.25) * 1.9) * 0.85;
-    vec3 f = fog(q, T) * 0.75 * vec3(1.0, 0.85, 0.75);
+    vec3 cmb = cmbmap((baked(q).a - 0.25) * 1.9) * 0.85;
+    vec3 f = fg * 0.75 * vec3(1.0, 0.85, 0.75);
     float clear = smoothstep(0.05, 0.5, t);
     vec3 c = mix(f, cmb, clear) * mix(1.0, 0.75, smoothstep(0.7, 1.0, t));
-    col += c * w;
+    col += c * w4;
   }
   // 5. The dark ages: no stars yet, only threads of dark matter slowly gathering gas
   w = ph(5.0);
   if (w > 0.001) {
     float t = lp(5.0);
-    vec2 p = q + vec2(T * 0.003, 0.0);
-    float wv = web(p * 3.0) * (0.5 + 0.5 * fbm(p * 8.0));
+    vec4 b = baked(q + drift);
+    float wv = b.r * (0.5 + 0.5 * b.g);
     col += (vec3(0.03, 0.05, 0.14) * wv * (0.4 + 1.2 * t) + vec3(0.004, 0.005, 0.01)) * w;
   }
   // 6. The first stars switch on along the threads
   w = ph(6.0);
   if (w > 0.001) {
     float t = lp(6.0);
-    vec2 p = q + vec2(T * 0.003, 0.0);
-    float wv = web(p * 3.0) * (0.5 + 0.5 * fbm(p * 8.0));
+    vec2 p = q + drift;
+    vec4 b = baked(p);
+    float wv = b.r * (0.5 + 0.5 * b.g);
     vec3 c = vec3(0.03, 0.05, 0.14) * wv * 1.6;
     c += firstStars(p, 34.0, t);
     c += vec3(0.25, 0.32, 0.55) * 0.12 * wv * t;
@@ -151,21 +169,20 @@ void main() {
   w = ph(7.0);
   if (w > 0.001) {
     float t = lp(7.0);
-    vec2 p = q * (1.0 + 0.5 * t) + vec2(T * 0.003, 0.0);
-    float wv = web(p * 3.0);
-    vec3 c = vec3(0.025, 0.04, 0.1) * wv;
+    vec2 p = q * (1.0 + 0.5 * t) + drift;
+    vec3 c = vec3(0.025, 0.04, 0.1) * baked(p).r;
     c += firstStars(p, 34.0, 1.0) * (1.0 - t) * 0.6;
-    c += galaxies(p, 22.0, 0.25 + 0.5 * t, 0.0) * 0.9;
+    c += galaxies(p, 1.0, vec2(0.0), 22.0, 0.25 + 0.5 * t, 0.0) * 0.9;
     col += c * w;
   }
   // 8. Today: hundreds of billions of galaxies
   w = ph(8.0);
   if (w > 0.001) {
     float t = lp(8.0);
-    vec2 p = q * (1.5 + 0.6 * t) + vec2(T * 0.003, 0.0);
-    vec3 c = vec3(0.02, 0.03, 0.07) * web(p * 3.0);
-    c += galaxies(p, 14.0, 0.7, 0.2) * 1.1;
-    c += galaxies(p * 1.9 + 5.0, 26.0, 0.55, 0.6) * 0.55;
+    vec2 p = q * (1.5 + 0.6 * t) + drift;
+    vec3 c = vec3(0.02, 0.03, 0.07) * baked(p).r;
+    c += galaxies(p, 1.0, vec2(0.0), 14.0, 0.7, 0.2) * 1.1;
+    c += galaxies(p, 1.9, vec2(5.0), 26.0, 0.55, 0.6) * 0.55;
     c += stars(q, 30.0) * 0.35;
     col += c * w;
   }
@@ -180,6 +197,8 @@ export default function BigBangSim() {
       title="The Big Bang"
       phases={PHASES}
       fragment={FRAG}
+      bake={BAKE}
+      bakeRange={3.3}
       closing="Nearly every atom in you was made in the Big Bang or inside a star."
     />
   );
