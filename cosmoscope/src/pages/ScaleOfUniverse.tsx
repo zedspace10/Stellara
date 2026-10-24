@@ -11,7 +11,7 @@ const SCALE_OBJECTS = [
     renderStyle: 'quantum',
     displayRadius: 4,
     description: 'The smallest meaningful unit of space. Below this our understanding of physics breaks down completely.',
-    fact: 'At this scale space itself becomes uncertain — foamy and undefined.',
+    fact: 'At this scale space itself becomes uncertain, foamy and undefined.',
     comparison: '10²⁰ times smaller than a proton',
   },
   {
@@ -124,7 +124,7 @@ const SCALE_OBJECTS = [
     name: 'Earth',
     size: 1.27e7,
     sizeLabel: '12,742 km diameter',
-    category: 'Solar System',
+    category: 'Solar system',
     colour: '#1a6bb5',
     renderStyle: 'planet',
     displayRadius: 210,
@@ -137,7 +137,7 @@ const SCALE_OBJECTS = [
     name: 'The Moon',
     size: 3.47e6,
     sizeLabel: '3,474 km diameter',
-    category: 'Solar System',
+    category: 'Solar system',
     colour: '#888888',
     renderStyle: 'moon',
     displayRadius: 185,
@@ -150,7 +150,7 @@ const SCALE_OBJECTS = [
     name: 'The Sun',
     size: 1.39e9,
     sizeLabel: '1,392,700 km diameter',
-    category: 'Solar System',
+    category: 'Solar system',
     colour: '#fff3b0',
     renderStyle: 'star',
     displayRadius: 240,
@@ -163,7 +163,7 @@ const SCALE_OBJECTS = [
     name: 'Solar System',
     size: 9e12,
     sizeLabel: '~9 billion km across, out to Neptune',
-    category: 'Solar System',
+    category: 'Solar system',
     colour: '#ffdd88',
     renderStyle: 'system',
     displayRadius: 260,
@@ -480,7 +480,7 @@ function renderObject(
 
       // "You are here" text beneath
       ctx.fillStyle = 'rgba(243,221,176,0.85)';
-      ctx.font = 'italic 13px Inter, sans-serif';
+      ctx.font = 'italic 13px "Instrument Sans", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('You are here', cx, cy + r + 34);
       break;
@@ -689,14 +689,14 @@ function renderObject(
 
       // Distance label
       ctx.fillStyle = 'rgba(255,255,255,0.35)';
-      ctx.font = '11px Inter, sans-serif';
+      ctx.font = '11px "Instrument Sans", sans-serif';
       ctx.textAlign = 'left';
       ctx.fillText('0', lineX1 + 4, lineY + 18);
       ctx.textAlign = 'right';
       ctx.fillText('9.46 trillion km →', lineX2 - 4, lineY + 18);
       ctx.textAlign = 'center';
       ctx.fillStyle = 'rgba(255,255,255,0.2)';
-      ctx.font = '10px Inter, sans-serif';
+      ctx.font = '10px "Instrument Sans", sans-serif';
       ctx.fillText('Speed of light: 299,792 km/s', cx, lineY - 14);
       break;
     }
@@ -831,7 +831,7 @@ function renderObject(
       ctx.fill();
 
       ctx.fillStyle = col;
-      ctx.font = 'bold 10px Inter, sans-serif';
+      ctx.font = 'bold 10px "Instrument Sans", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('You', cx, cy - pulseR * 3 - 4);
       break;
@@ -924,31 +924,26 @@ export default function ScaleOfUniverse() {
       // Draw the object
       renderObject(ctx, cx, cy, obj, w, h, t);
 
-      // Category badge
-      ctx.fillStyle = 'rgba(10,10,26,0.8)';
-      const badgeW = 130;
-      ctx.beginPath();
-      ctx.roundRect(cx - badgeW / 2, 40, badgeW, 28, 14);
-      ctx.fill();
-      ctx.fillStyle = '#8DEBFF';
-      ctx.font = '11px Inter, sans-serif';
+      // Category
+      ctx.fillStyle = '#8E9AA8';
+      ctx.font = '14px "Instrument Sans", sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(obj.category.toUpperCase(), cx, 59);
+      ctx.fillText(obj.category, cx, 58);
 
       // Name
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 28px Inter, sans-serif';
+      ctx.fillStyle = '#E8ECF1';
+      ctx.font = '36px "Newsreader", Georgia, serif';
       ctx.textAlign = 'center';
       ctx.fillText(obj.name, cx, h * 0.13);
 
       // Size label
       ctx.fillStyle = '#F3DDB0';
-      ctx.font = '16px Inter, sans-serif';
+      ctx.font = '16px "Instrument Sans", sans-serif';
       ctx.fillText(obj.sizeLabel, cx, h * 0.13 + 30);
 
       // Description (word-wrapped)
       ctx.fillStyle = 'rgba(255,255,255,0.65)';
-      ctx.font = '14px Inter, sans-serif';
+      ctx.font = '14px "Instrument Sans", sans-serif';
       const words = obj.description.split(' ');
       let line = '';
       let lineY = h * 0.82;
@@ -967,14 +962,14 @@ export default function ScaleOfUniverse() {
 
       // Nav hints
       ctx.fillStyle = 'rgba(255,255,255,0.28)';
-      ctx.font = '12px Inter, sans-serif';
+      ctx.font = '12px "Instrument Sans", sans-serif';
       if (idx > 0) ctx.fillText('← Scroll down to go smaller', cx, h - 30);
       if (idx < SCALE_OBJECTS.length - 1) ctx.fillText('Scroll up to go larger →', cx, h - 12);
 
       // Anchor extra message
       if (obj.isAnchor) {
         ctx.fillStyle = 'rgba(243,221,176,0.55)';
-        ctx.font = 'italic 13px Inter, sans-serif';
+        ctx.font = 'italic 13px "Instrument Sans", sans-serif';
         ctx.fillText(
           'Roughly halfway between the smallest and largest things that exist.',
           cx, h * 0.72,
@@ -1098,7 +1093,7 @@ export default function ScaleOfUniverse() {
       <div style={{
         width: '100vw', height: '100vh', background: '#000000',
         display: 'flex', flexDirection: 'column', alignItems: 'center',
-        justifyContent: 'center', fontFamily: 'Inter, sans-serif',
+        justifyContent: 'center', fontFamily: '"Instrument Sans", sans-serif',
       }}>
         <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
           {Array.from({ length: 150 }, (_, i) => (
@@ -1116,19 +1111,18 @@ export default function ScaleOfUniverse() {
         </div>
 
         <h1 style={{
-          fontFamily: 'Inter, sans-serif',
-          fontSize: 'clamp(32px, 5vw, 48px)',
-          fontWeight: 700,
-          color: '#F5FAFF',
-          letterSpacing: '-0.02em',
-          margin: '0 0 12px',
+          fontSize: 'clamp(40px, 6vw, 64px)',
+          fontWeight: 400,
+          color: '#E8ECF1',
+          lineHeight: 1.05,
+          margin: '0 0 16px',
           textAlign: 'center',
         }}>
           Scale of the universe
         </h1>
 
         <p style={{
-          color: '#A7B6C6', fontSize: 18, margin: '0 0 40px',
+          color: '#A3AFBC', fontSize: 18, margin: '0 0 40px',
           textAlign: 'center', maxWidth: 460, lineHeight: 1.6,
         }}>
           From the smallest length that makes sense to everything we can see. Scroll or swipe to travel
@@ -1138,16 +1132,16 @@ export default function ScaleOfUniverse() {
         <button
           onClick={() => setStarted(true)}
           style={{
-            padding: '14px 32px', background: '#8DEBFF', border: 'none',
-            borderRadius: 999, color: '#05070C',
-            fontFamily: 'Inter, sans-serif', fontSize: 16, fontWeight: 600,
+            padding: '10px 22px', background: '#E8ECF1', border: 'none',
+            borderRadius: 6, color: '#05070C',
+            fontSize: 16, fontWeight: 500,
             cursor: 'pointer',
           }}
         >
           Start at human size
         </button>
 
-        <p style={{ color: '#7C8C9C', fontSize: 13, marginTop: 28 }}>
+        <p style={{ color: '#7C8794', fontSize: 13, marginTop: 28 }}>
           18 stops across 62 powers of ten
         </p>
       </div>
@@ -1163,7 +1157,7 @@ export default function ScaleOfUniverse() {
 
       <div style={{
         position: 'absolute', top: 16, right: 16,
-        color: 'rgba(255,255,255,0.4)', fontFamily: 'Inter, sans-serif', fontSize: 12,
+        color: 'rgba(255,255,255,0.4)', fontFamily: '"Instrument Sans", sans-serif', fontSize: 12,
       }}>
         {currentIndex + 1} / {SCALE_OBJECTS.length}
       </div>
@@ -1174,7 +1168,7 @@ export default function ScaleOfUniverse() {
           position: 'absolute', top: 16, left: 16,
           background: 'transparent', border: '1px solid rgba(255,255,255,0.2)',
           borderRadius: 8, color: 'rgba(255,255,255,0.5)', padding: '8px 16px',
-          fontFamily: 'Inter, sans-serif', fontSize: 12, cursor: 'pointer',
+          fontFamily: '"Instrument Sans", sans-serif', fontSize: 12, cursor: 'pointer',
         }}
       >
         ← Back
@@ -1191,26 +1185,20 @@ export default function ScaleOfUniverse() {
           <div
             onClick={e => e.stopPropagation()}
             style={{
-              background: 'rgba(10,10,26,0.95)', backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(141,235,255,0.2)', borderRadius: 16,
+              background: '#0A0F17',
+              border: '1px solid #1C2533', borderRadius: 12,
               padding: 24, maxWidth: 480, width: '100%', maxHeight: '70vh', overflowY: 'auto',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
               <div>
-                <span style={{
-                  fontSize: 10, color: '#8DEBFF', letterSpacing: '0.2em',
-                  textTransform: 'uppercase', fontFamily: 'Inter, sans-serif',
-                }}>
+                <span style={{ fontSize: 13, color: '#8E9AA8' }}>
                   {selectedObject.category}
                 </span>
-                <h2 style={{
-                  fontFamily: 'Inter, sans-serif',
-                  color: selectedObject.colour, fontSize: 22, margin: '4px 0',
-                }}>
+                <h2 style={{ color: '#E8ECF1', fontSize: 28, fontWeight: 400, lineHeight: 1.1, margin: '4px 0' }}>
                   {selectedObject.name}
                 </h2>
-                <p style={{ color: '#F3DDB0', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>
+                <p style={{ color: '#F3DDB0', fontSize: 13, fontFamily: '"Instrument Sans", sans-serif' }}>
                   {selectedObject.sizeLabel}
                 </p>
               </div>
@@ -1227,24 +1215,16 @@ export default function ScaleOfUniverse() {
 
             <p style={{
               color: '#e0e0e0', fontSize: 14, lineHeight: 1.7,
-              fontFamily: 'Inter, sans-serif', marginBottom: 16,
+              fontFamily: '"Instrument Sans", sans-serif', marginBottom: 16,
             }}>
               {selectedObject.description}
             </p>
 
-            <div style={{
-              background: 'rgba(243,221,176,0.08)', border: '1px solid rgba(243,221,176,0.2)',
-              borderRadius: 8, padding: 12, marginBottom: 16,
-            }}>
-              <p style={{
-                color: '#F3DDB0', fontSize: 13, fontFamily: 'Inter, sans-serif',
-                lineHeight: 1.6, margin: 0,
-              }}>
-                ✦ {selectedObject.fact}
-              </p>
-            </div>
+            <p className="font-serif" style={{ color: '#E8ECF1', fontSize: 17, lineHeight: 1.45, margin: '0 0 16px' }}>
+              {selectedObject.fact}
+            </p>
 
-            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, fontFamily: 'Inter, sans-serif', margin: 0 }}>
+            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, fontFamily: '"Instrument Sans", sans-serif', margin: 0 }}>
               {selectedObject.comparison}
             </p>
 
@@ -1252,8 +1232,8 @@ export default function ScaleOfUniverse() {
               onClick={() => setShowCard(false)}
               style={{
                 marginTop: 16, padding: '10px 20px', background: 'transparent',
-                border: '1px solid rgba(141,235,255,0.3)', borderRadius: 8, color: '#8DEBFF',
-                fontFamily: 'Inter, sans-serif', fontSize: 13, cursor: 'pointer', width: '100%',
+                border: '1px solid rgba(169,195,224,0.3)', borderRadius: 8, color: '#A9C3E0',
+                fontFamily: '"Instrument Sans", sans-serif', fontSize: 13, cursor: 'pointer', width: '100%',
               }}
             >
               Ask about {selectedObject.name} →

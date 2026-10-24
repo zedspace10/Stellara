@@ -3,9 +3,9 @@ import { Link, useLocation } from "wouter";
 import { X } from "lucide-react";
 import { APP_STORE_URL } from "@/lib/links";
 
-const TINT = "#8DEBFF";
-const TEXT = "#F5FAFF";
-const MUTED = "#A7B6C6";
+const TINT = "#A9C3E0";
+const TEXT = "#E8ECF1";
+const MUTED = "#A3AFBC";
 
 const MAIN = [
   { path: "/", label: "Universe" },
@@ -31,7 +31,7 @@ function isActive(location: string, path: string) {
 }
 
 function Wordmark({ size = 20 }: { size?: number }) {
-  return <span style={{ fontSize: size, fontWeight: 700, letterSpacing: "0.32em", color: TEXT }}>PALE</span>;
+  return <span className="font-serif" style={{ fontSize: size + 2, fontWeight: 500, letterSpacing: "0.26em", color: TEXT }}>PALE</span>;
 }
 
 export default function Navigation() {
@@ -62,7 +62,7 @@ export default function Navigation() {
           background: "rgba(5,7,12,0.88)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          borderBottom: "1px solid #1D3040",
+          borderBottom: "1px solid #1C2533",
         }}
       >
         <Link href="/" aria-label="PALE home" className="shrink-0 no-underline">
@@ -77,8 +77,8 @@ export default function Navigation() {
                 key={item.path}
                 href={item.path}
                 aria-current={active ? "page" : undefined}
-                className="py-2 no-underline transition-colors duration-150 hover:text-white"
-                style={{ fontSize: 15, fontWeight: 500, color: active ? TINT : MUTED }}
+                className="py-2 no-underline transition-colors duration-150 hover:text-white underline-offset-[6px] decoration-1"
+                style={{ fontSize: 15, fontWeight: 500, color: active ? TEXT : MUTED, textDecorationLine: active ? "underline" : "none", textDecorationColor: TINT }}
               >
                 {item.label}
               </Link>
@@ -89,8 +89,8 @@ export default function Navigation() {
               href={APP_STORE_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="no-underline rounded-full px-4 py-2"
-              style={{ fontSize: 14, fontWeight: 600, background: TINT, color: "#05070C" }}
+              className="no-underline rounded-md px-3.5 py-1.5 transition-colors hover:bg-white/5"
+              style={{ fontSize: 14, fontWeight: 500, border: "1px solid #2A3546", color: TEXT }}
             >
               Get the app
             </a>
@@ -105,7 +105,7 @@ export default function Navigation() {
           background: "rgba(5,7,12,0.92)",
           backdropFilter: "blur(20px)",
           WebkitBackdropFilter: "blur(20px)",
-          borderBottom: "1px solid #1D3040",
+          borderBottom: "1px solid #1C2533",
         }}
       >
         <Link href="/" aria-label="PALE home" className="no-underline">
@@ -116,8 +116,8 @@ export default function Navigation() {
             href={APP_STORE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="no-underline rounded-full px-3.5 py-1.5"
-            style={{ fontSize: 13, fontWeight: 600, background: TINT, color: "#05070C" }}
+            className="no-underline rounded-md px-3 py-1.5"
+            style={{ fontSize: 13, fontWeight: 500, border: "1px solid #2A3546", color: TEXT }}
           >
             Get the app
           </a>
@@ -131,7 +131,7 @@ export default function Navigation() {
         style={{
           background: "rgba(5,7,12,0.97)",
           backdropFilter: "blur(20px)",
-          borderTop: "1px solid #1D3040",
+          borderTop: "1px solid #1C2533",
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
@@ -166,16 +166,16 @@ export default function Navigation() {
           <div
             role="dialog"
             aria-label="More"
-            className="pale-anim relative rounded-t-2xl p-6 pb-10"
+            className="pale-anim relative rounded-t-xl p-6 pb-10"
             style={{
-              background: "rgba(13,21,32,0.99)",
-              border: "1px solid #1D3040",
+              background: "#0A0F17",
+              border: "1px solid #1C2533",
               borderBottom: "none",
               animation: "slideUp 250ms ease-out",
             }}
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="m-0 text-base font-semibold" style={{ color: TINT }}>More</h2>
+              <h2 className="m-0 text-[22px]" style={{ color: TEXT, fontWeight: 400 }}>More</h2>
               <button type="button" aria-label="Close" onClick={() => setMoreOpen(false)} className="p-2 rounded-full hover:bg-white/10">
                 <X className="w-5 h-5" style={{ color: MUTED }} />
               </button>
@@ -192,8 +192,8 @@ export default function Navigation() {
                       navigate(link.path);
                     }}
                     aria-current={active ? "page" : undefined}
-                    className="flex items-center w-full px-4 py-3 rounded-xl text-base text-left"
-                    style={{ color: active ? TINT : TEXT, background: active ? "rgba(141,235,255,0.06)" : "transparent" }}
+                    className="flex items-center w-full px-3 py-3 rounded-md text-base text-left"
+                    style={{ color: active ? TINT : TEXT, background: active ? "rgba(169,195,224,0.06)" : "transparent" }}
                   >
                     {link.label}
                   </button>

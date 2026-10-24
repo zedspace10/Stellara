@@ -4,15 +4,15 @@ import SimulationLayout, { SimPhase } from "./SimulationLayout";
 import { makeCircleTex, makeBloomComposer } from "./simUtils";
 
 const PHASES: SimPhase[] = [
-  { id: "planck", label: "Planck Epoch", timecode: "t = 0 — 10⁻⁴³ s", description: "All forces are unified. The universe is smaller than a proton at 10³² Kelvin. Spacetime itself is undefined.", scienceDetail: "The Planck epoch is the earliest period of the universe, lasting from 0 to approximately 10⁻⁴³ seconds (Planck time). At these scales, quantum gravitational effects dominate and our current physics breaks down.", color: "#ffffff" },
-  { id: "inflation", label: "Cosmic Inflation", timecode: "t = 10⁻³⁶ s", description: "Space expands exponentially — faster than light. This is not matter moving through space; space itself is growing.", scienceDetail: "Inflation was driven by a hypothetical scalar field called the inflaton. In ~10⁻³² seconds, the universe expanded by a factor of 10²⁶, smoothing out any curvature and seeding quantum fluctuations that become galaxies.", color: "#a78bfa" },
-  { id: "plasma", label: "Quark-Gluon Plasma", timecode: "t = 10⁻³² s — 1 μs", description: "Energy converts to matter. The universe is an opaque, roiling soup of quarks and gluons hotter than any star.", scienceDetail: "After inflation, the inflaton field decayed into a hot dense plasma (reheating). Quarks, gluons, leptons, and their antimatter counterparts filled all of space in thermal equilibrium.", color: "#ff6b35" },
-  { id: "nucleosynthesis", label: "Big Bang Nucleosynthesis", timecode: "t = 1 — 3 minutes", description: "Quarks bind into protons and neutrons. The universe cools enough for hydrogen and helium nuclei to form.", scienceDetail: "BBN produced the primordial abundances: ~75% hydrogen, ~25% helium-4, trace deuterium and lithium-7. These ratios are among the strongest confirmations of the Big Bang model.", color: "#ff9f43" },
-  { id: "cmb", label: "Recombination & CMB", timecode: "t = 380,000 years", description: "The fog lifts. Electrons bind to nuclei. The universe becomes transparent — light streams freely for the first time. The Cosmic Microwave Background is born.", scienceDetail: "At ~3000 K, electrons and protons recombined into hydrogen atoms. Photons decoupled from matter and have been traveling freely ever since — we detect them today as the CMB at 2.73 K.", color: "#F3DDB0" },
-  { id: "dark-ages", label: "Cosmic Dark Ages", timecode: "t = 380,000 — 150 My", description: "Darkness. No stars, no light — only hydrogen gas slowly falling along dark matter filaments toward its fate.", scienceDetail: "During this era, dark matter haloes collapsed under gravity, drawing in baryonic gas. The first structures — cosmic web filaments — were forming, though no light was produced.", color: "#4a3f6b" },
-  { id: "first-stars", label: "First Stars Ignite", timecode: "t = 150 million years", description: "Population III stars — massive, brilliant blue-white giants — ignite along dark matter filaments. The universe comes alive.", scienceDetail: "Pop III stars were metal-free, likely 100–1000 solar masses, extremely luminous, and short-lived. Their UV radiation reionized the surrounding gas (Epoch of Reionization), ending the cosmic dark ages.", color: "#93c5fd" },
-  { id: "galaxies", label: "Galaxy Formation", timecode: "t = 400 million years", description: "Stars cluster along the cosmic web. Spiral structures emerge. The universe we recognise begins to take shape.", scienceDetail: "Early galaxies formed through hierarchical assembly: small structures merged into larger ones. Dark matter haloes provided the gravitational scaffolding. The first quasars (supermassive black holes accreting mass) appeared around this time.", color: "#818cf8" },
-  { id: "now", label: "Today", timecode: "t = 13.8 billion years", description: "Hundreds of billions of galaxies. Trillions of stars. One pale blue dot. 13.8 billion years later — you are here.", scienceDetail: "The universe today has expanded to ~93 billion light-years in diameter (observable). Dark energy drives accelerating expansion. Star formation has peaked and is declining. The universe is ~68% dark energy, ~27% dark matter, ~5% ordinary matter.", color: "#8DEBFF" },
+  { id: "planck", label: "Planck epoch", short: "Planck", timecode: "The first 10⁻⁴³ seconds", description: "All the forces may have been one. The universe is unimaginably hot, around 10³² degrees. Our physics cannot yet describe this moment.", scienceDetail: "The Planck epoch runs from the start to about 10⁻⁴³ seconds, the Planck time. At these scales gravity should behave quantum mechanically, and we have no tested theory for that, so this era is still a mystery.", color: "#ffffff" },
+  { id: "inflation", label: "Cosmic inflation", short: "Inflation", timecode: "Around 10⁻³⁶ seconds", description: "Space expands faster than light. This is not matter moving through space; space itself is growing.", scienceDetail: "Inflation is thought to have been driven by a field called the inflaton. In a tiny fraction of a second the universe grew by a factor of at least 10²⁶, smoothing it out and stretching tiny quantum ripples into the seeds of future galaxies.", color: "#a78bfa" },
+  { id: "plasma", label: "Quark and gluon plasma", short: "Plasma", timecode: "Up to about a millionth of a second", description: "Energy becomes matter. The universe is an opaque, seething soup of quarks and gluons, hotter than the centre of any star.", scienceDetail: "As inflation ended, its energy turned into a hot, dense plasma of quarks, gluons, electrons, neutrinos and their antimatter partners. At about a millionth of a second it had cooled enough for quarks to bind into protons and neutrons.", color: "#ff6b35" },
+  { id: "nucleosynthesis", label: "The first nuclei", short: "Nuclei", timecode: "1 to 3 minutes", description: "Protons and neutrons fuse into the first atomic nuclei: helium, and a trace of lithium. Most protons are left alone, as hydrogen.", scienceDetail: "Big Bang nucleosynthesis left the universe about 75% hydrogen and 25% helium by mass, with traces of deuterium and lithium. These proportions match what we measure today, one of the strongest pieces of evidence for the Big Bang.", color: "#ff9f43" },
+  { id: "cmb", label: "The universe becomes clear", short: "Light", timecode: "380,000 years", description: "The fog lifts. Electrons settle onto nuclei to make atoms, and light travels freely for the first time. That light still reaches us as the cosmic microwave background.", scienceDetail: "At about 3,000 degrees, electrons and protons combined into hydrogen atoms, and light stopped bouncing off free electrons. That light has been travelling ever since, stretched by expansion into microwaves at 2.7 degrees above absolute zero.", color: "#F3DDB0" },
+  { id: "dark-ages", label: "The dark ages", short: "Dark ages", timecode: "380,000 to about 100 million years", description: "Darkness. No stars yet, only hydrogen and helium gas slowly gathering along threads of dark matter.", scienceDetail: "Dark matter clumped under gravity and pulled gas in with it, building the first threads of the cosmic web. Nothing yet shone.", color: "#4a3f6b" },
+  { id: "first-stars", label: "First stars ignite", short: "Stars", timecode: "About 100 to 200 million years", description: "The first stars switch on, huge, hot and blue, in the densest knots of gas. The universe lights up.", scienceDetail: "The first stars, called Population III, contained no heavy elements and were probably tens to hundreds of times the Sun's mass. None has been seen directly yet. Their light, with that of the first galaxies, began to reionise the gas between them.", color: "#93c5fd" },
+  { id: "galaxies", label: "The first galaxies", short: "Galaxies", timecode: "A few hundred million years", description: "Stars gather into small galaxies that merge and grow. The James Webb Space Telescope has seen galaxies already shining less than 300 million years after the Big Bang.", scienceDetail: "Galaxies grew from the bottom up, small ones merging into larger ones inside haloes of dark matter. Black holes were already growing at the centres of some of them, earlier than many astronomers expected.", color: "#818cf8" },
+  { id: "now", label: "Today", short: "Today", timecode: "13.8 billion years", description: "Hundreds of billions of galaxies. Trillions upon trillions of stars. And one pale blue dot, where you are reading this.", scienceDetail: "The observable universe is about 93 billion light years across. It is about 68% dark energy, 27% dark matter and 5% ordinary matter. Its expansion is speeding up, and star formation peaked around 10 billion years ago.", color: "#A9C3E0" },
 ];
 
 const PARTICLE_COUNT = 8000;
@@ -43,7 +43,7 @@ export default function BigBangSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "The Big Bang · PALE";
+    document.title = "The Big Bang | PALE";
     const el = mountRef.current;
     if (!el) return;
 
@@ -152,7 +152,7 @@ export default function BigBangSim() {
       new THREE.Color("#180030"),   // Dark Ages — near black, deep violet
       new THREE.Color("#cce8ff"),   // First Stars — brilliant blue-white
       new THREE.Color("#9fa8da"),   // Galaxy Formation — blue-violet
-      new THREE.Color("#8DEBFF"),   // Today — sky blue
+      new THREE.Color("#A9C3E0"),   // Today — sky blue
     ];
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
@@ -310,15 +310,14 @@ export default function BigBangSim() {
   return (
     <SimulationLayout
       title="The Big Bang"
-      subtitle="From singularity to the observable universe"
+      subtitle="From the first moment to the universe today"
       phases={PHASES}
       currentPhaseIndex={currentPhaseIndex}
       totalProgress={totalProgress}
       isPlaying={isPlaying}
       scienceMode={scienceMode}
       speed={speed}
-      closingQuote="The cosmos is within us. We are made of star-stuff. We are a way for the universe to know itself."
-      closingAuthor="Carl Sagan"
+      closingQuote="Nearly every atom in you was made in the Big Bang or inside a star."
       onPlay={() => setIsPlaying(true)}
       onPause={() => setIsPlaying(false)}
       onRestart={handleRestart}

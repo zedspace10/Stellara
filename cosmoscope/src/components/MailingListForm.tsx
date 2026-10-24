@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Send, CheckCircle } from "lucide-react";
 
-export default function MailingListForm({ compact = false }: { compact?: boolean }) {
+export default function MailingListForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -21,61 +20,49 @@ export default function MailingListForm({ compact = false }: { compact?: boolean
 
       if (data.ok) {
         setStatus("success");
-        setMessage(data.message ?? "You're in!");
+        setMessage(data.message ?? "You're on the list. Look out for the first note.");
         setEmail("");
       } else {
         setStatus("error");
-        setMessage(data.message ?? "Something went wrong. Please try again.");
+        setMessage(data.message ?? "That didn't go through. Check the address and try again.");
       }
     } catch {
       setStatus("error");
-      setMessage("Connection error. Please try again.");
+      setMessage("We couldn't reach the server. Check your connection and try again.");
     }
   }
 
   if (status === "success") {
-    return (
-      <div className="flex items-center gap-2" style={{ color: "#8DEBFF" }}>
-        <CheckCircle className="w-4 h-4 shrink-0" />
-        <span className={compact ? "text-xs" : "text-sm"}>{message}</span>
-      </div>
-    );
+    return <p className="m-0 text-[15px]" style={{ color: "#A9C3E0" }} role="status">{message}</p>;
   }
 
   return (
-    <form onSubmit={handleSubmit} className="w-full">
-      <div className={`flex gap-2 ${compact ? "flex-row" : "flex-col sm:flex-row"}`}>
+    <form onSubmit={handleSubmit} className="w-full max-w-[28rem]">
+      <div className="flex gap-2">
+        <label htmlFor="mailing-email" className="sr-only">Email address</label>
         <input
+          id="mailing-email"
           type="email"
           value={email}
           onChange={(e) => { setEmail(e.target.value); if (status === "error") setStatus("idle"); }}
-          placeholder="your@email.com"
+          placeholder="Your email"
           required
-          className={`flex-1 rounded-xl bg-white/5 border outline-none transition-all placeholder:text-white/20 text-white ${
-            compact ? "px-3 py-1.5 text-xs" : "px-4 py-2.5 text-sm"
-          } ${status === "error" ? "border-red-400/50 focus:border-red-400" : "border-white/10 focus:border-[#8DEBFF]/50"}`}
+          autoComplete="email"
+          className="flex-1 min-w-0 rounded-md bg-transparent px-3 py-2 text-[15px] outline-none transition-colors placeholder:text-[#5D6B79]"
+          style={{ border: `1px solid ${status === "error" ? "#B7615A" : "#2A3546"}`, color: "#E8ECF1" }}
           disabled={status === "loading"}
         />
         <button
           type="submit"
           disabled={status === "loading" || !email.trim()}
-          className={`flex items-center justify-center gap-1.5 rounded-xl font-semibold transition-all disabled:opacity-40 shrink-0 ${
-            compact ? "px-3 py-1.5 text-xs" : "px-5 py-2.5 text-sm"
-          }`}
-          style={{ background: "linear-gradient(135deg, #8DEBFF, #0288d1)", color: "#000" }}
+          className="shrink-0 rounded-md px-4 py-2 text-[15px] font-medium transition-opacity disabled:opacity-40"
+          style={{ background: "#E8ECF1", color: "#05070C" }}
         >
-          {status === "loading" ? (
-            <span className="w-3.5 h-3.5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
-          ) : (
-            <>
-              <Send className={compact ? "w-3 h-3" : "w-3.5 h-3.5"} />
-              {!compact && "Subscribe"}
-            </>
-          )}
+          {status === "loading" ? "Signing up" : "Sign up"}
         </button>
       </div>
       {status === "error" && (
-        <p className="mt-1.5 text-xs" style={{ color: "#f87171" }}>{message}</p>
+        <p className="mt-2 mb-0 text-[13px]" style={{ color: "#E0948D" }} role="alert">{message}</p>
       )}
     </form>
   );

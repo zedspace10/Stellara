@@ -1,9 +1,8 @@
 import React from "react";
-import { X, Clock, Thermometer, Orbit, Disc, Weight, Ruler, Heart, Crosshair, Sparkles } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { planets } from "@/data/planets";
-import { useFavourites } from "@/hooks/useFavourites";
 
 interface PlanetInfoPanelProps {
   planetId: string | null;
@@ -28,14 +27,14 @@ const NOTABLE_FACTS: Record<string, string[]> = {
     "Earth's magnetic field deflects most of the solar wind, helping to protect our atmosphere.",
   ],
   mars: [
-    "Mars hosts Olympus Mons, the largest volcano in the Solar System, about 22 km high.",
+    "Mars hosts Olympus Mons, the largest volcano in the solar system, about 22 km high.",
     "A Martian day, called a sol, lasts 24 hours 40 minutes, almost the same as Earth's.",
-    "Mars has the longest canyon in the Solar System: Valles Marineris, 4,000 km long.",
+    "Mars has the longest canyon in the solar system: Valles Marineris, 4,000 km long.",
   ],
   jupiter: [
     "Jupiter's Great Red Spot is a storm wider than Earth that has lasted at least 190 years.",
-    "Jupiter's gravity shapes the orbits of asteroids and comets across the Solar System.",
-    "Jupiter has 101 known moons, but Saturn now has even more.",
+    "Jupiter's gravity shapes the orbits of asteroids and comets across the solar system.",
+    "Jupiter has 101 known moons, including Ganymede, the largest moon in the solar system.",
   ],
   saturn: [
     "Saturn's main rings stretch about 280,000 km across, yet in many places are only about 10 metres thick.",
@@ -44,11 +43,11 @@ const NOTABLE_FACTS: Record<string, string[]> = {
   ],
   uranus: [
     "Uranus rotates on its side, tilted by 98°, probably after an ancient collision.",
-    "Uranus is the coldest planetary atmosphere in the Solar System at −224°C.",
+    "Uranus has the coldest atmosphere of any planet, down to about −224°C.",
     "Uranus has 13 known rings, faint and dark compared to Saturn's.",
   ],
   neptune: [
-    "Neptune has the fastest winds in the Solar System, reaching about 2,100 km/h.",
+    "Neptune has the fastest winds in the solar system, reaching about 2,100 km/h.",
     "Neptune was the first planet predicted mathematically before being observed.",
     "Triton, Neptune's moon, orbits backwards and is likely a captured Kuiper Belt object.",
   ],
@@ -66,254 +65,104 @@ const SCALE_COMPARISONS: Record<string, string> = {
 };
 
 export default function PlanetInfoPanel({ planetId, onClose, onViewInFocus }: PlanetInfoPanelProps) {
-  const { isFavourite, toggle } = useFavourites();
-
   if (!planetId) return null;
   const planet = planets.find((p) => p.id === planetId);
   if (!planet) return null;
 
-  const isFav = isFavourite(`planet-${planetId}`);
   const facts = NOTABLE_FACTS[planetId] ?? [];
   const scale = SCALE_COMPARISONS[planetId] ?? "";
-  const colorHex = `#${planet.color.toString(16).padStart(6, "0")}`;
 
   return (
     <>
-      {/* Mobile: bottom sheet sliding up */}
+      {/* Phones: a sheet from the bottom */}
       <div className="md:hidden fixed inset-x-0 bottom-0 z-50 flex flex-col" style={{ maxHeight: "85vh" }}>
         <div
-          className="rounded-t-2xl flex flex-col"
-          style={{
-            background: "rgba(10,10,26,0.97)",
-            backdropFilter: "blur(24px)",
-            WebkitBackdropFilter: "blur(24px)",
-            border: "1px solid rgba(255,255,255,0.1)",
-            borderBottom: "none",
-            maxHeight: "85vh",
-          }}
+          className="rounded-t-xl flex flex-col"
+          style={{ background: "#0A0F17", borderTop: "1px solid #1C2533", maxHeight: "85vh" }}
         >
-          {/* Drag handle */}
-          <div className="flex justify-center pt-3 pb-1 shrink-0">
-            <div className="w-10 h-1 rounded-full bg-white/20" />
+          <div className="flex justify-center pt-2.5 pb-1 shrink-0">
+            <div className="w-9 h-1 rounded-full" style={{ background: "#2A3546" }} />
           </div>
-          <PanelContent
-            planet={planet}
-            colorHex={colorHex}
-            isFav={isFav}
-            facts={facts}
-            scale={scale}
-            planetId={planetId}
-            onClose={onClose}
-            onViewInFocus={onViewInFocus}
-            onToggleFav={() => toggle(`planet-${planetId}`)}
-          />
+          <PanelContent planet={planet} facts={facts} scale={scale} onClose={onClose} onViewInFocus={onViewInFocus} />
         </div>
       </div>
 
-      {/* Desktop: right side panel */}
+      {/* Larger screens: a panel on the right */}
       <div
-        className="hidden md:flex fixed right-4 bottom-4 z-50 flex-col w-96 rounded-2xl overflow-hidden shadow-2xl"
-        style={{
-          top: '220px',
-          background: "rgba(10,10,26,0.95)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          border: "1px solid rgba(255,255,255,0.08)",
-        }}
+        className="hidden md:flex fixed right-4 bottom-4 z-50 flex-col w-[22rem] rounded-xl overflow-hidden"
+        style={{ top: "220px", background: "#0A0F17", border: "1px solid #1C2533" }}
       >
-        <PanelContent
-          planet={planet}
-          colorHex={colorHex}
-          isFav={isFav}
-          facts={facts}
-          scale={scale}
-          planetId={planetId}
-          onClose={onClose}
-          onViewInFocus={onViewInFocus}
-          onToggleFav={() => toggle(`planet-${planetId}`)}
-        />
+        <PanelContent planet={planet} facts={facts} scale={scale} onClose={onClose} onViewInFocus={onViewInFocus} />
       </div>
     </>
   );
 }
 
 interface PanelContentProps {
-  planet: ReturnType<typeof planets.find> & object;
-  colorHex: string;
-  isFav: boolean;
+  planet: (typeof planets)[number];
   facts: string[];
   scale: string;
-  planetId: string;
   onClose: () => void;
   onViewInFocus?: () => void;
-  onToggleFav: () => void;
 }
 
-function PanelContent({ planet, colorHex, isFav, facts, scale, planetId, onClose, onViewInFocus, onToggleFav }: PanelContentProps) {
-  if (!planet) return null;
+function PanelContent({ planet, facts, scale, onClose, onViewInFocus }: PanelContentProps) {
+  const p = planet as typeof planet & Record<string, unknown>;
+  const rows: [string, string][] = [
+    ["Diameter", String(p.diameter)],
+    ["Mass", String(p.mass)],
+    ["Distance from the Sun", String(p.distance).replace(/([\d.]+)M km/, "$1 million km").replace(/([\d.]+)B km/, "$1 billion km")],
+    ["One orbit", `${Number(p.orbitalPeriod).toLocaleString("en-GB")} days`],
+    ["One day", String(p.day)],
+    ["Known moons", String(p.moons)],
+  ];
   return (
     <>
-      {/* Sticky header — never scrolls */}
-      <div
-        className="shrink-0 px-5 pt-4 pb-4"
-        style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
-      >
-        <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
-            <span
-              className="inline-block text-[10px] font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full mb-2"
-              style={{
-                background: `${colorHex}18`,
-                color: colorHex,
-                border: `1px solid ${colorHex}30`,
-              }}
-            >
-              {(planet as any).type}
-            </span>
-            <div className="flex items-center gap-2">
-              <h2
-                className="text-2xl font-bold"
-                style={{ fontFamily: "Inter, sans-serif", color: colorHex }}
-              >
-                {(planet as any).name}
-              </h2>
-              <button
-                onClick={onToggleFav}
-                className="p-1.5 rounded-full hover:bg-white/10 transition-colors"
-              >
-                <Heart className={`w-4 h-4 ${isFav ? "fill-red-500 text-red-500" : "text-white/30"}`} />
-              </button>
-            </div>
-          </div>
-          <button
-            onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/10 transition-colors shrink-0 mt-1"
-          >
-            <X className="w-4 h-4 text-white/60" />
-          </button>
+      <div className="shrink-0 px-5 pt-4 pb-4 flex items-start justify-between gap-3" style={{ borderBottom: "1px solid #1C2533" }}>
+        <div className="min-w-0">
+          <h2 className="m-0 text-[28px] leading-tight" style={{ color: "#E8ECF1", fontWeight: 400 }}>{String(p.name)}</h2>
+          <p className="m-0 mt-0.5 text-[13px]" style={{ color: "#8E9AA8" }}>{String(p.type)}</p>
         </div>
+        <button onClick={onClose} className="p-2 -mr-2 rounded-md hover:bg-white/5 transition-colors shrink-0" aria-label="Close">
+          <X className="w-4 h-4" style={{ color: "#8E9AA8" }} />
+        </button>
       </div>
 
-      {/* Scrollable body */}
       <ScrollArea className="flex-1 min-h-0">
-        <div className="px-5 pb-10 pt-4 space-y-5">
-          {/* Hero planet visual */}
-          <div className="flex justify-center py-4">
-            <div className="relative">
-              <div
-                className="absolute inset-0 rounded-full animate-pulse"
-                style={{
-                  background: `radial-gradient(circle, ${colorHex}30 0%, transparent 70%)`,
-                  transform: "scale(2.5)",
-                }}
-              />
-              <div
-                className="w-20 h-20 rounded-full"
-                style={{
-                  background: `radial-gradient(circle at 35% 35%, ${colorHex}ff, ${colorHex}88)`,
-                  boxShadow: `0 0 30px ${colorHex}40`,
-                }}
-              />
-              {planetId === "saturn" && (
-                <div
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                  style={{
-                    width: "130px",
-                    height: "130px",
-                    border: `3px solid ${colorHex}80`,
-                    transform: "translate(-50%, -50%) rotateX(70deg)",
-                  }}
-                />
-              )}
-            </div>
-          </div>
+        <div className="px-5 pb-10 pt-4">
+          <p className="m-0 text-[15px] leading-relaxed" style={{ color: "#C9D2DC" }}>{String(p.description)}</p>
 
-          {/* Action buttons */}
-          <div className="flex gap-2">
-            {onViewInFocus && (
-              <Button
-                size="sm"
-                variant="secondary"
-                className="flex-1 gap-2"
-                onClick={onViewInFocus}
-                style={{ background: "rgba(141,235,255,0.1)", border: "1px solid rgba(141,235,255,0.2)", color: "#8DEBFF" }}
-              >
-                <Crosshair className="w-3.5 h-3.5" /> View in Focus
-              </Button>
-            )}
-          </div>
-
-          {/* Description */}
-          <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
-            {(planet as any).description}
-          </p>
-
-          {/* Stats grid */}
-          <div>
-            <h3 className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-3">Statistics</h3>
-            <div className="space-y-0">
-              {[
-                { icon: <Disc className="w-3.5 h-3.5" />, label: "Diameter", value: (planet as any).diameter },
-                { icon: <Weight className="w-3.5 h-3.5" />, label: "Mass", value: (planet as any).mass },
-                { icon: <Orbit className="w-3.5 h-3.5" />, label: "Distance from Sun", value: (planet as any).distance },
-                { icon: <Clock className="w-3.5 h-3.5" />, label: "Orbital Period", value: `${(planet as any).orbitalPeriod} days` },
-                { icon: <Thermometer className="w-3.5 h-3.5" />, label: "Length of Day", value: (planet as any).day },
-                { icon: <Sparkles className="w-3.5 h-3.5" />, label: "Known moons", value: String((planet as any).moons) },
-              ].map((row) => (
-                <div
-                  key={row.label}
-                  className="flex items-center justify-between py-2.5"
-                  style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}
-                >
-                  <div className="flex items-center gap-2 text-sm" style={{ color: "rgba(255,255,255,0.45)" }}>
-                    <span style={{ color: colorHex }}>{row.icon}</span>
-                    {row.label}
-                  </div>
-                  <span className="text-sm font-medium text-white ml-4 text-right">{row.value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Notable facts */}
-          {facts.length > 0 && (
-            <div>
-              <h3 className="text-[10px] font-semibold uppercase tracking-widest text-white/30 mb-3">Notable Facts</h3>
-              <div className="space-y-2">
-                {facts.map((fact, i) => (
-                  <div
-                    key={i}
-                    className="flex gap-3 rounded-xl p-3"
-                    style={{ background: `${colorHex}08`, border: `1px solid ${colorHex}18` }}
-                  >
-                    <div
-                      className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-[11px] font-bold mt-0.5"
-                      style={{ background: `${colorHex}20`, color: colorHex }}
-                    >
-                      {i + 1}
-                    </div>
-                    <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
-                      {fact}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          {onViewInFocus && (
+            <button
+              onClick={onViewInFocus}
+              className="mt-4 w-full rounded-md py-2 text-[14px] font-medium transition-colors hover:bg-white/5"
+              style={{ border: "1px solid #2A3546", color: "#E8ECF1" }}
+            >
+              View up close
+            </button>
           )}
 
-          {/* Scale comparison */}
-          {scale && (
-            <div
-              className="rounded-xl p-4"
-              style={{ background: "rgba(141,235,255,0.05)", border: "1px solid rgba(141,235,255,0.12)" }}
-            >
-              <div className="flex items-center gap-2 text-[#8DEBFF] mb-2 text-[10px] font-semibold uppercase tracking-wider">
-                <Ruler className="w-3.5 h-3.5" /> Scale Comparison
+          <dl className="m-0 mt-6">
+            {rows.map(([label, value]) => (
+              <div key={label} className="flex items-baseline justify-between gap-4 py-2" style={{ borderTop: "1px solid #161E2A" }}>
+                <dt className="text-[14px]" style={{ color: "#8E9AA8" }}>{label}</dt>
+                <dd className="m-0 text-[14px] text-right tabular-nums" style={{ color: "#E8ECF1" }}>{value}</dd>
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
-                {scale}
-              </p>
-            </div>
+            ))}
+          </dl>
+
+          {scale && (
+            <p className="m-0 mt-6 font-serif text-[17px] leading-snug" style={{ color: "#E8ECF1" }}>{scale}</p>
+          )}
+
+          {facts.length > 0 && (
+            <ul className="m-0 mt-6 p-0 list-none space-y-3">
+              {facts.map((fact) => (
+                <li key={fact} className="text-[14px] leading-relaxed pl-3" style={{ color: "#C9D2DC", borderLeft: "1px solid #2A3546" }}>
+                  {fact}
+                </li>
+              ))}
+            </ul>
           )}
         </div>
       </ScrollArea>

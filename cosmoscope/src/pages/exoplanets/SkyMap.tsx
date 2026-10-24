@@ -129,11 +129,11 @@ export default function SkyMap({ planets, onSelectStar, highlightIds }: Props) {
       if (!sys) return;
       const { x, y } = project(sys.ra, sys.dec, W, H);
       if (x < 0 || x > W || y < 0 || y > H) return;
-      ctx.font = "bold 10px Inter, sans-serif";
+      ctx.font = "bold 10px 'Instrument Sans', sans-serif";
       ctx.textAlign = "left";
       ctx.fillStyle = "rgba(243,221,176,0.85)";
       ctx.fillText(info.label, x + 8, y - 5);
-      ctx.font = "9px Inter, sans-serif";
+      ctx.font = "9px 'Instrument Sans', sans-serif";
       ctx.fillStyle = "rgba(255,255,255,0.4)";
       ctx.fillText(info.note, x + 8, y + 7);
     });
@@ -146,16 +146,16 @@ export default function SkyMap({ planets, onSelectStar, highlightIds }: Props) {
       const tx = Math.min(W - tw - 10, Math.max(10, x - tw / 2));
       const ty = y > H * 0.7 ? y - 75 : y + 20;
       ctx.fillStyle = "rgba(6,6,20,0.9)";
-      ctx.strokeStyle = "rgba(141,235,255,0.3)";
+      ctx.strokeStyle = "rgba(169,195,224,0.3)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.roundRect(tx, ty, tw, 58, 8);
       ctx.fill(); ctx.stroke();
       ctx.textAlign = "left";
-      ctx.font = "bold 11px Inter, sans-serif";
+      ctx.font = "bold 11px 'Instrument Sans', sans-serif";
       ctx.fillStyle = "#ffffff";
       ctx.fillText(hovered.starName, tx + 10, ty + 18);
-      ctx.font = "10px Inter, sans-serif";
+      ctx.font = "10px 'Instrument Sans', sans-serif";
       ctx.fillStyle = "rgba(255,255,255,0.5)";
       ctx.fillText(`${hovered.count} confirmed planet${hovered.count > 1 ? "s" : ""}`, tx + 10, ty + 34);
       if (hovered.planets[0]?.distanceLY) {
@@ -165,10 +165,10 @@ export default function SkyMap({ planets, onSelectStar, highlightIds }: Props) {
     }
 
     // Bottom label
-    ctx.font = "11px Inter, sans-serif";
+    ctx.font = "11px 'Instrument Sans', sans-serif";
     ctx.textAlign = "center";
     ctx.fillStyle = "rgba(255,255,255,0.2)";
-    ctx.fillText("Every point is a star with at least one confirmed planet · Drag to pan · Scroll to zoom", W / 2, H - 14);
+    ctx.fillText("Every point is a star with at least one confirmed planet. Drag to move, scroll to zoom.", W / 2, H - 14);
   }, [project, highlightIds]);
 
   useEffect(() => {

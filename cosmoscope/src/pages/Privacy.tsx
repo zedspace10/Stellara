@@ -4,26 +4,26 @@ import { CONTACT_EMAIL } from "@/lib/links";
 
 function Heading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="mt-10 mb-3 text-sm font-semibold uppercase tracking-[0.14em]" style={{ color: "#8DEBFF" }}>
+    <h2 className="mt-12 mb-3 text-[24px] font-normal " style={{ color: "#E8ECF1" }}>
       {children}
     </h2>
   );
 }
 
 function P({ children }: { children: React.ReactNode }) {
-  return <p className="mt-0 mb-4 leading-relaxed" style={{ color: "#A7B6C6" }}>{children}</p>;
+  return <p className="mt-0 mb-4 leading-relaxed" style={{ color: "#A3AFBC" }}>{children}</p>;
 }
 
 export default function Privacy() {
   useEffect(() => {
-    document.title = "Privacy · PALE";
+    document.title = "Privacy | PALE";
   }, []);
 
   return (
-    <div className="min-h-screen px-6 pt-28 pb-20" style={{ background: "#05070C", color: "#F5FAFF" }}>
+    <div className="min-h-screen px-6 pt-28 pb-20" style={{ background: "#05070C", color: "#E8ECF1" }}>
       <div className="max-w-2xl mx-auto">
-        <h1 className="m-0 text-4xl font-bold tracking-[-0.01em]">Privacy policy</h1>
-        <p className="mt-2 mb-12 text-sm" style={{ color: "#7C8C9C" }}>Last updated: 24 October 2026</p>
+        <h1 className="m-0 text-[40px] md:text-[56px] leading-[1.05]">Privacy policy</h1>
+        <p className="mt-2 mb-12 text-sm" style={{ color: "#7C8794" }}>Last updated: 24 October 2026</p>
 
         <P>
           Stellara runs the PALE mobile app and the PALE website at stellaraspace.com. This page explains what
@@ -48,8 +48,8 @@ export default function Privacy() {
           Tonight does not ask for your location.
         </P>
         <P>
-          Picture of the day loads from NASA, the exoplanet pages load NASA's exoplanet archive (partly through the
-          corsproxy.io relay), and the site loads its typeface from Google Fonts. Tonight is worked out entirely in your
+          Picture of the day and the Voyager view load images from NASA, and the exoplanet pages load NASA's exoplanet archive (partly through the
+          corsproxy.io relay). Our typefaces are served from our own site. Tonight is worked out entirely in your
           browser. As with any website, those
           services can see your IP address when your browser contacts them.
         </P>
@@ -64,11 +64,11 @@ export default function Privacy() {
         <Heading>Contact</Heading>
         <P>
           Questions, or want your email removed? Write to{" "}
-          <a href={`mailto:${CONTACT_EMAIL}`} className="underline" style={{ color: "#8DEBFF" }}>{CONTACT_EMAIL}</a>.
+          <a href={`mailto:${CONTACT_EMAIL}`} className="underline" style={{ color: "#A9C3E0" }}>{CONTACT_EMAIL}</a>.
         </P>
 
-        <div className="mt-16 pt-8 border-t" style={{ borderColor: "#1D3040" }}>
-          <Link href="/" className="text-sm no-underline" style={{ color: "#A7B6C6" }}>Back to PALE</Link>
+        <div className="mt-16 pt-8 border-t" style={{ borderColor: "#1C2533" }}>
+          <Link href="/" className="text-sm no-underline" style={{ color: "#A3AFBC" }}>Back to PALE</Link>
         </div>
       </div>
     </div>

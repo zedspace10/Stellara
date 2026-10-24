@@ -14,79 +14,49 @@ export const PlanetCard = memo(function PlanetCard({ planet, onClick, featured =
   const typeLabel = getPlanetTypeLabel(planet.planetType);
   const canvasSize = featured ? 120 : 80;
 
+  const notes = [
+    typeLabel,
+    planet.potentiallyHabitable ? "in the habitable zone" : null,
+    planet.year && planet.year >= 2022 ? "found in the Webb era" : null,
+  ].filter(Boolean).join(", ");
+
   return (
     <button
       onClick={() => onClick(planet)}
-      className="text-left w-full rounded-2xl p-4 transition-all duration-200 group"
-      style={{
-        background: "rgba(255,255,255,0.03)",
-        border: "1px solid rgba(255,255,255,0.07)",
-      }}
-      onMouseEnter={e => {
-        (e.currentTarget as HTMLElement).style.borderColor = "rgba(243,221,176,0.35)";
-        (e.currentTarget as HTMLElement).style.boxShadow = "0 0 20px rgba(243,221,176,0.06)";
-      }}
-      onMouseLeave={e => {
-        (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.07)";
-        (e.currentTarget as HTMLElement).style.boxShadow = "none";
-      }}
+      className="text-left w-full rounded-lg p-4 transition-colors group hover:bg-white/[0.03]"
+      style={{ background: "#0A0F17", border: "1px solid #161E2A" }}
     >
-      {/* Planet illustration */}
       <div className="flex justify-center mb-3">
         <PlanetCanvas planet={planet} size={canvasSize} />
       </div>
 
-      {/* Badges */}
-      <div className="flex items-center gap-1.5 flex-wrap mb-2">
-        <span className="text-[9px] px-2 py-0.5 rounded-full border font-medium"
-          style={{ color: typeColor, borderColor: typeColor + "44", background: typeColor + "11" }}>
-          {typeLabel}
-        </span>
-        {planet.potentiallyHabitable && (
-          <span className="text-[9px] px-2 py-0.5 rounded-full border font-medium"
-            style={{ color: "#66bb6a", borderColor: "#66bb6a44", background: "#66bb6a11" }}>
-            ◉ HZ
-          </span>
-        )}
-        {planet.year && planet.year >= 2022 && (
-          <span className="text-[9px] px-2 py-0.5 rounded-full border font-medium"
-            style={{ color: "#F3DDB0", borderColor: "#F3DDB044", background: "#F3DDB011" }}>
-            Webb
-          </span>
-        )}
-      </div>
-
-      {/* Name */}
-      <div className="text-sm font-sans text-white/90 leading-tight mb-0.5 truncate group-hover:text-[#F3DDB0] transition-colors">
+      <div className="font-serif text-[19px] leading-tight truncate group-hover:underline underline-offset-4 decoration-1" style={{ color: "#E8ECF1" }}>
         {planet.name}
       </div>
-      <div className="text-[10px] text-white/35 mb-3 truncate">{planet.starName}</div>
+      <div className="mt-1 text-[13px] leading-snug" style={{ color: typeColor }}>{notes.charAt(0).toUpperCase() + notes.slice(1)}</div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
+      <dl className="m-0 mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5">
         {[
-          { label: "Radius", val: formatRadius(planet.radius) },
-          { label: "Temp", val: planet.temp ? `${planet.temp.toFixed(0)} K` : "—" },
+          { label: "Size", val: formatRadius(planet.radius) },
+          { label: "Temperature", val: planet.temp ? `${planet.temp.toFixed(0)} K` : "Unknown" },
           { label: "Distance", val: formatDistanceLY(planet.distanceLY) },
-          { label: "Found", val: planet.year?.toString() ?? "—" },
+          { label: "Found", val: planet.year?.toString() ?? "Unknown" },
         ].map(({ label, val }) => (
           <div key={label}>
-            <div className="text-[9px] text-white/30 uppercase tracking-wider">{label}</div>
-            <div className="text-[11px] text-white/70 font-mono">{val}</div>
+            <dt className="text-[12px]" style={{ color: "#7C8794" }}>{label}</dt>
+            <dd className="m-0 text-[13px] tabular-nums" style={{ color: "#C9D2DC" }}>{val}</dd>
           </div>
         ))}
-      </div>
+      </dl>
 
-      {/* ESI bar */}
       {planet.esi > 0 && (
         <div className="mt-3">
-          <div className="flex justify-between text-[9px] text-white/30 mb-1">
-            <span>Earth Similarity</span>
-            <span className={planet.esi > 0.6 ? "text-[#66bb6a]" : ""}>{(planet.esi * 100).toFixed(0)}%</span>
+          <div className="flex justify-between text-[12px] mb-1" style={{ color: "#7C8794" }}>
+            <span>Earth similarity</span>
+            <span className="tabular-nums" style={{ color: "#C9D2DC" }}>{(planet.esi * 100).toFixed(0)}%</span>
           </div>
-          <div className="h-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }}>
-            <div className="h-full rounded-full transition-all"
-              style={{ width: `${planet.esi * 100}%`, background: planet.esi > 0.6 ? "#66bb6a" : planet.esi > 0.3 ? "#8DEBFF" : "#556677" }} />
+          <div className="h-[2px]" style={{ background: "#1C2533" }}>
+            <div className="h-full" style={{ width: `${planet.esi * 100}%`, background: "#A9C3E0" }} />
           </div>
         </div>
       )}
@@ -97,10 +67,9 @@ export const PlanetCard = memo(function PlanetCard({ planet, onClick, featured =
 // Quote card that appears between planet cards
 export function QuoteCard({ text }: { text: string }) {
   return (
-    <div className="col-span-full py-10 px-8 text-center rounded-2xl"
-      style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.05)" }}>
-      <p className="text-base text-white/50 italic leading-relaxed max-w-2xl mx-auto font-light">
-        "{text}"
+    <div className="col-span-full py-10 px-2" style={{ borderTop: "1px solid #1C2533", borderBottom: "1px solid #1C2533" }}>
+      <p className="m-0 font-serif text-[22px] leading-snug max-w-[40rem] mx-auto text-center" style={{ color: "#C9D2DC" }}>
+        {text}
       </p>
     </div>
   );

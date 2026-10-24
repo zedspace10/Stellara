@@ -62,7 +62,6 @@ function IntroScreen({ onDone }: { onDone: () => void }) {
 
       {/* Text lines */}
       <div className="relative z-10 text-center">
-        <div className="text-sm text-[#8DEBFF] mb-10">Other worlds</div>
         <div className="space-y-4 min-h-[120px] flex flex-col items-center justify-center">
           {INTRO_LINES.map((line, i) => (
             <AnimatePresence key={line}>
@@ -70,7 +69,7 @@ function IntroScreen({ onDone }: { onDone: () => void }) {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="text-2xl md:text-4xl font-sans text-white"
+                  className="font-serif text-[30px] md:text-[44px] leading-tight"
                   style={{ color: i === 2 ? "rgba(255,255,255,0.6)" : "white" }}
                 >
                   {line}
@@ -81,7 +80,7 @@ function IntroScreen({ onDone }: { onDone: () => void }) {
         </div>
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4 }}
-          className="mt-12 text-xs text-white/25 tracking-widest"
+          className="mt-12 text-xs text-white/25 "
         >
           Tap to begin
         </motion.div>
@@ -95,24 +94,8 @@ function IntroScreen({ onDone }: { onDone: () => void }) {
 function LoadingState({ progress, statusMsg }: { progress: number; statusMsg: string }) {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center z-40" style={{ background: "#020209" }}>
-      {/* Scanning sweep line */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          className="absolute inset-x-0 h-px"
-          style={{ background: "linear-gradient(to right, transparent, rgba(141,235,255,0.6), rgba(243,221,176,0.4), transparent)" }}
-          animate={{ y: ["0vh", "100vh"] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-        />
-        <motion.div
-          className="absolute inset-x-0"
-          style={{ height: 80, background: "linear-gradient(to bottom, rgba(141,235,255,0.03), transparent)", pointerEvents: "none" }}
-          animate={{ y: ["0vh", "100vh"] }}
-          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-        />
-      </div>
-
       <div className="relative z-10 flex flex-col items-center">
-        <div className="text-xs tracking-[0.35em] text-[#8DEBFF]/50 uppercase mb-6">NASA Exoplanet Archive</div>
+        <div className="text-xs text-[#A9C3E0]/50  mb-6">NASA Exoplanet Archive</div>
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -129,12 +112,12 @@ function LoadingState({ progress, statusMsg }: { progress: number; statusMsg: st
         <div className="w-64 h-px rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: "linear-gradient(to right, #8DEBFF, #F3DDB0)" }}
+            style={{ background: "#A9C3E0" }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           />
         </div>
-        <div className="text-[10px] text-white/20 mt-2 font-mono">{progress}%</div>
+        <div className="text-xs text-white/20 mt-2 tabular-nums">{progress}%</div>
       </div>
     </div>
   );
@@ -153,7 +136,7 @@ function ActiveFilters({ filters, onChange }: { filters: Filters; onChange: (f: 
   return (
     <div className="flex flex-wrap gap-2 px-4 py-2">
       {pills.map(p => (
-        <span key={p.label} className="flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full border" style={{ color: "#F3DDB0", borderColor: "rgba(243,221,176,0.3)", background: "rgba(243,221,176,0.06)" }}>
+        <span key={p.label} className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border" style={{ color: "#F3DDB0", borderColor: "rgba(243,221,176,0.3)", background: "rgba(243,221,176,0.06)" }}>
           {p.label}
           <button onClick={p.clear} className="hover:text-white"><X className="w-2.5 h-2.5" /></button>
         </span>
@@ -195,7 +178,7 @@ export default function ExoplanetExplorer() {
   const isLoading = loading && planets.length === 0;
 
   return (
-    <div className="relative w-full h-screen bg-[#020209] overflow-hidden flex flex-col" style={{ fontFamily: "Inter, sans-serif" }}>
+    <div className="relative w-full h-screen bg-[#020209] overflow-hidden flex flex-col" style={{ fontFamily: "'Instrument Sans', sans-serif" }}>
 
       {/* Intro */}
       <AnimatePresence>
@@ -208,21 +191,21 @@ export default function ExoplanetExplorer() {
       {isLoading && <LoadingState progress={progress} statusMsg={statusMsg} />}
 
       {/* Top bar */}
-      <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 z-30" style={{ background: "rgba(2,2,9,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(141,235,255,0.1)" }}>
+      <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 z-30" style={{ background: "rgba(2,2,9,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(169,195,224,0.1)" }}>
         <Link href="/">
-          <button className="flex items-center gap-2 text-[#8DEBFF] hover:text-white transition-colors text-sm">
+          <button className="flex items-center gap-2 text-[#A9C3E0] hover:text-white transition-colors text-sm">
             <ArrowLeft className="w-4 h-4" /> PALE
           </button>
         </Link>
 
         <div className="text-center">
-          <div className="text-xs font-sans text-white/70 tracking-[0.15em]">EXOPLANET EXPLORER</div>
+          <div className="text-xs font-sans text-white/70 ">Other worlds</div>
           {fromFallback ? (
-            <button onClick={() => window.location.reload()} className="text-[9px] text-[#F3DDB0]/60 hover:text-[#F3DDB0] transition-colors">
-              Featured worlds · Tap to retry live data
+            <button onClick={() => window.location.reload()} className="text-[11px] text-[#F3DDB0]/60 hover:text-[#F3DDB0] transition-colors">
+              Featured worlds. Tap to load the full list.
             </button>
           ) : fromCache && cacheDate ? (
-            <div className="text-[9px] text-white/25">Cached · {cacheDate.toLocaleDateString()}</div>
+            <div className="text-[11px] text-white/25">Saved {cacheDate.toLocaleDateString('en-GB')}</div>
           ) : null}
         </div>
 
@@ -232,7 +215,7 @@ export default function ExoplanetExplorer() {
             <Shuffle className="w-4 h-4" />
           </button>
           <button onClick={() => setShowFilters(s => !s)}
-            className={`p-2 rounded-lg transition-colors ${showFilters ? "text-[#8DEBFF]" : "text-white/40 hover:text-white"}`}>
+            className={`p-2 rounded-lg transition-colors ${showFilters ? "text-[#A9C3E0]" : "text-white/40 hover:text-white"}`}>
             <SlidersHorizontal className="w-4 h-4" />
           </button>
         </div>
@@ -267,8 +250,8 @@ export default function ExoplanetExplorer() {
               key={v}
               title={title}
               onClick={() => setView(v)}
-              className={`px-3 py-1.5 transition-colors ${view === v ? "text-[#8DEBFF]" : "text-white/35 hover:text-white/60"}`}
-              style={view === v ? { background: "rgba(141,235,255,0.12)" } : {}}
+              className={`px-3 py-1.5 transition-colors ${view === v ? "text-[#A9C3E0]" : "text-white/35 hover:text-white/60"}`}
+              style={view === v ? { background: "rgba(169,195,224,0.12)" } : {}}
             >
               {icon}
             </button>
@@ -306,10 +289,10 @@ export default function ExoplanetExplorer() {
 
       {/* Bottom stat bar */}
       {!loading && planets.length > 0 && (
-        <div className="flex-shrink-0 px-4 py-2 flex items-center justify-between z-20 text-[10px] text-white/25"
+        <div className="flex-shrink-0 px-4 py-2 flex items-center justify-between z-20 text-xs text-white/25"
           style={{ background: "rgba(2,2,9,0.7)", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
           <span>{filtered.length.toLocaleString()} worlds {filters.search || filters.type !== "all" ? "filtered" : "catalogued"}</span>
-          <span>NASA Exoplanet Archive · {planets.length.toLocaleString()} confirmed</span>
+          <span>{planets.length.toLocaleString()} confirmed, from the NASA Exoplanet Archive</span>
         </div>
       )}
 
