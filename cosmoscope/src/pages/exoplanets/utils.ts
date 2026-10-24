@@ -82,20 +82,20 @@ export function getStarColor(spectralType: string | null): string {
 
 export function getPlanetTypeLabel(type: PlanetType): string {
   const map: Record<PlanetType, string> = {
-    "earth-sized": "Earth-sized",
-    "super-earth": "Super-Earth",
-    "mini-neptune": "Mini-Neptune",
-    "neptune-like": "Neptune-like",
-    "gas-giant": "Gas Giant",
+    "earth-sized": "Earth sized",
+    "super-earth": "Super Earth",
+    "mini-neptune": "Mini Neptune",
+    "neptune-like": "Neptune like",
+    "gas-giant": "Gas giant",
     "hot-jupiter": "Hot Jupiter",
-    "unknown": "Unknown",
+    "unknown": "Unknown type",
   };
   return map[type];
 }
 
 export function getPlanetTypeColor(type: PlanetType): string {
   const map: Record<PlanetType, string> = {
-    "earth-sized": "#8DEBFF",
+    "earth-sized": "#A9C3E0",
     "super-earth": "#66bb6a",
     "mini-neptune": "#42a5f5",
     "neptune-like": "#26c6da",
@@ -133,13 +133,13 @@ export function formatPeriod(days: number | null): string {
 
 export function formatRadius(r: number | null): string {
   if (r == null) return "Unknown";
-  return `${r.toFixed(2)} R⊕`;
+  return `${r.toFixed(2)} × Earth`;
 }
 
 export function formatMass(m: number | null): string {
   if (m == null) return "Unknown";
   if (m > 318) return `${(m / 318).toFixed(1)} Jupiter masses`;
-  return `${m.toFixed(1)} M⊕`;
+  return `${m.toFixed(1)} × Earth`;
 }
 
 export function travelTimes(ly: number | null): {

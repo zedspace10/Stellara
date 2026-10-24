@@ -2,7 +2,7 @@ export const planets = [
   {
     id: "mercury",
     name: "Mercury",
-    type: "Rocky Planet",
+    type: "Rocky planet",
     radiusScale: 0.4,
     orbitRadius: 5,
     orbitalPeriod: 88,
@@ -18,7 +18,7 @@ export const planets = [
   {
     id: "venus",
     name: "Venus",
-    type: "Rocky Planet",
+    type: "Rocky planet",
     radiusScale: 0.9,
     orbitRadius: 8,
     orbitalPeriod: 225,
@@ -34,7 +34,7 @@ export const planets = [
   {
     id: "earth",
     name: "Earth",
-    type: "Rocky Planet",
+    type: "Rocky planet",
     radiusScale: 1.0,
     orbitRadius: 12,
     orbitalPeriod: 365.25,
@@ -50,7 +50,7 @@ export const planets = [
   {
     id: "mars",
     name: "Mars",
-    type: "Rocky Planet",
+    type: "Rocky planet",
     radiusScale: 0.6,
     orbitRadius: 17,
     orbitalPeriod: 687,
@@ -66,7 +66,7 @@ export const planets = [
   {
     id: "jupiter",
     name: "Jupiter",
-    type: "Gas Giant",
+    type: "Gas giant",
     radiusScale: 3.5,
     orbitRadius: 28,
     orbitalPeriod: 4333,
@@ -82,7 +82,7 @@ export const planets = [
   {
     id: "saturn",
     name: "Saturn",
-    type: "Gas Giant",
+    type: "Gas giant",
     radiusScale: 3.0,
     orbitRadius: 40,
     orbitalPeriod: 10759,
@@ -98,7 +98,7 @@ export const planets = [
   {
     id: "uranus",
     name: "Uranus",
-    type: "Ice Giant",
+    type: "Ice giant",
     radiusScale: 2.0,
     orbitRadius: 54,
     orbitalPeriod: 30687,
@@ -114,7 +114,7 @@ export const planets = [
   {
     id: "neptune",
     name: "Neptune",
-    type: "Ice Giant",
+    type: "Ice giant",
     radiusScale: 1.8,
     orbitRadius: 68,
     orbitalPeriod: 60190,

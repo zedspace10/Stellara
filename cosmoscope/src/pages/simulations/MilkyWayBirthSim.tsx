@@ -30,7 +30,7 @@ export default function MilkyWayBirthSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "Birth of the Milky Way · PALE";
+    document.title = "Birth of the Milky Way | PALE";
     const el = mountRef.current;
     if (!el) return;
     const W = el.clientWidth, H = el.clientHeight;

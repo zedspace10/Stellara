@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface WelcomeScreenProps {
   onComplete: () => void;
@@ -18,8 +17,6 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
 
     let animationFrameId: number;
     let stars: Array<{ x: number; y: number; size: number; speed: number; opacity: number; opacitySpeed: number; layer: number }> = [];
-    let shootingStars: Array<{ x: number; y: number; length: number; speedX: number; speedY: number; opacity: number; active: boolean }> = [];
-    let lastShootingStarTime = 0;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -119,46 +116,6 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
         ctx.fill();
       });
 
-      // Shooting stars
-      if (time - lastShootingStarTime > Math.random() * 240 + 180) { // 3-7 seconds approx at 60fps
-        shootingStars.push({
-          x: Math.random() * canvas.width,
-          y: 0,
-          length: Math.random() * 80 + 40,
-          speedX: Math.random() * 5 + 5,
-          speedY: Math.random() * 5 + 5,
-          opacity: 1,
-          active: true
-        });
-        lastShootingStarTime = time;
-      }
-
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        const ss = shootingStars[i];
-        if (!ss.active) continue;
-
-        ss.x += ss.speedX;
-        ss.y += ss.speedY;
-        ss.opacity -= 0.015;
-
-        if (ss.opacity <= 0) {
-          ss.active = false;
-          shootingStars.splice(i, 1);
-          continue;
-        }
-
-        const gradient = ctx.createLinearGradient(ss.x, ss.y, ss.x - ss.length * (ss.speedX / Math.sqrt(ss.speedX*ss.speedX + ss.speedY*ss.speedY)), ss.y - ss.length * (ss.speedY / Math.sqrt(ss.speedX*ss.speedX + ss.speedY*ss.speedY)));
-        gradient.addColorStop(0, `rgba(255, 255, 255, ${ss.opacity})`);
-        gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-
-        ctx.beginPath();
-        ctx.moveTo(ss.x, ss.y);
-        ctx.lineTo(ss.x - ss.length * (ss.speedX / Math.sqrt(ss.speedX*ss.speedX + ss.speedY*ss.speedY)), ss.y - ss.length * (ss.speedY / Math.sqrt(ss.speedX*ss.speedX + ss.speedY*ss.speedY)));
-        ctx.strokeStyle = gradient;
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-      }
-
       animationFrameId = requestAnimationFrame(draw);
     };
 
@@ -172,105 +129,62 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
   }, []);
 
   return (
-    <motion.div 
-      className="fixed inset-0 z-[100] bg-[#05070C] flex flex-col items-center justify-center overflow-hidden"
+    <motion.div
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center overflow-hidden"
+      style={{ background: "#05070C" }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
     >
-      {/* Canvas Layer */}
-      <canvas ref={canvasRef} className="absolute inset-0 z-0" />
+      <canvas ref={canvasRef} className="absolute inset-0 z-0" aria-hidden="true" />
 
-      {/* Nebula Layer */}
-      <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 right-0 w-[80vw] h-[80vw] bg-[#4a0080]/10 rounded-full blur-[100px] animate-[nebula1_20s_infinite_alternate_ease-in-out]" />
-        <div className="absolute bottom-0 left-0 w-[70vw] h-[70vw] bg-[#004080]/10 rounded-full blur-[120px] animate-[nebula2_25s_infinite_alternate_ease-in-out]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] h-[90vw] bg-[#200060]/10 rounded-full blur-[150px] animate-[nebula3_30s_infinite_alternate_ease-in-out]" />
-      </div>
-
-      <style>{`
-        @keyframes nebula1 {
-          0% { transform: translate(10%, -10%) scale(1); }
-          100% { transform: translate(-30%, 30%) scale(1.2); }
-        }
-        @keyframes nebula2 {
-          0% { transform: translate(-10%, 10%) scale(1); }
-          100% { transform: translate(30%, -30%) scale(1.1); }
-        }
-        @keyframes nebula3 {
-          0% { transform: translate(-50%, -50%) scale(1); }
-          100% { transform: translate(-50%, -50%) scale(1.3); }
-        }
-      `}</style>
-
-      {/* Skip Intro */}
-      <button 
+      <button
         onClick={onComplete}
-        className="absolute top-6 right-8 z-30 text-white/50 hover:text-white transition-colors text-sm uppercase tracking-widest font-medium"
+        className="absolute top-5 right-6 z-30 text-[15px] transition-colors hover:text-white"
+        style={{ color: "#8E9AA8" }}
       >
-        Skip Intro
+        Skip
       </button>
 
-      {/* Central Content */}
-      <div className="relative z-20 flex flex-col items-center text-center">
-        <AnimatePresence>
-          <motion.div
-            key="logo"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="relative flex items-center justify-center w-24 h-24 mb-6"
-          >
-            {/* Animated Ring */}
-            <svg className="absolute inset-0 w-full h-full animate-[spin_10s_linear_infinite]" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="48" fill="none" stroke="#8DEBFF" strokeWidth="1" strokeDasharray="10 20" opacity="0.5" />
-              <circle cx="50" cy="50" r="42" fill="none" stroke="#F3DDB0" strokeWidth="1" strokeDasharray="30 10" opacity="0.3" className="animate-[spin_15s_linear_infinite_reverse]" style={{ transformOrigin: 'center' }} />
-            </svg>
-            
-            {/* The pale blue dot */}
-            <div className="relative z-10 w-3 h-3 rounded-full bg-[#8DEBFF] shadow-[0_0_18px_6px_rgba(141,235,255,0.55)]" />
-          </motion.div>
+      <div className="relative z-20 flex flex-col items-center text-center px-6">
+        {/* The one moment: a single point of light, then what it is. */}
+        <motion.span
+          aria-hidden="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4, duration: 1.6 }}
+          className="block rounded-full"
+          style={{ width: 5, height: 5, background: "#C6DCF5" }}
+        />
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.6, duration: 1.2 }}
+          className="mt-4 mb-0 text-[14px]"
+          style={{ color: "#8E9AA8" }}
+        >
+          Earth, seen from six billion kilometres away
+        </motion.p>
 
-          <motion.h1
-            key="wordmark"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
-            className="text-5xl md:text-7xl font-bold tracking-[0.32em] pl-[0.32em] mb-4 text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"
-          >
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.8, duration: 1.2 }}
+          className="mt-20 flex flex-col items-center"
+        >
+          <h1 className="m-0 font-serif text-[56px] md:text-[80px] leading-none pl-[0.26em]" style={{ color: "#E8ECF1", fontWeight: 400, letterSpacing: "0.26em" }}>
             PALE
-          </motion.h1>
-
-          <motion.p
-            key="tagline"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3, duration: 0.8 }}
-            className="text-lg md:text-xl text-[#e0e0e0]/70 mb-12 max-w-md mx-auto"
-          >
-            A calm space to think
-          </motion.p>
-
-          <motion.button
-            key="cta"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.8, duration: 0.8 }}
+          </h1>
+          <p className="mt-5 mb-0 font-serif text-[20px] md:text-[22px]" style={{ color: "#A3AFBC" }}>
+            A calm space to think.
+          </p>
+          <button
             onClick={onComplete}
-            className="bg-[#8DEBFF] hover:bg-[#B9F3FF] text-[#05070C] font-bold text-lg px-8 py-3 rounded-full animate-pulse transition-colors shadow-[0_0_20px_rgba(141,235,255,0.4)] hover:shadow-[0_0_30px_rgba(141,235,255,0.6)]"
+            className="mt-10 rounded-md px-6 py-2.5 text-[16px] font-medium transition-colors hover:bg-white/5"
+            style={{ border: "1px solid #3A4658", color: "#E8ECF1" }}
           >
             Enter the universe
-          </motion.button>
-
-          <motion.div
-            key="scroll-arrow"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.2, duration: 0.8 }}
-            className="mt-16 absolute -bottom-24"
-          >
-            <ChevronDown className="w-8 h-8 text-white/30 animate-bounce" />
-          </motion.div>
-        </AnimatePresence>
+          </button>
+        </motion.div>
       </div>
     </motion.div>
   );

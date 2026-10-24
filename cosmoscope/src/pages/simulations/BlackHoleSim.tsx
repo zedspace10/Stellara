@@ -7,7 +7,7 @@ const PHASES: SimPhase[] = [
   { id: "collapse", label: "Core collapse", short: "Collapse", timecode: "The first second", description: "The iron core of a massive star collapses. If enough mass falls in, nothing can stop it, and a black hole is born.", scienceDetail: "When the core passes about 1.4 times the Sun's mass, it collapses to the density of an atomic nucleus. If what is left is heavier than about 2 to 3 times the Sun's mass, even neutron pressure cannot hold it up, and it becomes a black hole.", color: "#A995FF" },
   { id: "singularity", label: "The event horizon", short: "Horizon", timecode: "Milliseconds later", description: "The event horizon forms: the boundary beyond which not even light can escape. At the centre, general relativity predicts a point of infinite density.", scienceDetail: "The horizon's radius is 2GM/c², about 30 km for a black hole ten times the Sun's mass. Most physicists expect a theory of quantum gravity to replace the infinite density at the centre with something finite.", color: "#4a0080" },
   { id: "accretion", label: "Accretion disc", short: "Disc", timecode: "Later", description: "Gas pulled from a companion star spirals inward and forms a disc. Friction heats its inner edge to millions of degrees, glowing in X rays.", scienceDetail: "Gas can orbit stably only down to three times the horizon's radius. Inside that it plunges in. The inner disc of a black hole a few times the Sun's mass reaches around 10 million degrees.", color: "#ff6b35" },
-  { id: "lensing", label: "Bent light", short: "Lensing", timecode: "Near the black hole", description: "Gravity bends light around the black hole. Stars behind it appear stretched and doubled, and can form rings.", scienceDetail: "At one and a half times the horizon's radius is the photon sphere, where light can travel in circles, though only unstably. When a background star, the black hole and the viewer line up exactly, the star appears as a ring, called an Einstein ring.", color: "#8DEBFF" },
+  { id: "lensing", label: "Bent light", short: "Lensing", timecode: "Near the black hole", description: "Gravity bends light around the black hole. Stars behind it appear stretched and doubled, and can form rings.", scienceDetail: "At one and a half times the horizon's radius is the photon sphere, where light can travel in circles, though only unstably. When a background star, the black hole and the viewer line up exactly, the star appears as a ring, called an Einstein ring.", color: "#A9C3E0" },
   { id: "merger", label: "Black holes merge", short: "Merger", timecode: "When two meet", description: "Two black holes spiral together, sending out gravitational waves that stretch and squeeze space itself.", scienceDetail: "The first merger was detected by LIGO on 14 September 2015. Black holes of about 36 and 29 times the Sun's mass, 1.3 billion light years away, merged and turned three Suns' worth of mass into gravitational waves in a fraction of a second.", color: "#a78bfa" },
 ];
 
@@ -28,7 +28,7 @@ export default function BlackHoleSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "Black Hole Formation · PALE";
+    document.title = "Black Hole Formation | PALE";
     const el = mountRef.current;
     if (!el) return;
     const W = el.clientWidth, H = el.clientHeight;

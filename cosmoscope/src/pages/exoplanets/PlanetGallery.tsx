@@ -38,26 +38,21 @@ export default function PlanetGallery({ planets, onSelect }: Props) {
   const sliced = planets.slice(0, visible);
 
   return (
-    <div className="px-4 pb-20 pt-2">
+    <div className="px-5 md:px-8 pb-20 pt-4">
       {/* Planet of the week */}
       {potwPlanet && (
         <div className="mb-8">
-          <div className="text-[10px] tracking-[0.25em] text-[#F3DDB0]/60 uppercase mb-3 flex items-center gap-2">
-            <span>★</span> Planet of the Week
-          </div>
+          <h2 className="m-0 mb-3 text-[22px] font-normal" style={{ color: "#E8ECF1" }}>This week's world</h2>
           <button
             onClick={() => onSelect(potwPlanet)}
-            className="w-full rounded-2xl p-5 flex items-center gap-5 text-left transition-all"
-            style={{ background: "rgba(243,221,176,0.04)", border: "1px solid rgba(243,221,176,0.2)" }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(243,221,176,0.45)"; }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(243,221,176,0.2)"; }}
+            className="w-full rounded-lg p-5 flex items-center gap-5 text-left transition-colors hover:bg-white/[0.03]"
+            style={{ background: "#0A0F17", border: "1px solid #1C2533" }}
           >
             <div className="flex-shrink-0">
               <PlanetCanvas planet={potwPlanet} size={100} />
             </div>
             <div className="flex-1 min-w-0">
-              <div className="text-[10px] tracking-widest text-[#F3DDB0]/60 uppercase mb-1">Featured World</div>
-              <h2 className="text-xl font-sans text-white mb-1">{potwPlanet.name}</h2>
+              <h3 className="m-0 mb-1 font-serif text-[28px] font-normal leading-tight" style={{ color: "#E8ECF1" }}>{potwPlanet.name}</h3>
               <p className="text-sm text-white/50 leading-relaxed">
                 {potwPlanet.potentiallyHabitable
                   ? "This world sits within its star's habitable zone, one of the most compelling candidates in the known catalogue for conditions that could support liquid water."
@@ -73,7 +68,7 @@ export default function PlanetGallery({ planets, onSelect }: Props) {
         <div className="text-sm text-white/50">
           {planets.length.toLocaleString()} confirmed worlds
         </div>
-        <div className="text-[10px] text-white/25">{visible} loaded</div>
+        <div className="text-xs text-white/25">{visible} loaded</div>
       </div>
 
       {/* Grid */}
@@ -95,7 +90,7 @@ export default function PlanetGallery({ planets, onSelect }: Props) {
       <div ref={sentinelRef} className="h-8 mt-4" />
       {visible >= planets.length && planets.length > 0 && (
         <div className="text-center py-8">
-          <div className="text-sm text-white/30 font-sans tracking-widest">
+          <div className="text-sm text-white/30 font-sans ">
             All {planets.length.toLocaleString()} worlds explored.
           </div>
           <div className="text-xs text-white/20 mt-1">The search for more continues.</div>

@@ -4,7 +4,7 @@ import SimulationLayout, { SimPhase } from "./SimulationLayout";
 import { makeCircleTex, makeBloomComposer } from "./simUtils";
 
 const PHASES: SimPhase[] = [
-  { id: "approach", label: "A safe distance", short: "Approach", timecode: "1,000 times the horizon radius", description: "The black hole is a perfect dark disc against the stars. Already, the stars around it look slightly bent.", scienceDetail: "Out here gravity is strong but nothing dramatic happens. You could orbit safely. Light from the horizon area takes a fraction of a second to reach you for a black hole a few times the Sun's mass.", color: "#8DEBFF" },
+  { id: "approach", label: "A safe distance", short: "Approach", timecode: "1,000 times the horizon radius", description: "The black hole is a perfect dark disc against the stars. Already, the stars around it look slightly bent.", scienceDetail: "Out here gravity is strong but nothing dramatic happens. You could orbit safely. Light from the horizon area takes a fraction of a second to reach you for a black hole a few times the Sun's mass.", color: "#A9C3E0" },
   { id: "time-dilation", label: "Time slows", short: "Time", timecode: "10 times the horizon radius", description: "Your clock now runs slower than clocks far away. Starlight reaching you is shifted to bluer colours. The black hole grows to fill more of your view.", scienceDetail: "Hovering here, your clock runs at about 95% of the rate of a distant clock. The same effect makes light falling in from far away arrive bluer, by the same factor.", color: "#a78bfa" },
   { id: "photon-sphere", label: "The photon sphere", short: "Photons", timecode: "1.5 times the horizon radius", description: "Here light itself can circle the black hole. Hovering here, the black hole fills half your sky, and the rest of the universe is squeezed into the other half.", scienceDetail: "The photon sphere lies at 3GM/c². Orbits of light here are unstable: the smallest nudge sends a light ray falling in or escaping. Light can loop round, so in principle you could see the back of your own head.", color: "#F3DDB0" },
   { id: "crossing", label: "Crossing the horizon", short: "Horizon", timecode: "At the horizon", description: "You cross the event horizon. Locally, nothing feels different. There is no wall. But there is no way back.", scienceDetail: "For a supermassive black hole, the stretching force at the horizon is gentle, so crossing is uneventful. For a small one, you would be stretched apart before you got there. Some ways of drawing spacetime make the horizon look special, but others show nothing happens locally there.", color: "#ff9f43" },
@@ -29,7 +29,7 @@ export default function InsideBlackHoleSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "Inside a Black Hole · PALE";
+    document.title = "Inside a Black Hole | PALE";
     const el = mountRef.current;
     if (!el) return;
     const W = el.clientWidth, H = el.clientHeight;

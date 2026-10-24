@@ -29,7 +29,7 @@ export default function StarBirthSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "Birth of a Star · PALE";
+    document.title = "Birth of a Star | PALE";
     const el = mountRef.current;
     if (!el) return;
     const W = el.clientWidth, H = el.clientHeight;

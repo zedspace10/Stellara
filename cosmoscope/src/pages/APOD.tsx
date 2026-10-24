@@ -63,7 +63,7 @@ export default function APOD() {
   };
 
   useEffect(() => {
-    document.title = "APOD · PALE";
+    document.title = "APOD | PALE";
     fetchApod();
 
     // Fetch archive (past 7 days)
@@ -116,15 +116,15 @@ export default function APOD() {
         transition={{ duration: 0.5 }}
       >
         <div className="pt-14 pb-10">
-          <h1 className="m-0 text-4xl md:text-5xl font-bold tracking-[-0.02em] text-white">Picture of the day</h1>
-          <p className="mt-3 mb-0 text-lg leading-relaxed max-w-[620px]" style={{ color: "#A7B6C6" }}>
+          <h1 className="m-0 text-[40px] md:text-[56px] leading-[1.05] text-[#E8ECF1]">Picture of the day</h1>
+          <p className="mt-3 mb-0 text-lg leading-relaxed max-w-[620px]" style={{ color: "#A3AFBC" }}>
             A new view of the universe every day, chosen and explained by astronomers at NASA.
           </p>
         </div>
 
         {error && (
           <Card className="p-8 text-center">
-            <p className="m-0" style={{ color: "#A7B6C6" }}>{error}</p>
+            <p className="m-0" style={{ color: "#A3AFBC" }}>{error}</p>
           </Card>
         )}
 
@@ -175,7 +175,7 @@ export default function APOD() {
 
             <div className="w-full lg:w-1/3 space-y-6">
               <div>
-                <h2 className="text-3xl font-bold text-white mb-2">{data.title}</h2>
+                <h2 className="text-[32px] leading-tight text-[#E8ECF1] mb-2 font-normal">{data.title}</h2>
                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
@@ -197,7 +197,7 @@ export default function APOD() {
         {/* Archive Section, only when there is something to show */}
         {(loadingArchive || archive.length > 0) && (
         <div className="mt-16 pt-12 border-t border-white/10">
-          <h2 className="text-2xl font-bold text-white mb-6">The last few days</h2>
+          <h2 className="text-[28px] text-[#E8ECF1] mb-6 font-normal">The last few days</h2>
           {loadingArchive ? (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[...Array(4)].map((_, i) => (

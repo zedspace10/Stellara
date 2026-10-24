@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
 
 interface PaleBlueDotSequenceProps {
   onComplete: () => void;
@@ -35,7 +34,7 @@ export default function PaleBlueDotSequence({ onComplete, onStart }: PaleBlueDot
   }, [step, texts.length, onStart]);
 
   return (
-    <div className="absolute inset-0 z-[100] bg-black/80 flex items-center justify-center p-8">
+    <div className="absolute inset-0 z-[100] flex items-center justify-center p-8" style={{ background: "rgba(5,7,12,0.92)" }}>
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -45,7 +44,7 @@ export default function PaleBlueDotSequence({ onComplete, onStart }: PaleBlueDot
           transition={{ duration: 1.5 }}
           className="text-center max-w-4xl"
         >
-          <h2 className="text-3xl md:text-5xl font-light text-white leading-relaxed tracking-wide font-sans">
+          <h2 className="font-serif font-normal text-[30px] md:text-[48px] text-[#E8ECF1] leading-snug">
             {texts[step]}
           </h2>
           
@@ -56,14 +55,14 @@ export default function PaleBlueDotSequence({ onComplete, onStart }: PaleBlueDot
               transition={{ delay: 2, duration: 2 }}
               className="mt-12 flex flex-col items-center"
             >
-              <div className="w-2 h-2 bg-[#8DEBFF] rounded-full shadow-[0_0_15px_#8DEBFF] mb-12 animate-pulse" />
-              <Button 
-                variant="outline" 
+              <div className="rounded-full mb-12" style={{ width: 5, height: 5, background: "#C6DCF5" }} />
+              <button
                 onClick={onComplete}
-                className="border-white/20 text-white hover:bg-white/10"
+                className="rounded-md px-5 py-2 text-[15px] font-medium transition-colors hover:bg-white/5"
+                style={{ border: "1px solid #3A4658", color: "#E8ECF1" }}
               >
-                Close
-              </Button>
+                Back to the universe
+              </button>
             </motion.div>
           )}
         </motion.div>

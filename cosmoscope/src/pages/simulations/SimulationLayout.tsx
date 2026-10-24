@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { ArrowLeft, Play, Pause, RotateCcw, FlaskConical, ChevronRight } from "lucide-react";
+import { Play, Pause, RotateCcw, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
@@ -49,33 +49,30 @@ export default function SimulationLayout({
   const isEnd = currentPhaseIndex >= phases.length - 1 && totalProgress >= 0.99;
 
   return (
-    <div className="min-h-screen bg-[#020209] text-[#e0e0e0] flex flex-col">
+    <div className="h-[100dvh] bg-[#020209] text-[#e0e0e0] flex flex-col pt-14 pb-12 md:pt-16 md:pb-0">
       {/* Top bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 py-3 border-b" style={{ background: 'rgba(10,10,26,0.75)', backdropFilter: 'blur(20px)', borderColor: 'rgba(141,235,255,0.18)' }}>
+      <div className="relative z-40 flex items-center justify-between gap-3 px-4 py-2.5 border-b shrink-0" style={{ background: '#05070C', borderColor: '#1C2533' }}>
         <Link href="/simulations">
-          <button className="flex items-center gap-2 text-sm text-[#8DEBFF] hover:text-white transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Simulations
+          <button className="text-[14px] whitespace-nowrap underline underline-offset-4 decoration-1 text-[#A3AFBC] hover:text-white transition-colors">
+            All simulations
           </button>
         </Link>
         <div className="text-center">
-          <div className="text-xs text-[#A995FF] font-sans tracking-widest uppercase">PALE Simulations</div>
-          <div className="text-sm font-bold font-sans text-white">{title}</div>
+          <div className="hidden sm:block font-serif text-[18px] text-[#E8ECF1] leading-tight">{title}</div>
         </div>
         <button
           onClick={onScienceModeToggle}
-          className={`flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all ${
-            scienceMode
-              ? "bg-[#8DEBFF]/20 border-[#8DEBFF] text-[#8DEBFF]"
-              : "bg-white/5 border-white/20 text-gray-400 hover:border-white/40"
+          aria-pressed={scienceMode}
+          className={`text-[14px] whitespace-nowrap px-3 py-1 rounded-md border transition-colors ${
+            scienceMode ? "border-[#A9C3E0] text-[#E8ECF1]" : "border-[#2A3546] text-[#A3AFBC] hover:text-white"
           }`}
         >
-          <FlaskConical className="w-3.5 h-3.5" />
-          Science Mode
+          {scienceMode ? "Less detail" : "More detail"}
         </button>
       </div>
 
       {/* Canvas area */}
-      <div className="flex-1 relative mt-[52px]">
+      <div className="flex-1 relative min-h-0">
         {children}
         {/* Cinematic vignette — darkens edges to focus the centre */}
         <div
@@ -86,23 +83,22 @@ export default function SimulationLayout({
         {/* Phase info overlay */}
         <motion.div
           key={currentPhaseIndex}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="absolute top-4 left-4 max-w-xs pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="absolute top-4 left-4 right-4 sm:right-auto sm:max-w-[22rem] pointer-events-none z-20"
         >
-          <div className="rounded-2xl p-4" style={{ background: 'rgba(10,10,26,0.72)', backdropFilter: 'blur(20px)', border: '1px solid rgba(141,235,255,0.18)' }}>
-            <div className="text-xs font-sans tracking-widest mb-1" style={{ color: phase.color }}>
-              PHASE {currentPhaseIndex + 1}/{phases.length}
+          <div className="rounded-lg p-4" style={{ background: 'rgba(5,7,12,0.88)', border: '1px solid #1C2533' }}>
+            <div className="text-[13px] mb-1" style={{ color: '#8E9AA8' }}>
+              Step {currentPhaseIndex + 1} of {phases.length}, {phase.timecode.charAt(0).toLowerCase() + phase.timecode.slice(1)}
             </div>
-            <div className="text-base font-bold text-white mb-1">{phase.label}</div>
-            <div className="text-xs text-[#8DEBFF]/80 mb-2 font-mono">{phase.timecode}</div>
-            <p className="text-xs text-gray-300 leading-relaxed">{phase.description}</p>
+            <div className="font-serif text-[24px] leading-tight text-[#E8ECF1] mb-2">{phase.label}</div>
+            <p className="m-0 text-[14px] text-[#C9D2DC] leading-relaxed">{phase.description}</p>
             {scienceMode && (
               <motion.p
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                className="text-xs text-[#A995FF]/90 mt-2 pt-2 border-t border-white/10 leading-relaxed"
+                className="m-0 text-[13px] text-[#A3AFBC] mt-3 pt-3 border-t border-[#1C2533] leading-relaxed"
               >
                 {phase.scienceDetail}
               </motion.p>
@@ -118,8 +114,8 @@ export default function SimulationLayout({
             transition={{ duration: 2 }}
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
           >
-            <div className="bg-black/80 backdrop-blur-lg rounded-2xl border border-[#F3DDB0]/20 p-8 max-w-lg text-center mx-4">
-              <div className="text-[#F3DDB0] text-lg font-light leading-relaxed mb-4">
+            <div className="rounded-lg p-8 max-w-lg text-center mx-4" style={{ background: 'rgba(5,7,12,0.9)', border: '1px solid #1C2533' }}>
+              <div className="font-serif text-[#E8ECF1] text-[26px] leading-snug">
                 {closingQuote}
               </div>
               {closingAuthor && (
@@ -131,7 +127,7 @@ export default function SimulationLayout({
       </div>
 
       {/* Bottom controls */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 px-4 pt-2 pb-3" style={{ background: 'rgba(10,10,26,0.80)', backdropFilter: 'blur(20px)', borderTop: '1px solid rgba(141,235,255,0.18)' }}>
+      <div className="relative z-40 shrink-0 px-4 pt-2 pb-3" style={{ background: '#05070C', borderTop: '1px solid #1C2533' }}>
         {/* Phase markers timeline */}
         <div className="relative mb-2">
           <div className="flex justify-between mb-1">
@@ -140,7 +136,7 @@ export default function SimulationLayout({
                 key={p.id}
                 onClick={() => onPhaseJump(i)}
                 title={p.label}
-                className={`text-[10px] font-sans transition-all ${
+                className={`text-xs font-sans transition-all ${
                   i === currentPhaseIndex ? "text-[#F3DDB0]" : "text-gray-600 hover:text-gray-400"
                 }`}
                 style={{ flex: 1, textAlign: "center" }}
@@ -162,8 +158,8 @@ export default function SimulationLayout({
               <button
                 key={p.id}
                 onClick={() => onPhaseJump(i)}
-                className={`text-[9px] truncate transition-colors px-0.5 ${
-                  i === currentPhaseIndex ? "text-[#8DEBFF]" : "text-gray-600 hover:text-gray-400"
+                className={`text-[11px] truncate transition-colors px-0.5 ${
+                  i === currentPhaseIndex ? "text-[#A9C3E0]" : "text-gray-600 hover:text-gray-400"
                 }`}
                 style={{ flex: 1, textAlign: "center" }}
               >
@@ -180,7 +176,7 @@ export default function SimulationLayout({
               <RotateCcw className="w-4 h-4" />
             </Button>
             <Button size="icon" onClick={isPlaying ? onPause : onPlay}
-              className="w-9 h-9 bg-[#8DEBFF] hover:bg-[#8DEBFF]/80 text-black rounded-full">
+              className="w-9 h-9 bg-[#A9C3E0] hover:bg-[#A9C3E0]/80 text-black rounded-full">
               {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
             </Button>
             {currentPhaseIndex < phases.length - 1 && (
@@ -197,16 +193,16 @@ export default function SimulationLayout({
                 onClick={() => onSpeedChange(s)}
                 className={`text-xs px-2 py-1 rounded-lg transition-all ${
                   speed === s
-                    ? "text-[#8DEBFF] border"
+                    ? "text-[#A9C3E0] border"
                     : "text-gray-500 hover:text-gray-300"
                 }`}
-              style={speed === s ? { background: 'rgba(141,235,255,0.18)', borderColor: 'rgba(141,235,255,0.55)', boxShadow: '0 0 12px rgba(141,235,255,0.18)' } : {}}
+              style={speed === s ? { background: 'rgba(169,195,224,0.18)', borderColor: 'rgba(169,195,224,0.55)', boxShadow: '0 0 12px rgba(169,195,224,0.18)' } : {}}
               >
                 {s}×
               </button>
             ))}
           </div>
-          <div className="text-xs text-gray-500 font-mono min-w-[60px] text-right">
+          <div className="text-xs text-gray-500 tabular-nums min-w-[60px] text-right">
             {(totalProgress * 100).toFixed(1)}%
           </div>
         </div>

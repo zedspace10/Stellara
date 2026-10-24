@@ -48,7 +48,7 @@ export default function FilterPanel({ filters, onChange, onClose, totalCount, fi
       initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
       transition={{ type: "spring", damping: 30, stiffness: 300 }}
       className="fixed top-0 right-0 bottom-0 z-40 w-80 overflow-y-auto flex flex-col"
-      style={{ background: "rgba(6,6,22,0.97)", backdropFilter: "blur(20px)", borderLeft: "1px solid rgba(141,235,255,0.15)" }}
+      style={{ background: "rgba(6,6,22,0.97)", backdropFilter: "blur(20px)", borderLeft: "1px solid rgba(169,195,224,0.15)" }}
     >
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.08)" }}>
@@ -62,7 +62,7 @@ export default function FilterPanel({ filters, onChange, onClose, totalCount, fi
       <div className="flex-1 px-5 py-4 space-y-6">
         {/* Sort */}
         <div>
-          <div className="text-[10px] tracking-widest text-white/40 uppercase mb-2">Sort By</div>
+          <div className="text-xs text-white/40  mb-2">Sort By</div>
           <select
             value={filters.sort}
             onChange={e => onChange(set(filters, "sort", e.target.value as SortMode))}
@@ -75,14 +75,14 @@ export default function FilterPanel({ filters, onChange, onClose, totalCount, fi
 
         {/* Planet type */}
         <div>
-          <div className="text-[10px] tracking-widest text-white/40 uppercase mb-2">Planet Type</div>
+          <div className="text-xs text-white/40  mb-2">Planet Type</div>
           <div className="flex flex-wrap gap-2">
             {PLANET_TYPES.map(t => (
               <button
                 key={t}
                 onClick={() => onChange(set(filters, "type", t))}
-                className={`text-xs px-2.5 py-1 rounded-full border transition-all ${filters.type === t ? "border-[#8DEBFF] text-[#8DEBFF]" : "border-white/15 text-white/50 hover:border-white/30"}`}
-                style={filters.type === t ? { background: "rgba(141,235,255,0.12)" } : {}}
+                className={`text-xs px-2.5 py-1 rounded-full border transition-all ${filters.type === t ? "border-[#A9C3E0] text-[#A9C3E0]" : "border-white/15 text-white/50 hover:border-white/30"}`}
+                style={filters.type === t ? { background: "rgba(169,195,224,0.12)" } : {}}
               >
                 {t === "all" ? "All" : getPlanetTypeLabel(t)}
               </button>
@@ -92,7 +92,7 @@ export default function FilterPanel({ filters, onChange, onClose, totalCount, fi
 
         {/* Habitability */}
         <div>
-          <div className="text-[10px] tracking-widest text-white/40 uppercase mb-2">Habitability</div>
+          <div className="text-xs text-white/40  mb-2">Habitability</div>
           <div className="flex flex-col gap-2">
             {[
               { v: "all", l: "All planets" },
@@ -114,7 +114,7 @@ export default function FilterPanel({ filters, onChange, onClose, totalCount, fi
 
         {/* Discovery method */}
         <div>
-          <div className="text-[10px] tracking-widest text-white/40 uppercase mb-2">Discovery Method</div>
+          <div className="text-xs text-white/40  mb-2">Discovery Method</div>
           <select
             value={filters.method}
             onChange={e => onChange(set(filters, "method", e.target.value))}
@@ -128,7 +128,7 @@ export default function FilterPanel({ filters, onChange, onClose, totalCount, fi
         {/* Distance */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <div className="text-[10px] tracking-widest text-white/40 uppercase">Max Distance</div>
+            <div className="text-xs text-white/40 ">Max Distance</div>
             <div className="text-xs text-[#F3DDB0]">
               {filters.maxDistanceLY >= 10000 ? "Any" : `${filters.maxDistanceLY.toLocaleString()} ly`}
             </div>
@@ -137,9 +137,9 @@ export default function FilterPanel({ filters, onChange, onClose, totalCount, fi
             type="range" min={10} max={10000} step={10}
             value={filters.maxDistanceLY}
             onChange={e => onChange(set(filters, "maxDistanceLY", Number(e.target.value)))}
-            className="w-full accent-[#8DEBFF]"
+            className="w-full accent-[#A9C3E0]"
           />
-          <div className="flex justify-between text-[9px] text-white/25 mt-1">
+          <div className="flex justify-between text-[11px] text-white/25 mt-1">
             <span>10 ly</span><span>100 ly (near)</span><span>10,000 ly</span>
           </div>
         </div>
@@ -147,18 +147,18 @@ export default function FilterPanel({ filters, onChange, onClose, totalCount, fi
         {/* Year range */}
         <div>
           <div className="flex justify-between items-center mb-2">
-            <div className="text-[10px] tracking-widest text-white/40 uppercase">Discovery Year</div>
+            <div className="text-xs text-white/40 ">Discovery Year</div>
             <div className="text-xs text-[#F3DDB0]">{filters.yearMin} to {filters.yearMax}</div>
           </div>
           <div className="space-y-2">
             <input type="range" min={1992} max={2024} value={filters.yearMin}
               onChange={e => onChange(set(filters, "yearMin", Math.min(Number(e.target.value), filters.yearMax - 1)))}
-              className="w-full accent-[#8DEBFF]" />
+              className="w-full accent-[#A9C3E0]" />
             <input type="range" min={1992} max={2024} value={filters.yearMax}
               onChange={e => onChange(set(filters, "yearMax", Math.max(Number(e.target.value), filters.yearMin + 1)))}
               className="w-full accent-[#F3DDB0]" />
           </div>
-          <div className="flex justify-between text-[9px] text-white/25 mt-1">
+          <div className="flex justify-between text-[11px] text-white/25 mt-1">
             <span>1992</span><span>Kepler 2009</span><span>Webb 2022+</span>
           </div>
         </div>

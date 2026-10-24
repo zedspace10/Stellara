@@ -61,7 +61,7 @@ export default function VoyagerLookBack({ onClose }: Props) {
       <button
         onClick={onClose}
         className="absolute top-5 right-5 rounded-full p-2"
-        style={{ color: "#A7B6C6", background: "rgba(255,255,255,0.06)" }}
+        style={{ color: "#A3AFBC", background: "rgba(255,255,255,0.06)" }}
         aria-label="Close"
       >
         <X className="w-5 h-5" />
@@ -95,7 +95,7 @@ export default function VoyagerLookBack({ onClose }: Props) {
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 1.2 }}
             className="m-0 text-xl md:text-2xl font-light leading-relaxed"
-            style={{ color: "#F5FAFF" }}
+            style={{ color: "#E8ECF1" }}
           >
             {lines[step]}
           </motion.p>
@@ -109,7 +109,7 @@ export default function VoyagerLookBack({ onClose }: Props) {
           transition={{ delay: 2, duration: 1.5 }}
           onClick={onClose}
           className="mt-6 rounded-full px-6 py-2.5 text-[15px] font-semibold"
-          style={{ background: "#8DEBFF", color: "#05070C" }}
+          style={{ background: "#A9C3E0", color: "#05070C" }}
         >
           Back to the universe
         </motion.button>

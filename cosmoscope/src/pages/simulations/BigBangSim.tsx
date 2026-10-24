@@ -12,7 +12,7 @@ const PHASES: SimPhase[] = [
   { id: "dark-ages", label: "The dark ages", short: "Dark ages", timecode: "380,000 to about 100 million years", description: "Darkness. No stars yet, only hydrogen and helium gas slowly gathering along threads of dark matter.", scienceDetail: "Dark matter clumped under gravity and pulled gas in with it, building the first threads of the cosmic web. Nothing yet shone.", color: "#4a3f6b" },
   { id: "first-stars", label: "First stars ignite", short: "Stars", timecode: "About 100 to 200 million years", description: "The first stars switch on, huge, hot and blue, in the densest knots of gas. The universe lights up.", scienceDetail: "The first stars, called Population III, contained no heavy elements and were probably tens to hundreds of times the Sun's mass. None has been seen directly yet. Their light, with that of the first galaxies, began to reionise the gas between them.", color: "#93c5fd" },
   { id: "galaxies", label: "The first galaxies", short: "Galaxies", timecode: "A few hundred million years", description: "Stars gather into small galaxies that merge and grow. The James Webb Space Telescope has seen galaxies already shining less than 300 million years after the Big Bang.", scienceDetail: "Galaxies grew from the bottom up, small ones merging into larger ones inside haloes of dark matter. Black holes were already growing at the centres of some of them, earlier than many astronomers expected.", color: "#818cf8" },
-  { id: "now", label: "Today", short: "Today", timecode: "13.8 billion years", description: "Hundreds of billions of galaxies. Trillions upon trillions of stars. And one pale blue dot, where you are reading this.", scienceDetail: "The observable universe is about 93 billion light years across. It is about 68% dark energy, 27% dark matter and 5% ordinary matter. Its expansion is speeding up, and star formation peaked around 10 billion years ago.", color: "#8DEBFF" },
+  { id: "now", label: "Today", short: "Today", timecode: "13.8 billion years", description: "Hundreds of billions of galaxies. Trillions upon trillions of stars. And one pale blue dot, where you are reading this.", scienceDetail: "The observable universe is about 93 billion light years across. It is about 68% dark energy, 27% dark matter and 5% ordinary matter. Its expansion is speeding up, and star formation peaked around 10 billion years ago.", color: "#A9C3E0" },
 ];
 
 const PARTICLE_COUNT = 8000;
@@ -43,7 +43,7 @@ export default function BigBangSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "The Big Bang · PALE";
+    document.title = "The Big Bang | PALE";
     const el = mountRef.current;
     if (!el) return;
 
@@ -152,7 +152,7 @@ export default function BigBangSim() {
       new THREE.Color("#180030"),   // Dark Ages — near black, deep violet
       new THREE.Color("#cce8ff"),   // First Stars — brilliant blue-white
       new THREE.Color("#9fa8da"),   // Galaxy Formation — blue-violet
-      new THREE.Color("#8DEBFF"),   // Today — sky blue
+      new THREE.Color("#A9C3E0"),   // Today — sky blue
     ];
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {

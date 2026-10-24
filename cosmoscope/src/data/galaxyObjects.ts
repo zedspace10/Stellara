@@ -56,7 +56,7 @@ export const galaxyObjects = [
   {
     id: "sagittarius-a",
     name: "Sagittarius A*",
-    type: "Supermassive Black Hole",
+    type: "Supermassive black hole",
     distance: "26,000 light years",
     size: "4 million solar masses",
     discovery: "1974 (Bruce Balick, Robert Brown)",
@@ -65,7 +65,7 @@ export const galaxyObjects = [
   {
     id: "eagle-nebula",
     name: "Eagle Nebula",
-    type: "Stellar Nursery",
+    type: "Stellar nursery",
     distance: "About 6,500 light years",
     size: "70x55 light years",
     discovery: "1745 (Jean-Philippe de Chéseaux)",
@@ -74,7 +74,7 @@ export const galaxyObjects = [
   {
     id: "orion-nebula",
     name: "Orion Nebula",
-    type: "Stellar Nursery",
+    type: "Stellar nursery",
     distance: "1,344 light years",
     size: "24 light years",
     discovery: "1610 (Nicolas-Claude Fabri de Peiresc)",
@@ -83,7 +83,7 @@ export const galaxyObjects = [
   {
     id: "crab-nebula",
     name: "Crab Nebula",
-    type: "Supernova Remnant",
+    type: "Supernova remnant",
     distance: "6,523 light years",
     size: "11 light years",
     discovery: "1731 (John Bevis). The supernova was recorded in 1054",
@@ -92,7 +92,7 @@ export const galaxyObjects = [
   {
     id: "lagoon-nebula",
     name: "Lagoon Nebula",
-    type: "Emission Nebula",
+    type: "Emission nebula",
     distance: "About 4,100 light years",
     size: "110x50 light years",
     discovery: "1654 (Giovanni Hodierna)",
@@ -101,7 +101,7 @@ export const galaxyObjects = [
   {
     id: "omega-centauri",
     name: "Omega Centauri",
-    type: "Globular Cluster",
+    type: "Globular cluster",
     distance: "17,000 light years",
     size: "150 light years",
     discovery: "1677 (Edmond Halley)",
@@ -110,7 +110,7 @@ export const galaxyObjects = [
   {
     id: "47-tucanae",
     name: "47 Tucanae",
-    type: "Globular Cluster",
+    type: "Globular cluster",
     distance: "15,300 light years",
     size: "120 light years",
     discovery: "1751 (Nicolas-Louis de Lacaille)",
@@ -119,7 +119,7 @@ export const galaxyObjects = [
   {
     id: "m13",
     name: "Hercules Cluster (M13)",
-    type: "Globular Cluster",
+    type: "Globular cluster",
     distance: "22,200 light years",
     size: "145 light years",
     discovery: "1714 (Edmond Halley)",
@@ -128,7 +128,7 @@ export const galaxyObjects = [
   {
     id: "m3",
     name: "M3",
-    type: "Globular Cluster",
+    type: "Globular cluster",
     distance: "33,900 light years",
     size: "180 light years",
     discovery: "1764 (Charles Messier)",
@@ -137,7 +137,7 @@ export const galaxyObjects = [
   {
     id: "m5",
     name: "M5",
-    type: "Globular Cluster",
+    type: "Globular cluster",
     distance: "24,500 light years",
     size: "165 light years",
     discovery: "1702 (Gottfried Kirch)",
@@ -146,7 +146,7 @@ export const galaxyObjects = [
   {
     id: "lmc",
     name: "Large Magellanic Cloud",
-    type: "Satellite Galaxy",
+    type: "Satellite galaxy",
     distance: "160,000 light years",
     size: "14,000 light years",
     discovery: "Prehistoric (Indigenous peoples of the Southern Hemisphere)",
@@ -155,7 +155,7 @@ export const galaxyObjects = [
   {
     id: "smc",
     name: "Small Magellanic Cloud",
-    type: "Satellite Galaxy",
+    type: "Satellite galaxy",
     distance: "200,000 light years",
     size: "7,000 light years",
     discovery: "Prehistoric (Indigenous peoples of the Southern Hemisphere)",
@@ -164,7 +164,7 @@ export const galaxyObjects = [
   {
     id: "virgo-cluster",
     name: "Virgo Cluster",
-    type: "Galaxy Cluster",
+    type: "Galaxy cluster",
     distance: "53.8 million light years",
     size: "About 7 million light years",
     discovery: "1781 (Charles Messier)",
@@ -173,7 +173,7 @@ export const galaxyObjects = [
   {
     id: "andromeda",
     name: "Andromeda Galaxy (M31)",
-    type: "Spiral Galaxy",
+    type: "Spiral galaxy",
     distance: "2.537 million light years",
     size: "220,000 light years",
     discovery: "964 (Abd al-Rahman al-Sufi)",
@@ -182,7 +182,7 @@ export const galaxyObjects = [
   {
     id: "coma-cluster",
     name: "Coma Cluster",
-    type: "Galaxy Cluster",
+    type: "Galaxy cluster",
     distance: "336 million light years",
     size: "20 million light years",
     discovery: "1785 (William Herschel)",
@@ -191,7 +191,7 @@ export const galaxyObjects = [
   {
     id: "perseus-cluster",
     name: "Perseus Cluster",
-    type: "Galaxy Cluster",
+    type: "Galaxy cluster",
     distance: "240 million light years",
     size: "10 million light years",
     discovery: "18th century",

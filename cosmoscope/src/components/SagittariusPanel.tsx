@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'wouter';
+import { X } from 'lucide-react';
 
 interface SagittariusPanelProps {
   open: boolean;
@@ -11,9 +12,9 @@ const SAGITTARIUS_DATA = {
   category: 'Supermassive Black Hole',
   stats: [
     { label: 'Mass', value: '4 million solar masses' },
-    { label: 'Event horizon diameter', value: '~25 million km' },
+    { label: 'Event horizon diameter', value: 'About 25 million km' },
     { label: 'Distance from Earth', value: '26,000 light years' },
-    { label: 'Location', value: 'Centre of Milky Way' },
+    { label: 'Location', value: 'Centre of the Milky Way' },
     { label: 'First imaged', value: '12 May 2022' },
     { label: 'Radio source discovery', value: '1974' },
   ],
@@ -139,222 +140,55 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
 
   return (
     <>
+      <div className="fixed inset-0 z-[39]" onClick={onClose} />
       <div
-        className="fixed inset-0 z-[39]"
-        onClick={onClose}
-      />
-      <div
-        className="fixed right-4 z-40 flex flex-col"
-        style={{
-          top: '220px',
-          width: 360,
-          maxWidth: 'calc(100vw - 2rem)',
-          maxHeight: '85vh',
-          background: 'rgba(10,10,26,0.97)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(141,235,255,0.2)',
-          borderRadius: 16,
-          boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
-          overflowY: 'auto',
-        }}
+        className="fixed right-4 z-40 flex flex-col rounded-xl overflow-y-auto"
+        style={{ top: "220px", width: 352, maxWidth: "calc(100vw - 2rem)", maxHeight: "calc(100vh - 240px)", background: "#0A0F17", border: "1px solid #1C2533" }}
       >
-        <div
-          style={{
-            position: 'sticky',
-            top: 0,
-            zIndex: 10,
-            background: 'rgba(10,10,26,0.97)',
-            borderBottom: '1px solid rgba(141,235,255,0.08)',
-            padding: '20px 20px 16px',
-            display: 'flex',
-            alignItems: 'flex-start',
-            justifyContent: 'space-between',
-            gap: 12,
-          }}
-        >
-          <div>
-            <h2 style={{
-              fontFamily: 'Inter, sans-serif',
-              fontSize: 18,
-              fontWeight: 700,
-              color: '#F3DDB0',
-              margin: 0,
-              letterSpacing: '0.06em',
-            }}>
-              Sagittarius A*
-            </h2>
-            <span style={{
-              display: 'inline-block',
-              marginTop: 6,
-              padding: '3px 10px',
-              background: 'rgba(220,80,0,0.15)',
-              border: '1px solid rgba(220,80,0,0.3)',
-              borderRadius: 20,
-              color: '#ff7722',
-              fontSize: 11,
-              fontFamily: 'Inter, sans-serif',
-              letterSpacing: '0.08em',
-              fontWeight: 600,
-            }}>
-              SUPERMASSIVE BLACK HOLE
-            </span>
+        <div className="sticky top-0 z-10 px-5 pt-4 pb-4 flex items-start justify-between gap-3" style={{ background: "#0A0F17", borderBottom: "1px solid #1C2533" }}>
+          <div className="min-w-0">
+            <h2 className="m-0 text-[26px] leading-tight" style={{ color: "#F3DDB0", fontWeight: 400 }}>Sagittarius A*</h2>
+            <p className="m-0 mt-0.5 text-[13px]" style={{ color: "#8E9AA8" }}>The black hole at the centre of our galaxy</p>
           </div>
-          <button
-            onClick={onClose}
-            style={{
-              flexShrink: 0,
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              border: '1px solid rgba(255,255,255,0.15)',
-              background: 'rgba(255,255,255,0.05)',
-              color: 'rgba(255,255,255,0.6)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 16,
-            }}
-          >
-            ×
+          <button onClick={onClose} className="p-2 -mr-2 rounded-md hover:bg-white/5 transition-colors shrink-0" aria-label="Close" style={{ color: "#8E9AA8" }}>
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div style={{ padding: '16px 20px 24px' }}>
-          <div style={{
-            background: 'rgba(0,0,0,0.6)',
-            borderRadius: 10,
-            overflow: 'hidden',
-            marginBottom: 20,
-            border: '1px solid rgba(255,140,0,0.15)',
-          }}>
+        <div className="px-5 pt-4 pb-6">
+          <figure className="m-0">
             <BlackHoleCanvas />
-            <p style={{
-              textAlign: 'center',
-              fontSize: 10,
-              color: 'rgba(255,255,255,0.3)',
-              padding: '6px 0',
-              margin: 0,
-              fontFamily: 'Inter, sans-serif',
-              letterSpacing: '0.06em',
-            }}>
-              SIMULATED · BASED ON 2022 EHT IMAGE
-            </p>
-          </div>
+            <figcaption className="mt-2 text-[12px] text-center" style={{ color: "#6E7A88" }}>
+              A simulation, based on the 2022 Event Horizon Telescope image
+            </figcaption>
+          </figure>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '8px 12px',
-              marginBottom: 20,
-            }}
+          <p className="m-0 mt-5 text-[15px] leading-relaxed" style={{ color: "#C9D2DC" }}>{SAGITTARIUS_DATA.about}</p>
+
+          <dl className="m-0 mt-6">
+            {SAGITTARIUS_DATA.stats.map((st) => (
+              <div key={st.label} className="flex items-baseline justify-between gap-4 py-2" style={{ borderTop: "1px solid #161E2A" }}>
+                <dt className="text-[14px] shrink-0" style={{ color: "#8E9AA8" }}>{st.label}</dt>
+                <dd className="m-0 text-[14px] text-right tabular-nums" style={{ color: "#E8ECF1" }}>{st.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <ul className="m-0 mt-6 p-0 list-none space-y-3">
+            {SAGITTARIUS_DATA.facts.map((fact) => (
+              <li key={fact} className="text-[14px] leading-relaxed pl-3" style={{ color: "#C9D2DC", borderLeft: "1px solid #2A3546" }}>{fact}</li>
+            ))}
+          </ul>
+
+          <p className="m-0 mt-6 font-serif text-[17px] leading-snug" style={{ color: "#E8ECF1" }}>{SAGITTARIUS_DATA.ehtNote}</p>
+
+          <button
+            onClick={() => { navigate("/simulations/black-hole"); onClose(); }}
+            className="mt-6 w-full rounded-md py-2 text-[14px] font-medium transition-colors hover:bg-white/5"
+            style={{ border: "1px solid #2A3546", color: "#E8ECF1" }}
           >
-            {SAGITTARIUS_DATA.stats.map((s) => (
-              <div
-                key={s.label}
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  border: '1px solid rgba(255,255,255,0.06)',
-                  borderRadius: 8,
-                  padding: '8px 10px',
-                }}
-              >
-                <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', marginBottom: 3, fontFamily: 'Inter, sans-serif', letterSpacing: '0.06em' }}>
-                  {s.label.toUpperCase()}
-                </div>
-                <div style={{ fontSize: 12, color: '#e0e0e0', fontWeight: 600, fontFamily: 'Inter, sans-serif' }}>
-                  {s.value}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p style={{
-            fontSize: 13,
-            lineHeight: 1.7,
-            color: 'rgba(255,255,255,0.7)',
-            marginBottom: 20,
-            fontFamily: 'Inter, sans-serif',
-          }}>
-            {SAGITTARIUS_DATA.about}
-          </p>
-
-          <div style={{ marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {SAGITTARIUS_DATA.facts.map((fact, i) => (
-              <div
-                key={i}
-                style={{
-                  display: 'flex',
-                  gap: 10,
-                  padding: '10px 12px',
-                  background: 'rgba(141,235,255,0.04)',
-                  border: '1px solid rgba(141,235,255,0.1)',
-                  borderRadius: 8,
-                }}
-              >
-                <div style={{ color: '#8DEBFF', fontSize: 14, flexShrink: 0, marginTop: 1 }}>✦</div>
-                <p style={{ fontSize: 12, lineHeight: 1.6, color: 'rgba(255,255,255,0.65)', margin: 0, fontFamily: 'Inter, sans-serif' }}>
-                  {fact}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div style={{
-            padding: '14px 16px',
-            background: 'rgba(255,140,0,0.05)',
-            border: '1px solid rgba(255,140,0,0.25)',
-            borderRadius: 10,
-            marginBottom: 20,
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-              <span style={{
-                padding: '2px 8px',
-                background: 'rgba(255,140,0,0.2)',
-                border: '1px solid rgba(255,140,0,0.4)',
-                borderRadius: 12,
-                color: '#ff9933',
-                fontSize: 10,
-                fontWeight: 700,
-                fontFamily: 'Inter, sans-serif',
-                letterSpacing: '0.08em',
-              }}>
-                FIRST IMAGE 2022
-              </span>
-            </div>
-            <p style={{
-              fontSize: 12,
-              lineHeight: 1.7,
-              color: 'rgba(255,220,150,0.8)',
-              margin: 0,
-              fontFamily: 'Inter, sans-serif',
-            }}>
-              {SAGITTARIUS_DATA.ehtNote}
-            </p>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <button
-              onClick={() => { navigate('/simulations/black-hole'); onClose(); }}
-              style={{
-                width: '100%',
-                padding: '11px 16px',
-                background: 'rgba(255,80,0,0.06)',
-                border: '1px solid rgba(255,80,0,0.2)',
-                borderRadius: 10,
-                color: 'rgba(255,150,80,0.85)',
-                fontSize: 13,
-                fontFamily: 'Inter, sans-serif',
-                cursor: 'pointer',
-                textAlign: 'left',
-                letterSpacing: '0.02em',
-              }}
-            >
-              Watch a black hole form
-            </button>
-          </div>
+            Watch a black hole form
+          </button>
         </div>
       </div>
     </>

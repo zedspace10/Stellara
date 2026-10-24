@@ -1,16 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import Footer from "@/components/Footer";
-import PageHeader from "@/components/PageHeader";
 import { moon, planetsTonight, nextSeason, showers } from "@/lib/sky";
 
 const C = {
-  card: "#0D1520",
-  border: "#1D3040",
-  text: "#F5FAFF",
-  muted: "#A7B6C6",
-  faint: "#7C8C9C",
-  tint: "#8DEBFF",
+  border: "#1C2533",
+  rule: "#141B26",
+  text: "#E8ECF1",
+  muted: "#A3AFBC",
+  faint: "#7C8794",
+  tint: "#A9C3E0",
   warm: "#F3DDB0",
 };
 
@@ -54,7 +53,7 @@ function MoonDisc({ fraction, size = 120 }: { fraction: number; size?: number })
           <stop offset="100%" stopColor="#C9C4B8" />
         </radialGradient>
       </defs>
-      <circle cx={c} cy={c} r={r} fill="#141C27" stroke="#1D3040" />
+      <circle cx={c} cy={c} r={r} fill="#121925" />
       {lit > 0.01 && (
         <path d={d} fill="url(#moonlit)" transform={waxing ? undefined : `translate(${size} 0) scale(-1 1)`} />
       )}
@@ -62,17 +61,12 @@ function MoonDisc({ fraction, size = 120 }: { fraction: number; size?: number })
   );
 }
 
-function Card({ title, children }: { title: string; children: React.ReactNode }) {
+// One entry in tonight's log: what it is on the left, the details on the right.
+function Entry({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section
-      aria-label={title}
-      className="rounded-[20px] p-6"
-      style={{ background: C.card, border: `1px solid ${C.border}` }}
-    >
-      <h2 className="m-0 mb-4 text-sm font-semibold uppercase tracking-[0.12em]" style={{ color: C.muted }}>
-        {title}
-      </h2>
-      {children}
+    <section aria-label={title} className="grid grid-cols-1 md:grid-cols-[11rem_1fr] gap-x-10 gap-y-3 py-8" style={{ borderTop: `1px solid ${C.border}` }}>
+      <h2 className="m-0 text-[22px] leading-tight" style={{ color: C.text, fontWeight: 400 }}>{title}</h2>
+      <div className="min-w-0">{children}</div>
     </section>
   );
 }
@@ -81,7 +75,7 @@ export default function Tonight() {
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
-    document.title = "Tonight · PALE";
+    document.title = "Tonight | PALE";
     const id = setInterval(() => setNow(Date.now()), 10 * 60 * 1000);
     return () => clearInterval(id);
   }, []);
@@ -103,121 +97,97 @@ export default function Tonight() {
 
   return (
     <div className="min-h-screen pt-16" style={{ background: "#05070C", color: C.text }}>
-      <PageHeader
-        title="Tonight"
-        lede={`${formatDay(now)}. Step outside and look up. Here is what is above you.`}
-      />
+      <div className="max-w-[920px] mx-auto px-5 md:px-8">
+        <header className="pt-14 pb-10">
+          <h1 className="m-0 text-[40px] md:text-[56px] leading-[1.05]" style={{ color: C.text }}>Tonight</h1>
+          <p className="mt-4 mb-0 text-[17px] leading-relaxed max-w-[34rem]" style={{ color: C.muted }}>
+            {formatDay(now)}. Step outside and look up. This is what is above you.
+          </p>
+        </header>
 
-      <div className="max-w-[1100px] mx-auto px-6 pb-8 grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 420px), 1fr))" }}>
-        <Card title="The Moon">
+        <Entry title="The Moon">
           <div className="flex items-center gap-6 flex-wrap">
-            <MoonDisc fraction={m.fraction} />
+            <MoonDisc fraction={m.fraction} size={96} />
             <div className="min-w-0 flex-1">
-              <p className="m-0 text-2xl font-semibold">{m.name}</p>
-              <p className="mt-1 mb-0 text-[15px]" style={{ color: C.muted }}>{m.illumination}% lit</p>
-              <p className="mt-3 mb-0 text-sm" style={{ color: C.muted }}>
-                Next full Moon: <span style={{ color: C.text }}>{formatDay(m.nextFull)}</span> ({daysUntil(m.nextFull, now)})
+              <p className="m-0 font-serif text-[26px] leading-tight">{m.name}, {m.illumination}% lit</p>
+              <p className="mt-2 mb-0 text-[15px] leading-relaxed" style={{ color: C.muted }}>
+                Full Moon {formatDay(m.nextFull)} ({daysUntil(m.nextFull, now)}).
                 <br />
-                Next new Moon: <span style={{ color: C.text }}>{formatDay(m.nextNew)}</span> ({daysUntil(m.nextNew, now)})
+                New Moon {formatDay(m.nextNew)} ({daysUntil(m.nextNew, now)}).
               </p>
             </div>
           </div>
-          <p className="mt-4 mb-0 text-[15px] leading-relaxed" style={{ color: C.muted }}>{moonNote}</p>
-        </Card>
+          <p className="mt-5 mb-0 text-[16px] leading-relaxed max-w-[34rem]" style={{ color: C.text }}>{moonNote}</p>
+        </Entry>
 
-        <Card title="Planets you can see">
+        <Entry title="Planets">
           {visible.length === 0 ? (
-            <p className="m-0 text-[15px]" style={{ color: C.muted }}>
+            <p className="m-0 text-[16px]" style={{ color: C.muted }}>
               All five bright planets are too close to the Sun right now. Check back in a few weeks.
             </p>
           ) : (
-            <ul className="m-0 p-0 list-none space-y-4">
-              {visible.map((p) => (
-                <li key={p.id} className="flex items-start gap-3">
-                  <span
-                    aria-hidden="true"
-                    className="mt-1.5 shrink-0 rounded-full"
-                    style={{ width: 12, height: 12, background: PLANET_COLOURS[p.id], boxShadow: `0 0 10px ${PLANET_COLOURS[p.id]}` }}
-                  />
-                  <div className="min-w-0">
-                    <p className="m-0 text-[17px] font-semibold">{p.name}</p>
-                    <p className="mt-0.5 mb-0 text-[15px]" style={{ color: C.text }}>{p.when}</p>
-                    <p className="mt-0.5 mb-0 text-sm" style={{ color: C.muted }}>{p.brightness}</p>
-                  </div>
-                </li>
+            <dl className="m-0">
+              {visible.map((p, i) => (
+                <div key={p.id} className="grid grid-cols-[6.5rem_1fr] gap-x-4 py-3" style={i ? { borderTop: `1px solid ${C.rule}` } : undefined}>
+                  <dt className="flex items-center gap-2 text-[16px]" style={{ color: C.text }}>
+                    <span aria-hidden="true" className="shrink-0 rounded-full" style={{ width: 8, height: 8, background: PLANET_COLOURS[p.id] }} />
+                    {p.name}
+                  </dt>
+                  <dd className="m-0">
+                    <span className="block text-[16px]" style={{ color: C.text }}>{p.when}</span>
+                    <span className="block mt-0.5 text-[14px]" style={{ color: C.muted }}>{p.brightness}</span>
+                  </dd>
+                </div>
               ))}
-            </ul>
+            </dl>
           )}
-          {hidden.length > 0 && (
-            <p className="mt-5 mb-0 text-sm" style={{ color: C.faint }}>
-              Hidden in the Sun's glare: {hidden.map((p) => p.name).join(", ")}.
-            </p>
-          )}
-          <Link href="/" className="inline-block mt-4 text-[15px] font-semibold no-underline" style={{ color: C.tint }}>
-            See where they are in 3D
-          </Link>
-        </Card>
+          <p className="mt-4 mb-0 text-[14px]" style={{ color: C.faint }}>
+            {hidden.length > 0 && <>Hidden in the Sun's glare: {hidden.map((p) => p.name).join(", ")}. </>}
+            <Link href="/" className="underline underline-offset-4" style={{ color: C.tint }}>See where they are in 3D</Link>
+          </p>
+        </Entry>
 
-        <Card title="Meteor showers">
-          <ul className="m-0 p-0 list-none space-y-4">
-            {meteorShowers.map((s) => (
-              <li key={s.name + s.peakTime}>
-                <p className="m-0 text-[17px] font-semibold">
+        <Entry title="Meteors">
+          <dl className="m-0">
+            {meteorShowers.map((s, i) => (
+              <div key={s.name + s.peakTime} className="py-3" style={i ? { borderTop: `1px solid ${C.rule}` } : undefined}>
+                <dt className="text-[16px]" style={{ color: C.text }}>
                   {s.name}
-                  {s.activeNow && (
-                    <span className="ml-2 align-middle text-xs font-semibold rounded-full px-2 py-0.5" style={{ background: "rgba(141,235,255,0.12)", color: C.tint }}>
-                      Active now
-                    </span>
-                  )}
-                </p>
-                <p className="mt-0.5 mb-0 text-[15px]" style={{ color: C.text }}>
+                  {s.activeNow && <span className="ml-2 text-[14px]" style={{ color: C.tint }}>active now</span>}
+                </dt>
+                <dd className="m-0 mt-0.5 text-[14px] leading-relaxed" style={{ color: C.muted }}>
                   {s.activeNow && s.peakTime < now ? "Peaked around " : "Peaks around "}
                   {new Date(s.peakTime).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}
-                  {s.peakTime > now ? ` (${daysUntil(s.peakTime, now)})` : ""}
-                </p>
-                <p className="mt-0.5 mb-0 text-sm" style={{ color: C.muted }}>
-                  Up to about {s.rate} an hour in a dark sky, appearing to come from {s.radiant}.{s.note ? ` ${s.note}` : ""}
-                </p>
-              </li>
+                  {s.peakTime > now ? ` (${daysUntil(s.peakTime, now)})` : ""}. Up to about {s.rate} an hour in a dark sky, coming from {s.radiant}.{s.note ? ` ${s.note}` : ""}
+                </dd>
+              </div>
             ))}
-          </ul>
-        </Card>
+          </dl>
+        </Entry>
 
         {season && (
-          <Card title="The turning year">
-            <p className="m-0 text-[17px] font-semibold">{season.name}</p>
-            <p className="mt-0.5 mb-0 text-[15px]" style={{ color: C.text }}>
+          <Entry title="The year">
+            <p className="m-0 font-serif text-[22px] leading-tight">{season.name}</p>
+            <p className="mt-1 mb-0 text-[15px]" style={{ color: C.text }}>
               {formatDay(season.time, true)} ({daysUntil(season.time, now)})
             </p>
-            <p className="mt-0.5 mb-0 text-sm" style={{ color: C.muted }}>
+            <p className="mt-1 mb-0 text-[14px] leading-relaxed" style={{ color: C.muted }}>
               {season.northern}. The moment Earth reaches this point in its orbit around the Sun.
             </p>
-          </Card>
+          </Entry>
         )}
+
+        <div className="py-8 text-[15px] leading-relaxed" style={{ borderTop: `1px solid ${C.border}`, color: C.muted }}>
+          <p className="m-0">
+            Want more? Learn the shapes in the sky with the{" "}
+            <Link href="/constellations" className="underline underline-offset-4" style={{ color: C.tint }}>constellation guide</Link>, or see NASA's{" "}
+            <Link href="/apod" className="underline underline-offset-4" style={{ color: C.tint }}>picture of the day</Link>.
+          </p>
+          <p className="mt-4 mb-0 text-[13px]" style={{ color: C.faint }}>
+            Worked out on your device from NASA JPL orbital data. No location needed. Planets low in the sky near the Sun can be hard to spot from the UK.
+          </p>
+        </div>
       </div>
-
-      <section aria-label="More to look at" className="max-w-[1100px] mx-auto px-6 pb-6 flex flex-wrap gap-4">
-        <Link
-          href="/constellations"
-          className="flex-1 min-w-[260px] rounded-[20px] p-6 no-underline"
-          style={{ background: C.card, border: `1px solid ${C.border}` }}
-        >
-          <span className="block text-[17px] font-semibold" style={{ color: C.text }}>Constellation guide</span>
-          <span className="block mt-1 text-[15px]" style={{ color: C.muted }}>The shapes in the sky and the stories behind them.</span>
-        </Link>
-        <Link
-          href="/apod"
-          className="flex-1 min-w-[260px] rounded-[20px] p-6 no-underline"
-          style={{ background: C.card, border: `1px solid ${C.border}` }}
-        >
-          <span className="block text-[17px] font-semibold" style={{ color: C.text }}>Picture of the day</span>
-          <span className="block mt-1 text-[15px]" style={{ color: C.muted }}>A new view of the universe from NASA, every day.</span>
-        </Link>
-      </section>
-
-      <p className="max-w-[1100px] mx-auto px-6 m-0 text-xs" style={{ color: C.faint }}>
-        Worked out on your device from NASA JPL orbital data. No location needed. Planets low in the sky near the Sun can be hard to spot from the UK.
-      </p>
 
       <Footer />
     </div>

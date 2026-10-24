@@ -11,7 +11,7 @@ const PHASES: SimPhase[] = [
   { id: "protoplanets", label: "Young planets collide", short: "Collisions", timecode: "4.56 to 4.5 billion years ago", description: "Planetesimals merge into planetary embryos, some as big as Mars. Their orbits cross, and giant collisions are common.", scienceDetail: "The biggest bodies grow fastest, because their gravity sweeps up more material. Some models, such as the Grand Tack, have Jupiter moving inward and then back out while the gas disc remained, which would have scattered material across the inner solar system.", color: "#e53935" },
   { id: "moon-forming", label: "The giant impact", short: "Moon", timecode: "About 4.5 billion years ago", description: "A Mars sized body, named Theia, strikes the young Earth. Debris thrown into orbit gathers to form the Moon.", scienceDetail: "First proposed in 1975, the giant impact explains why the Moon has so little iron and why its rocks are such a close match for Earth's. Simulations suggest the Moon came together quickly, and a 2022 study found it could have formed in just hours.", color: "#F3DDB0" },
   { id: "bombardment", label: "An era of impacts", short: "Impacts", timecode: "Around 4 billion years ago", description: "The young planets are still being hit by leftover rocks and comets. The Moon's oldest craters keep a record of this violent time.", scienceDetail: "Moon rocks from the Apollo missions once pointed to a spike in impacts around 3.9 billion years ago, called the Late Heavy Bombardment, perhaps caused by the giant planets shifting their orbits. Newer studies suggest the impacts may instead have tailed off gradually. The question is still open.", color: "#ff6b35" },
-  { id: "today", label: "The solar system today", short: "Today", timecode: "Today", description: "Eight planets. Hundreds of moons. Millions of asteroids and comets. And one world we know has life, where chemistry became biology, and biology became curious.", scienceDetail: "The planets now move on nearly circular orbits, almost in one plane, a pattern left by how they formed. The Sun is about halfway through its life, with about 5 billion years of hydrogen left in its core.", color: "#8DEBFF" },
+  { id: "today", label: "The solar system today", short: "Today", timecode: "Today", description: "Eight planets. Hundreds of moons. Millions of asteroids and comets. And one world we know has life, where chemistry became biology, and biology became curious.", scienceDetail: "The planets now move on nearly circular orbits, almost in one plane, a pattern left by how they formed. The Sun is about halfway through its life, with about 5 billion years of hydrogen left in its core.", color: "#A9C3E0" },
 ];
 
 const N = 7000;
@@ -31,7 +31,7 @@ export default function SolarSystemFormationSim() {
   useEffect(() => { speedRef.current = speed; }, [speed]);
 
   useEffect(() => {
-    document.title = "Solar System Formation · PALE";
+    document.title = "Solar System Formation | PALE";
     const el = mountRef.current;
     if (!el) return;
     const W = el.clientWidth, H = el.clientHeight;
