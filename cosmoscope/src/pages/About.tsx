@@ -64,7 +64,7 @@ export default function About() {
 
         <Section icon={<BookOpen className="w-4 h-4" />} title="Who makes it" color="#8DEBFF">
           <p className="m-0 text-[15px] leading-relaxed" style={{ color: "#C9D4DF" }}>
-            PALE is made by Stellara, a not for profit space education project based in the UK. The 3D universe is
+            PALE is made by Stellara, a space education project based in the UK. The 3D universe is
             built with Three.js, and imagery comes from NASA, ESA and the James Webb Space Telescope.
           </p>
           <p className="mt-3 mb-0 text-[13px] leading-relaxed" style={{ color: "#7C8C9C" }}>
