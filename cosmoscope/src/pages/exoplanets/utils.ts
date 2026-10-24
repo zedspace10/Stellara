@@ -95,7 +95,7 @@ export function getPlanetTypeLabel(type: PlanetType): string {
 
 export function getPlanetTypeColor(type: PlanetType): string {
   const map: Record<PlanetType, string> = {
-    "earth-sized": "#4fc3f7",
+    "earth-sized": "#8DEBFF",
     "super-earth": "#66bb6a",
     "mini-neptune": "#42a5f5",
     "neptune-like": "#26c6da",
@@ -195,7 +195,7 @@ export function getPlanetOfWeek(): string {
 
 export const GALLERY_QUOTES = [
   {
-    text: "We have confirmed 5,500+ worlds in our galaxy alone. The Milky Way contains 200–400 billion stars. The maths is left as an exercise for the reader.",
+    text: "We have confirmed more than 6,000 worlds in our galaxy alone. The Milky Way contains 100 to 400 billion stars. The maths is left as an exercise for the reader.",
   },
   {
     text: "The first exoplanet was confirmed in 1992. In 30 years we went from zero known worlds beyond our solar system to thousands. We are just getting started.",
@@ -220,8 +220,8 @@ export const DISCOVERY_TIMELINE = [
   { year: 2014, count: 1000, note: "1,000 confirmed planets milestone" },
   { year: 2016, count: 2000, note: "TRAPPIST-1 system announced" },
   { year: 2018, count: 3800, note: "TESS begins all-sky survey" },
-  { year: 2022, count: 5000, note: "5,000 milestone. James Webb launches" },
-  { year: 2024, count: 5600, note: "5,600+ confirmed. Webb reading atmospheres" },
+  { year: 2022, count: 5000, note: "5,000 milestone. James Webb begins science" },
+  { year: 2025, count: 6000, note: "6,000 milestone. Webb reading atmospheres" },
 ];
 
 export const NOTABLE_SYSTEMS: Record<string, { label: string; note: string }> = {

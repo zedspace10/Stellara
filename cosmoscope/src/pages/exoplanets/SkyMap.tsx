@@ -131,7 +131,7 @@ export default function SkyMap({ planets, onSelectStar, highlightIds }: Props) {
       if (x < 0 || x > W || y < 0 || y > H) return;
       ctx.font = "bold 10px Inter, sans-serif";
       ctx.textAlign = "left";
-      ctx.fillStyle = "rgba(255,213,79,0.85)";
+      ctx.fillStyle = "rgba(243,221,176,0.85)";
       ctx.fillText(info.label, x + 8, y - 5);
       ctx.font = "9px Inter, sans-serif";
       ctx.fillStyle = "rgba(255,255,255,0.4)";
@@ -146,7 +146,7 @@ export default function SkyMap({ planets, onSelectStar, highlightIds }: Props) {
       const tx = Math.min(W - tw - 10, Math.max(10, x - tw / 2));
       const ty = y > H * 0.7 ? y - 75 : y + 20;
       ctx.fillStyle = "rgba(6,6,20,0.9)";
-      ctx.strokeStyle = "rgba(79,195,247,0.3)";
+      ctx.strokeStyle = "rgba(141,235,255,0.3)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.roundRect(tx, ty, tw, 58, 8);

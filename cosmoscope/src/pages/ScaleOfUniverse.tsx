@@ -229,7 +229,7 @@ const SCALE_OBJECTS = [
     size: 8.8e26,
     sizeLabel: '93 billion light years across',
     category: 'Cosmic',
-    colour: '#ffd54f',
+    colour: '#F3DDB0',
     renderStyle: 'universe',
     displayRadius: 300,
     description: 'Everything we can see. The universe continues beyond this, but light from there has not reached us, and much of it never will.',
@@ -470,7 +470,7 @@ function renderObject(
       ctx.fill();
 
       // Gold dashed ring
-      ctx.strokeStyle = '#ffd54f';
+      ctx.strokeStyle = '#F3DDB0';
       ctx.lineWidth = 2;
       ctx.setLineDash([10, 6]);
       ctx.beginPath();
@@ -479,7 +479,7 @@ function renderObject(
       ctx.setLineDash([]);
 
       // "You are here" text beneath
-      ctx.fillStyle = 'rgba(255,213,79,0.85)';
+      ctx.fillStyle = 'rgba(243,221,176,0.85)';
       ctx.font = 'italic 13px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('You are here', cx, cy + r + 34);
@@ -819,7 +819,7 @@ function renderObject(
       const pulseFrac = (Math.sin(t * 0.002) + 1) / 2;
       const pulseR = 6 + pulseFrac * 8;
       const pulseGlow = ctx.createRadialGradient(cx, cy, 0, cx, cy, pulseR * 3);
-      pulseGlow.addColorStop(0, `rgba(255,213,79,${0.6 + pulseFrac * 0.4})`);
+      pulseGlow.addColorStop(0, `rgba(243,221,176,${0.6 + pulseFrac * 0.4})`);
       pulseGlow.addColorStop(1, 'transparent');
       ctx.fillStyle = pulseGlow;
       ctx.beginPath();
@@ -908,7 +908,7 @@ export default function ScaleOfUniverse() {
       ctx.fill();
 
       const progress = idx / (SCALE_OBJECTS.length - 1);
-      ctx.fillStyle = '#ffd54f';
+      ctx.fillStyle = '#F3DDB0';
       ctx.beginPath();
       ctx.roundRect(barX, barY - 8, barW * progress, 16, 8);
       ctx.fill();
@@ -917,7 +917,7 @@ export default function ScaleOfUniverse() {
         const x = barX + (i / (SCALE_OBJECTS.length - 1)) * barW;
         ctx.beginPath();
         ctx.arc(x, barY, i === idx ? 6 : 3, 0, Math.PI * 2);
-        ctx.fillStyle = i === idx ? '#ffd54f' : 'rgba(255,255,255,0.3)';
+        ctx.fillStyle = i === idx ? '#F3DDB0' : 'rgba(255,255,255,0.3)';
         ctx.fill();
       });
 
@@ -930,7 +930,7 @@ export default function ScaleOfUniverse() {
       ctx.beginPath();
       ctx.roundRect(cx - badgeW / 2, 40, badgeW, 28, 14);
       ctx.fill();
-      ctx.fillStyle = '#4fc3f7';
+      ctx.fillStyle = '#8DEBFF';
       ctx.font = '11px Inter, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(obj.category.toUpperCase(), cx, 59);
@@ -942,7 +942,7 @@ export default function ScaleOfUniverse() {
       ctx.fillText(obj.name, cx, h * 0.13);
 
       // Size label
-      ctx.fillStyle = '#ffd54f';
+      ctx.fillStyle = '#F3DDB0';
       ctx.font = '16px Inter, sans-serif';
       ctx.fillText(obj.sizeLabel, cx, h * 0.13 + 30);
 
@@ -973,7 +973,7 @@ export default function ScaleOfUniverse() {
 
       // Anchor extra message
       if (obj.isAnchor) {
-        ctx.fillStyle = 'rgba(255,213,79,0.55)';
+        ctx.fillStyle = 'rgba(243,221,176,0.55)';
         ctx.font = 'italic 13px Inter, sans-serif';
         ctx.fillText(
           'Roughly halfway between the smallest and largest things that exist.',
@@ -1117,46 +1117,38 @@ export default function ScaleOfUniverse() {
 
         <h1 style={{
           fontFamily: 'Inter, sans-serif',
-          fontSize: 'clamp(24px, 5vw, 48px)',
-          color: '#ffffff',
-          letterSpacing: '0.15em',
-          marginBottom: 8,
+          fontSize: 'clamp(32px, 5vw, 48px)',
+          fontWeight: 700,
+          color: '#F5FAFF',
+          letterSpacing: '-0.02em',
+          margin: '0 0 12px',
           textAlign: 'center',
         }}>
-          SCALE OF THE UNIVERSE
+          Scale of the universe
         </h1>
 
         <p style={{
-          color: '#ffd54f', letterSpacing: '0.3em', fontSize: 12,
-          marginBottom: 16, textTransform: 'uppercase',
+          color: '#A7B6C6', fontSize: 18, margin: '0 0 40px',
+          textAlign: 'center', maxWidth: 460, lineHeight: 1.6,
         }}>
-          FROM THE PLANCK LENGTH TO THE OBSERVABLE UNIVERSE
-        </p>
-
-        <p style={{
-          color: 'rgba(255,255,255,0.5)', fontSize: 14, marginBottom: 48,
-          textAlign: 'center', maxWidth: 400, lineHeight: 1.6,
-        }}>
-          62 orders of magnitude. Scroll or swipe to travel through the scales of existence.
-          Tap any object to learn more.
+          From the smallest length that makes sense to everything we can see. Scroll or swipe to travel
+          through the scales, and tap anything to learn more.
         </p>
 
         <button
           onClick={() => setStarted(true)}
           style={{
-            padding: '16px 48px', background: 'transparent',
-            border: '1px solid #ffd54f', borderRadius: 8, color: '#ffd54f',
-            fontFamily: 'Inter, sans-serif', fontSize: 14,
-            letterSpacing: '0.2em', cursor: 'pointer', transition: 'all 300ms',
+            padding: '14px 32px', background: '#8DEBFF', border: 'none',
+            borderRadius: 999, color: '#05070C',
+            fontFamily: 'Inter, sans-serif', fontSize: 16, fontWeight: 600,
+            cursor: 'pointer',
           }}
-          onMouseEnter={e => { (e.target as HTMLButtonElement).style.background = 'rgba(255,213,79,0.1)'; }}
-          onMouseLeave={e => { (e.target as HTMLButtonElement).style.background = 'transparent'; }}
         >
-          BEGIN EXPLORATION
+          Start at human size
         </button>
 
-        <p style={{ color: 'rgba(255,255,255,0.2)', fontSize: 11, marginTop: 32 }}>
-          Starts at human scale · 18 objects across 62 orders of magnitude
+        <p style={{ color: '#7C8C9C', fontSize: 13, marginTop: 28 }}>
+          18 stops across 62 powers of ten
         </p>
       </div>
     );
@@ -1200,14 +1192,14 @@ export default function ScaleOfUniverse() {
             onClick={e => e.stopPropagation()}
             style={{
               background: 'rgba(10,10,26,0.95)', backdropFilter: 'blur(20px)',
-              border: '1px solid rgba(79,195,247,0.2)', borderRadius: 16,
+              border: '1px solid rgba(141,235,255,0.2)', borderRadius: 16,
               padding: 24, maxWidth: 480, width: '100%', maxHeight: '70vh', overflowY: 'auto',
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
               <div>
                 <span style={{
-                  fontSize: 10, color: '#4fc3f7', letterSpacing: '0.2em',
+                  fontSize: 10, color: '#8DEBFF', letterSpacing: '0.2em',
                   textTransform: 'uppercase', fontFamily: 'Inter, sans-serif',
                 }}>
                   {selectedObject.category}
@@ -1218,7 +1210,7 @@ export default function ScaleOfUniverse() {
                 }}>
                   {selectedObject.name}
                 </h2>
-                <p style={{ color: '#ffd54f', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>
+                <p style={{ color: '#F3DDB0', fontSize: 13, fontFamily: 'Inter, sans-serif' }}>
                   {selectedObject.sizeLabel}
                 </p>
               </div>
@@ -1241,11 +1233,11 @@ export default function ScaleOfUniverse() {
             </p>
 
             <div style={{
-              background: 'rgba(255,213,79,0.08)', border: '1px solid rgba(255,213,79,0.2)',
+              background: 'rgba(243,221,176,0.08)', border: '1px solid rgba(243,221,176,0.2)',
               borderRadius: 8, padding: 12, marginBottom: 16,
             }}>
               <p style={{
-                color: '#ffd54f', fontSize: 13, fontFamily: 'Inter, sans-serif',
+                color: '#F3DDB0', fontSize: 13, fontFamily: 'Inter, sans-serif',
                 lineHeight: 1.6, margin: 0,
               }}>
                 ✦ {selectedObject.fact}
@@ -1260,7 +1252,7 @@ export default function ScaleOfUniverse() {
               onClick={() => setShowCard(false)}
               style={{
                 marginTop: 16, padding: '10px 20px', background: 'transparent',
-                border: '1px solid rgba(79,195,247,0.3)', borderRadius: 8, color: '#4fc3f7',
+                border: '1px solid rgba(141,235,255,0.3)', borderRadius: 8, color: '#8DEBFF',
                 fontFamily: 'Inter, sans-serif', fontSize: 13, cursor: 'pointer', width: '100%',
               }}
             >

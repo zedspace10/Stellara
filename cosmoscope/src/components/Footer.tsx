@@ -4,8 +4,10 @@ import MailingListForm from "./MailingListForm";
 import { CONTACT_EMAIL } from "@/lib/links";
 
 const LINKS = [
-  { href: "/explore", label: "Explore" },
+  { href: "/", label: "Universe" },
   { href: "/tonight", label: "Tonight" },
+  { href: "/scale", label: "Scale" },
+  { href: "/simulations", label: "Simulations" },
   { href: "/about", label: "About" },
   { href: "/privacy", label: "Privacy" },
 ];
@@ -53,7 +55,7 @@ export default function Footer() {
           style={{ borderColor: "#1D3040", color: "#7C8C9C" }}
         >
           <p className="m-0">Imagery: NASA, ESA and Webb. Free, with no ads.</p>
-          <p className="m-0">PALE is made by Stellara, a not for profit space education project in the UK.</p>
+          <p className="m-0">PALE is made by Stellara, a space education project in the UK.</p>
         </div>
       </div>
     </footer>

@@ -56,7 +56,7 @@ export default function PaleBlueDotSequence({ onComplete, onStart }: PaleBlueDot
               transition={{ delay: 2, duration: 2 }}
               className="mt-12 flex flex-col items-center"
             >
-              <div className="w-2 h-2 bg-[#4fc3f7] rounded-full shadow-[0_0_15px_#4fc3f7] mb-12 animate-pulse" />
+              <div className="w-2 h-2 bg-[#8DEBFF] rounded-full shadow-[0_0_15px_#8DEBFF] mb-12 animate-pulse" />
               <Button 
                 variant="outline" 
                 onClick={onComplete}

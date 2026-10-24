@@ -1,17 +1,17 @@
 import { useEffect, useRef } from "react";
 import { Link } from "wouter";
 import { motion } from "framer-motion";
-import { Play, Clock, BarChart2, Sliders } from "lucide-react";
+import { Play, Clock } from "lucide-react";
 
 const SIMS = [
   {
     id: "big-bang",
     title: "The Big Bang",
-    description: "Witness the birth of spacetime itself — from a singularity to the observable universe.",
+    description: "Watch space itself begin, from a hot dense beginning to the universe we see today.",
     duration: "~4 min",
     difficulty: "Beginner",
-    difficultyColor: "#4fc3f7",
-    colors: ["#ff6b35", "#ff9f43", "#ffd54f"],
+    difficultyColor: "#8DEBFF",
+    colors: ["#ff6b35", "#ff9f43", "#F3DDB0"],
     icon: "✦",
   },
   {
@@ -20,8 +20,8 @@ const SIMS = [
     description: "Watch our galaxy assemble over 13.5 billion years from dark matter and colliding dwarfs.",
     duration: "~3 min",
     difficulty: "Intermediate",
-    difficultyColor: "#9c27b0",
-    colors: ["#9c27b0", "#4fc3f7", "#ffd54f"],
+    difficultyColor: "#A995FF",
+    colors: ["#A995FF", "#8DEBFF", "#F3DDB0"],
     icon: "⊛",
   },
   {
@@ -30,18 +30,18 @@ const SIMS = [
     description: "A cold molecular cloud collapses under gravity until fusion ignites in its core.",
     duration: "~3 min",
     difficulty: "Beginner",
-    difficultyColor: "#4fc3f7",
-    colors: ["#e53935", "#ff9f43", "#ffd54f"],
+    difficultyColor: "#8DEBFF",
+    colors: ["#e53935", "#ff9f43", "#F3DDB0"],
     icon: "★",
   },
   {
     id: "star-death",
     title: "Life & Death of a Star",
-    description: "From main sequence to red giant, supernova, and beyond — three stellar fates.",
+    description: "From a steady middle age to a red giant, a supernova, and beyond. Three ways a star can end.",
     duration: "~4 min",
     difficulty: "Intermediate",
-    difficultyColor: "#9c27b0",
-    colors: ["#ffd54f", "#e53935", "#9c27b0"],
+    difficultyColor: "#A995FF",
+    colors: ["#F3DDB0", "#e53935", "#A995FF"],
     icon: "☆",
   },
   {
@@ -51,17 +51,17 @@ const SIMS = [
     duration: "~4 min",
     difficulty: "Advanced",
     difficultyColor: "#e53935",
-    colors: ["#110022", "#9c27b0", "#4fc3f7"],
+    colors: ["#110022", "#A995FF", "#8DEBFF"],
     icon: "◉",
   },
   {
     id: "inside-black-hole",
     title: "Inside a Black Hole",
-    description: "Cross the event horizon and journey toward the singularity — where physics ends.",
+    description: "Cross the event horizon and head towards the centre, where our physics stops working.",
     duration: "~3 min",
     difficulty: "Advanced",
     difficultyColor: "#e53935",
-    colors: ["#1a0030", "#9c27b0", "#ff6b35"],
+    colors: ["#1a0030", "#A995FF", "#ff6b35"],
     icon: "⊗",
   },
   {
@@ -70,8 +70,8 @@ const SIMS = [
     description: "From a supernova shockwave 4.6 billion years ago to the world you stand on today.",
     duration: "~4 min",
     difficulty: "Intermediate",
-    difficultyColor: "#9c27b0",
-    colors: ["#4fc3f7", "#e53935", "#ffd54f"],
+    difficultyColor: "#A995FF",
+    colors: ["#8DEBFF", "#e53935", "#F3DDB0"],
     icon: "⊙",
   },
 ];
@@ -147,12 +147,12 @@ function AnimatedCard({ sim, index }: { sim: typeof SIMS[0]; index: number }) {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: index * 0.08 }}
-      className="group relative rounded-2xl border border-white/10 overflow-hidden bg-[#05050f] hover:border-white/25 transition-all duration-300 hover:scale-[1.02]"
+      className="group relative rounded-2xl border border-white/10 overflow-hidden bg-[#05070C] hover:border-white/25 transition-all duration-300 hover:scale-[1.02]"
     >
       {/* Preview canvas */}
       <div className="relative h-36 overflow-hidden">
         <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#05050f] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#05070C] via-transparent to-transparent" />
         <div className="absolute top-3 right-3 text-2xl opacity-50 group-hover:opacity-80 transition-opacity" style={{ color: sim.colors[0] }}>
           {sim.icon}
         </div>
@@ -176,8 +176,8 @@ function AnimatedCard({ sim, index }: { sim: typeof SIMS[0]; index: number }) {
             {sim.duration}
           </div>
           <Link href={`/simulations/${sim.id}`}>
-            <button className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full bg-[#4fc3f7]/10 border border-[#4fc3f7]/30 text-[#4fc3f7] hover:bg-[#4fc3f7]/20 transition-all">
-              <Play className="w-3.5 h-3.5 fill-[#4fc3f7]" />
+            <button className="flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-full bg-[#8DEBFF]/10 border border-[#8DEBFF]/30 text-[#8DEBFF] hover:bg-[#8DEBFF]/20 transition-all">
+              <Play className="w-3.5 h-3.5 fill-[#8DEBFF]" />
               Begin
             </button>
           </Link>
@@ -193,76 +193,18 @@ export default function SimulationsLanding() {
   }, []);
 
   return (
-    <div className="min-h-screen pt-24 pb-24 px-4 md:px-8 max-w-7xl mx-auto">
+    <div className="min-h-screen pt-24 pb-24 px-6 max-w-[1240px] mx-auto">
       {/* Hero */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
-        className="text-center mb-16"
+        className="pt-6 pb-12"
       >
-        <div className="inline-flex items-center gap-2 text-xs text-[#9c27b0] font-sans tracking-widest uppercase mb-4 px-4 py-2 rounded-full border border-[#9c27b0]/30 bg-[#9c27b0]/10">
-          <BarChart2 className="w-3.5 h-3.5" />
-          Interactive Cosmic Simulations
-        </div>
-        <h1 className="text-4xl md:text-6xl font-sans font-bold text-white mb-4">
-          PALE <span className="text-[#8DEBFF]">Simulations</span>
-        </h1>
-        <p className="text-gray-400 text-lg max-w-xl mx-auto leading-relaxed">
-          Witness the most profound events in cosmic history — scientifically accurate, visually cinematic.
+        <h1 className="m-0 text-4xl md:text-5xl font-bold tracking-[-0.02em] text-white">Simulations</h1>
+        <p className="mt-3 mb-0 text-lg leading-relaxed max-w-[620px]" style={{ color: "#A7B6C6" }}>
+          Watch the biggest events in the history of the universe unfold, from the Big Bang to the death of a star.
         </p>
-      </motion.div>
-
-      {/* Featured: Build Your Own Universe */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="mb-8"
-      >
-        <Link href="/build-universe">
-          <div className="group relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.01]"
-            style={{ background: "linear-gradient(135deg, rgba(156,39,176,0.15) 0%, rgba(79,195,247,0.08) 50%, rgba(255,213,79,0.08) 100%)", border: "1px solid rgba(156,39,176,0.35)" }}>
-            {/* Animated star field background */}
-            <div className="absolute inset-0 overflow-hidden">
-              {Array.from({ length: 40 }).map((_, i) => (
-                <div key={i} className="absolute rounded-full animate-pulse"
-                  style={{
-                    width: Math.random() * 2 + 1 + "px", height: Math.random() * 2 + 1 + "px",
-                    left: Math.random() * 100 + "%", top: Math.random() * 100 + "%",
-                    background: ["#4fc3f7", "#ffd54f", "#ce93d8", "#ff9f43"][Math.floor(Math.random() * 4)],
-                    opacity: 0.3 + Math.random() * 0.5,
-                    animationDelay: Math.random() * 3 + "s",
-                    animationDuration: 2 + Math.random() * 2 + "s",
-                  }} />
-              ))}
-            </div>
-            <div className="relative flex flex-col md:flex-row items-center gap-6 p-6 md:p-8">
-              <div className="shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center"
-                style={{ background: "rgba(156,39,176,0.2)", border: "1px solid rgba(156,39,176,0.4)" }}>
-                <Sliders className="w-8 h-8" style={{ color: "#ce93d8" }} />
-              </div>
-              <div className="flex-1 text-center md:text-left">
-                <div className="text-[10px] font-bold tracking-widest mb-1" style={{ fontFamily: "Inter, sans-serif", color: "#ce93d8" }}>
-                  INTERACTIVE SANDBOX
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-2" style={{ fontFamily: "Inter, sans-serif" }}>
-                  Build Your Own Universe
-                </h2>
-                <p className="text-sm md:text-base leading-relaxed max-w-2xl" style={{ color: "rgba(255,255,255,0.6)" }}>
-                  What if gravity were stronger? What if dark energy didn't exist? Adjust the fundamental constants of physics and watch a completely different universe unfold — from the Big Bang to the present day.
-                </p>
-              </div>
-              <div className="shrink-0">
-                <div className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all group-hover:scale-105"
-                  style={{ background: "linear-gradient(135deg, #9c27b0, #4fc3f7)", color: "#fff", fontFamily: "Inter, sans-serif", letterSpacing: "0.05em" }}>
-                  <Play className="w-4 h-4 fill-white" />
-                  BEGIN
-                </div>
-              </div>
-            </div>
-          </div>
-        </Link>
       </motion.div>
 
       {/* Grid */}
@@ -277,11 +219,11 @@ export default function SimulationsLanding() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="mt-12 p-6 rounded-2xl border border-[#ffd54f]/20 bg-[#ffd54f]/5 text-center"
+        className="mt-12 p-6 rounded-2xl border border-[#F3DDB0]/20 bg-[#F3DDB0]/5 text-center"
       >
-        <div className="text-[#ffd54f] font-sans text-sm mb-2">Recommended Order for New Explorers</div>
-        <div className="text-gray-400 text-sm">
-          Big Bang → Solar System Formation → Star Birth → Star Death → Black Hole → Milky Way Birth → Inside a Black Hole
+        <div className="text-[#F3DDB0] font-sans text-sm mb-2">New here? Try them in this order</div>
+        <div className="text-sm" style={{ color: "#A7B6C6" }}>
+          The Big Bang, then the birth of the solar system, the birth of a star, the death of a star, a black hole forming, the birth of the Milky Way, and finally inside a black hole.
         </div>
       </motion.div>
     </div>

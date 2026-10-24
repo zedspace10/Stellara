@@ -64,7 +64,7 @@ export interface ExoplanetsState {
 const LOADING_MSGS = [
   "Connecting to NASA Exoplanet Archive…",
   "Scanning confirmed worlds…",
-  "Loading 5,500+ planets…",
+  "Loading more than 6,000 planets…",
   "Preparing your galaxy…",
 ];
 

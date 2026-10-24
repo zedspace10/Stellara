@@ -21,7 +21,7 @@ export default function SunInfoPanel({ open, onClose }: SunInfoPanelProps) {
           style={{
             background: 'rgba(10,10,26,0.97)',
             backdropFilter: 'blur(24px)',
-            border: '1px solid rgba(255,213,79,0.2)',
+            border: '1px solid rgba(243,221,176,0.2)',
             borderBottom: 'none',
             maxHeight: '85vh',
           }}
@@ -41,8 +41,8 @@ export default function SunInfoPanel({ open, onClose }: SunInfoPanelProps) {
           top: '220px',
           background: 'rgba(10,10,26,0.95)',
           backdropFilter: 'blur(24px)',
-          border: '1px solid rgba(255,213,79,0.2)',
-          boxShadow: '0 0 40px rgba(255,213,79,0.08)',
+          border: '1px solid rgba(243,221,176,0.2)',
+          boxShadow: '0 0 40px rgba(243,221,176,0.08)',
         }}
       >
         <SunContent onClose={onClose} />
@@ -57,20 +57,20 @@ function SunContent({ onClose }: { onClose: () => void }) {
       {/* Sticky header */}
       <div
         className="flex items-start justify-between px-5 pt-4 pb-4 shrink-0"
-        style={{ borderBottom: '1px solid rgba(255,213,79,0.15)' }}
+        style={{ borderBottom: '1px solid rgba(243,221,176,0.15)' }}
       >
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span
               className="text-xs font-semibold uppercase tracking-widest px-2 py-0.5 rounded-full"
-              style={{ background: 'rgba(255,213,79,0.12)', color: '#ffd54f', border: '1px solid rgba(255,213,79,0.3)' }}
+              style={{ background: 'rgba(243,221,176,0.12)', color: '#F3DDB0', border: '1px solid rgba(243,221,176,0.3)' }}
             >
               Star · G-Type Main Sequence
             </span>
           </div>
           <h2
             className="text-3xl font-bold tracking-tight"
-            style={{ fontFamily: 'Inter, sans-serif', color: '#ffd54f' }}
+            style={{ fontFamily: 'Inter, sans-serif', color: '#F3DDB0' }}
           >
             The Sun
           </h2>
@@ -88,7 +88,7 @@ function SunContent({ onClose }: { onClose: () => void }) {
       {/* Sun illustration */}
       <div
         className="shrink-0 flex items-center justify-center py-6"
-        style={{ background: 'linear-gradient(180deg, rgba(255,213,79,0.06) 0%, transparent 100%)' }}
+        style={{ background: 'linear-gradient(180deg, rgba(243,221,176,0.06) 0%, transparent 100%)' }}
       >
         <div className="relative">
           {/* Outer glow */}
@@ -102,7 +102,7 @@ function SunContent({ onClose }: { onClose: () => void }) {
           <div
             className="absolute inset-0 rounded-full"
             style={{
-              background: 'radial-gradient(circle, rgba(255,213,79,0.25) 0%, transparent 70%)',
+              background: 'radial-gradient(circle, rgba(243,221,176,0.25) 0%, transparent 70%)',
               transform: 'scale(2.2)',
             }}
           />
@@ -110,8 +110,8 @@ function SunContent({ onClose }: { onClose: () => void }) {
           <div
             className="w-24 h-24 rounded-full relative"
             style={{
-              background: 'radial-gradient(circle at 35% 35%, #fff9c4 0%, #ffd54f 40%, #ff8f00 80%, #e65100 100%)',
-              boxShadow: '0 0 30px rgba(255,213,79,0.5), 0 0 60px rgba(255,150,0,0.3)',
+              background: 'radial-gradient(circle at 35% 35%, #fff9c4 0%, #F3DDB0 40%, #ff8f00 80%, #e65100 100%)',
+              boxShadow: '0 0 30px rgba(243,221,176,0.5), 0 0 60px rgba(255,150,0,0.3)',
             }}
           >
             {/* Surface detail */}
@@ -147,7 +147,7 @@ function SunContent({ onClose }: { onClose: () => void }) {
                   className="rounded-xl p-3"
                   style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
                 >
-                  <div className="flex items-center gap-1.5 text-[#ffd54f] mb-1">
+                  <div className="flex items-center gap-1.5 text-[#F3DDB0] mb-1">
                     {s.icon}
                     <span className="text-[10px] uppercase tracking-wider text-white/40">{s.label}</span>
                   </div>
@@ -187,11 +187,11 @@ function SunContent({ onClose }: { onClose: () => void }) {
                 <div
                   key={i}
                   className="flex gap-3 rounded-xl p-3"
-                  style={{ background: 'rgba(255,213,79,0.05)', border: '1px solid rgba(255,213,79,0.1)' }}
+                  style={{ background: 'rgba(243,221,176,0.05)', border: '1px solid rgba(243,221,176,0.1)' }}
                 >
                   <div
                     className="w-5 h-5 rounded-full shrink-0 flex items-center justify-center text-xs font-bold mt-0.5"
-                    style={{ background: 'rgba(255,213,79,0.15)', color: '#ffd54f' }}
+                    style={{ background: 'rgba(243,221,176,0.15)', color: '#F3DDB0' }}
                   >
                     {i + 1}
                   </div>
@@ -204,9 +204,9 @@ function SunContent({ onClose }: { onClose: () => void }) {
           {/* Scale comparison */}
           <div
             className="rounded-xl p-4"
-            style={{ background: 'rgba(79,195,247,0.05)', border: '1px solid rgba(79,195,247,0.15)' }}
+            style={{ background: 'rgba(141,235,255,0.05)', border: '1px solid rgba(141,235,255,0.15)' }}
           >
-            <div className="flex items-center gap-2 text-[#4fc3f7] mb-2 text-xs font-semibold uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-[#8DEBFF] mb-2 text-xs font-semibold uppercase tracking-wider">
               <Ruler className="w-3.5 h-3.5" /> Scale Comparison
             </div>
             <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.75)' }}>

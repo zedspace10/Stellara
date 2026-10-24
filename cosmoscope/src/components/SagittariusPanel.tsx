@@ -153,7 +153,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
           background: 'rgba(10,10,26,0.97)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          border: '1px solid rgba(79,195,247,0.2)',
+          border: '1px solid rgba(141,235,255,0.2)',
           borderRadius: 16,
           boxShadow: '0 8px 40px rgba(0,0,0,0.6)',
           overflowY: 'auto',
@@ -165,7 +165,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
             top: 0,
             zIndex: 10,
             background: 'rgba(10,10,26,0.97)',
-            borderBottom: '1px solid rgba(79,195,247,0.08)',
+            borderBottom: '1px solid rgba(141,235,255,0.08)',
             padding: '20px 20px 16px',
             display: 'flex',
             alignItems: 'flex-start',
@@ -178,7 +178,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
               fontFamily: 'Inter, sans-serif',
               fontSize: 18,
               fontWeight: 700,
-              color: '#ffd54f',
+              color: '#F3DDB0',
               margin: 0,
               letterSpacing: '0.06em',
             }}>
@@ -289,12 +289,12 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
                   display: 'flex',
                   gap: 10,
                   padding: '10px 12px',
-                  background: 'rgba(79,195,247,0.04)',
-                  border: '1px solid rgba(79,195,247,0.1)',
+                  background: 'rgba(141,235,255,0.04)',
+                  border: '1px solid rgba(141,235,255,0.1)',
                   borderRadius: 8,
                 }}
               >
-                <div style={{ color: '#4fc3f7', fontSize: 14, flexShrink: 0, marginTop: 1 }}>✦</div>
+                <div style={{ color: '#8DEBFF', fontSize: 14, flexShrink: 0, marginTop: 1 }}>✦</div>
                 <p style={{ fontSize: 12, lineHeight: 1.6, color: 'rgba(255,255,255,0.65)', margin: 0, fontFamily: 'Inter, sans-serif' }}>
                   {fact}
                 </p>
@@ -337,7 +337,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             <button
-              onClick={() => { navigate('/blackholes'); onClose(); }}
+              onClick={() => { navigate('/simulations/black-hole'); onClose(); }}
               style={{
                 width: '100%',
                 padding: '11px 16px',
@@ -352,7 +352,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
                 letterSpacing: '0.02em',
               }}
             >
-              View Black Holes &amp; Relativity →
+              Watch a black hole form
             </button>
           </div>
         </div>

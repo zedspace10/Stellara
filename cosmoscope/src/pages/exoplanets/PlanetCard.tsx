@@ -23,8 +23,8 @@ export const PlanetCard = memo(function PlanetCard({ planet, onClick, featured =
         border: "1px solid rgba(255,255,255,0.07)",
       }}
       onMouseEnter={e => {
-        (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,213,79,0.35)";
-        (e.currentTarget as HTMLElement).style.boxShadow = "0 0 20px rgba(255,213,79,0.06)";
+        (e.currentTarget as HTMLElement).style.borderColor = "rgba(243,221,176,0.35)";
+        (e.currentTarget as HTMLElement).style.boxShadow = "0 0 20px rgba(243,221,176,0.06)";
       }}
       onMouseLeave={e => {
         (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.07)";
@@ -50,14 +50,14 @@ export const PlanetCard = memo(function PlanetCard({ planet, onClick, featured =
         )}
         {planet.year && planet.year >= 2022 && (
           <span className="text-[9px] px-2 py-0.5 rounded-full border font-medium"
-            style={{ color: "#ffd54f", borderColor: "#ffd54f44", background: "#ffd54f11" }}>
+            style={{ color: "#F3DDB0", borderColor: "#F3DDB044", background: "#F3DDB011" }}>
             Webb
           </span>
         )}
       </div>
 
       {/* Name */}
-      <div className="text-sm font-sans text-white/90 leading-tight mb-0.5 truncate group-hover:text-[#ffd54f] transition-colors">
+      <div className="text-sm font-sans text-white/90 leading-tight mb-0.5 truncate group-hover:text-[#F3DDB0] transition-colors">
         {planet.name}
       </div>
       <div className="text-[10px] text-white/35 mb-3 truncate">{planet.starName}</div>
@@ -86,7 +86,7 @@ export const PlanetCard = memo(function PlanetCard({ planet, onClick, featured =
           </div>
           <div className="h-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.08)" }}>
             <div className="h-full rounded-full transition-all"
-              style={{ width: `${planet.esi * 100}%`, background: planet.esi > 0.6 ? "#66bb6a" : planet.esi > 0.3 ? "#4fc3f7" : "#556677" }} />
+              style={{ width: `${planet.esi * 100}%`, background: planet.esi > 0.6 ? "#66bb6a" : planet.esi > 0.3 ? "#8DEBFF" : "#556677" }} />
           </div>
         </div>
       )}

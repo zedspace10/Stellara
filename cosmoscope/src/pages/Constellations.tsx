@@ -262,7 +262,7 @@ function ConstellationSVG({ data, size = 100 }: { data: ConstellationData; size?
             key={i}
             x1={sa.x} y1={sa.y}
             x2={sb.x} y2={sb.y}
-            stroke="rgba(79,195,247,0.35)"
+            stroke="rgba(141,235,255,0.35)"
             strokeWidth="0.8"
           />
         );
@@ -285,7 +285,7 @@ function ConstellationSVG({ data, size = 100 }: { data: ConstellationData; size?
           x={star.x + star.r + 1}
           y={star.y + 1}
           fontSize="5"
-          fill="rgba(255,213,79,0.7)"
+          fill="rgba(243,221,176,0.7)"
           fontFamily="Inter, sans-serif"
         >
           {star.name}
@@ -296,9 +296,9 @@ function ConstellationSVG({ data, size = 100 }: { data: ConstellationData; size?
 }
 
 const HEMISPHERE_BADGE: Record<Hemisphere, { label: string; color: string }> = {
-  N: { label: "Northern", color: "#4fc3f7" },
+  N: { label: "Northern", color: "#8DEBFF" },
   S: { label: "Southern", color: "#ef5350" },
-  Both: { label: "Both", color: "#9c27b0" },
+  Both: { label: "Both", color: "#A995FF" },
 };
 
 function ConstellationCard({ data, onClick }: { data: ConstellationData; onClick: () => void }) {
@@ -310,7 +310,7 @@ function ConstellationCard({ data, onClick }: { data: ConstellationData; onClick
       style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
-        (e.currentTarget as HTMLElement).style.borderColor = "rgba(79,195,247,0.25)";
+        (e.currentTarget as HTMLElement).style.borderColor = "rgba(141,235,255,0.25)";
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.03)";
@@ -318,11 +318,11 @@ function ConstellationCard({ data, onClick }: { data: ConstellationData; onClick
       }}
     >
       <div className="flex items-start gap-3 mb-3">
-        <div className="rounded-xl overflow-hidden border" style={{ borderColor: "rgba(79,195,247,0.15)" }}>
+        <div className="rounded-xl overflow-hidden border" style={{ borderColor: "rgba(141,235,255,0.15)" }}>
           <ConstellationSVG data={data} size={72} />
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="font-bold text-sm text-white mb-0.5" style={{ fontFamily: "Inter, sans-serif", color: "#ffd54f" }}>
+          <h3 className="font-bold text-sm text-white mb-0.5" style={{ fontFamily: "Inter, sans-serif", color: "#F3DDB0" }}>
             {data.name}
           </h3>
           <p className="text-xs mb-2" style={{ color: "rgba(255,255,255,0.35)" }}>{data.abbr} · {data.months}</p>
@@ -351,18 +351,18 @@ function ConstellationDetail({ data, onBack }: { data: ConstellationData; onBack
         onClick={onBack}
         className="flex items-center gap-2 text-sm mb-8 transition-colors"
         style={{ color: "rgba(255,255,255,0.4)" }}
-        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#4fc3f7")}
+        onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.color = "#8DEBFF")}
         onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.4)")}
       >
         ← Back to Constellations
       </button>
 
       <div className="flex flex-col md:flex-row gap-6 mb-8">
-        <div className="rounded-2xl overflow-hidden border self-start" style={{ borderColor: "rgba(79,195,247,0.15)" }}>
+        <div className="rounded-2xl overflow-hidden border self-start" style={{ borderColor: "rgba(141,235,255,0.15)" }}>
           <ConstellationSVG data={data} size={180} />
         </div>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "Inter, sans-serif", color: "#ffd54f" }}>
+          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: "Inter, sans-serif", color: "#F3DDB0" }}>
             {data.name}
           </h1>
           <p className="text-sm mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
@@ -424,7 +424,7 @@ export default function Constellations() {
 
   if (selected) {
     return (
-      <div className="min-h-screen pt-20 pb-0" style={{ background: "linear-gradient(180deg, #020208 0%, #05050f 100%)" }}>
+      <div className="min-h-screen pt-20 pb-0" style={{ background: "#05070C" }}>
         <ConstellationDetail data={selected} onBack={() => setSelected(null)} />
         <Footer />
       </div>
@@ -432,18 +432,13 @@ export default function Constellations() {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-0" style={{ background: "linear-gradient(180deg, #020208 0%, #05050f 100%)" }}>
-      <div className="max-w-5xl mx-auto px-5 py-10">
+    <div className="min-h-screen pt-20 pb-0" style={{ background: "#05070C" }}>
+      <div className="max-w-[1100px] mx-auto px-6 py-10">
         {/* Header */}
-        <div className="text-center mb-10">
-          <h1
-            className="text-3xl md:text-4xl font-bold tracking-widest mb-3"
-            style={{ fontFamily: "Inter, sans-serif", color: "#ffd54f" }}
-          >
-            CONSTELLATION GUIDE
-          </h1>
-          <p style={{ color: "rgba(255,255,255,0.4)" }}>
-            The patterns humanity has written in the stars.
+        <div className="pt-4 pb-10">
+          <h1 className="m-0 text-4xl md:text-5xl font-bold tracking-[-0.02em] text-white">Constellation guide</h1>
+          <p className="mt-3 mb-0 text-lg leading-relaxed max-w-[620px]" style={{ color: "#A7B6C6" }}>
+            The patterns people have traced in the stars for thousands of years, and the stories behind them.
           </p>
         </div>
 
@@ -470,8 +465,8 @@ export default function Constellations() {
                 className="px-4 py-2 text-xs font-semibold transition-colors"
                 style={{
                   fontFamily: "Inter, sans-serif",
-                  background: hemisphere === h ? "rgba(79,195,247,0.15)" : "transparent",
-                  color: hemisphere === h ? "#4fc3f7" : "rgba(255,255,255,0.4)",
+                  background: hemisphere === h ? "rgba(141,235,255,0.15)" : "transparent",
+                  color: hemisphere === h ? "#8DEBFF" : "rgba(255,255,255,0.4)",
                 }}
               >
                 {h === "N" ? "Northern" : h === "S" ? "Southern" : h === "Both" ? "Equatorial" : "All"}

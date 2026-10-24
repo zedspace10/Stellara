@@ -67,12 +67,12 @@ function OrbitalDiagram({ systemPlanets, current }: { systemPlanets: ExoplanetDa
           return (
             <div key={p.id} className="absolute" style={{ left: `${x}%`, top: "50%", transform: "translate(-50%, -50%)" }}>
               <div
-                className={`rounded-full transition-all ${isCurrent ? "ring-2 ring-[#ffd54f]" : ""}`}
+                className={`rounded-full transition-all ${isCurrent ? "ring-2 ring-[#F3DDB0]" : ""}`}
                 style={{
                   width: isCurrent ? 10 : 6,
                   height: isCurrent ? 10 : 6,
-                  background: isCurrent ? "#ffd54f" : getStarColor(p.spectralType ?? null),
-                  boxShadow: isCurrent ? "0 0 8px #ffd54f" : undefined,
+                  background: isCurrent ? "#F3DDB0" : getStarColor(p.spectralType ?? null),
+                  boxShadow: isCurrent ? "0 0 8px #F3DDB0" : undefined,
                   marginTop: i % 2 === 0 ? -2 : 2,
                 }}
                 title={p.name}
@@ -99,11 +99,11 @@ export default function PlanetDetail({ planet, allPlanets, onClose, onNavigate }
       initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
       transition={{ type: "spring", damping: 32, stiffness: 320 }}
       className="fixed top-0 right-0 bottom-0 z-50 w-full max-w-md overflow-y-auto"
-      style={{ background: "rgba(4,4,18,0.98)", backdropFilter: "blur(20px)", borderLeft: "1px solid rgba(79,195,247,0.15)" }}
+      style={{ background: "rgba(4,4,18,0.98)", backdropFilter: "blur(20px)", borderLeft: "1px solid rgba(141,235,255,0.15)" }}
     >
       {/* Hero */}
       <div className="relative flex flex-col items-center pt-14 pb-8 px-6"
-        style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(79,195,247,0.06) 0%, transparent 70%)" }}>
+        style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(141,235,255,0.06) 0%, transparent 70%)" }}>
         <button onClick={onClose} className="absolute top-4 right-4 text-white/40 hover:text-white transition-colors">
           <X className="w-5 h-5" />
         </button>
@@ -123,8 +123,8 @@ export default function PlanetDetail({ planet, allPlanets, onClose, onNavigate }
               </span>
             )}
             {planet.year && planet.year >= 2022 && (
-              <span className="text-xs px-3 py-1 rounded-full border border-[#ffd54f]/30 text-[#ffd54f]"
-                style={{ background: "rgba(255,213,79,0.08)" }}>
+              <span className="text-xs px-3 py-1 rounded-full border border-[#F3DDB0]/30 text-[#F3DDB0]"
+                style={{ background: "rgba(243,221,176,0.08)" }}>
                 Webb Era
               </span>
             )}
@@ -161,9 +161,9 @@ export default function PlanetDetail({ planet, allPlanets, onClose, onNavigate }
             <div className="mt-3 flex items-center gap-3">
               <div className="text-xs text-white/40">Earth Similarity Index</div>
               <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-                <div className="h-full rounded-full" style={{ width: `${planet.esi * 100}%`, background: planet.esi > 0.6 ? "#66bb6a" : "#4fc3f7" }} />
+                <div className="h-full rounded-full" style={{ width: `${planet.esi * 100}%`, background: planet.esi > 0.6 ? "#66bb6a" : "#8DEBFF" }} />
               </div>
-              <div className="text-xs font-mono" style={{ color: planet.esi > 0.6 ? "#66bb6a" : "#4fc3f7" }}>
+              <div className="text-xs font-mono" style={{ color: planet.esi > 0.6 ? "#66bb6a" : "#8DEBFF" }}>
                 {(planet.esi * 100).toFixed(1)}%
               </div>
             </div>
@@ -171,8 +171,8 @@ export default function PlanetDetail({ planet, allPlanets, onClose, onNavigate }
         </section>
 
         {/* If you were there */}
-        <section className="rounded-xl p-4" style={{ background: "rgba(79,195,247,0.04)", border: "1px solid rgba(79,195,247,0.12)" }}>
-          <div className="text-[10px] tracking-widest text-[#4fc3f7]/60 uppercase mb-2">
+        <section className="rounded-xl p-4" style={{ background: "rgba(141,235,255,0.04)", border: "1px solid rgba(141,235,255,0.12)" }}>
+          <div className="text-[10px] tracking-widest text-[#8DEBFF]/60 uppercase mb-2">
             If You Were There — Speculative but Science-Based
           </div>
           <div className="text-sm text-white/65 leading-relaxed space-y-2">
@@ -236,7 +236,7 @@ export default function PlanetDetail({ planet, allPlanets, onClose, onNavigate }
             <div className="flex flex-wrap gap-2">
               {siblings.slice(0, 6).map(s => (
                 <button key={s.id} onClick={() => onNavigate(s)}
-                  className="text-xs px-3 py-1.5 rounded-full border border-white/10 text-white/50 hover:border-[#4fc3f7]/50 hover:text-[#4fc3f7] transition-colors">
+                  className="text-xs px-3 py-1.5 rounded-full border border-white/10 text-white/50 hover:border-[#8DEBFF]/50 hover:text-[#8DEBFF] transition-colors">
                   {s.name}
                 </button>
               ))}
@@ -269,9 +269,9 @@ export default function PlanetDetail({ planet, allPlanets, onClose, onNavigate }
         {/* External link */}
         <a href={nasa_url} target="_blank" rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs transition-colors"
-          style={{ border: "1px solid rgba(79,195,247,0.2)", color: "rgba(79,195,247,0.7)" }}
-          onMouseEnter={e => (e.currentTarget.style.color = "#4fc3f7")}
-          onMouseLeave={e => (e.currentTarget.style.color = "rgba(79,195,247,0.7)")}>
+          style={{ border: "1px solid rgba(141,235,255,0.2)", color: "rgba(141,235,255,0.7)" }}
+          onMouseEnter={e => (e.currentTarget.style.color = "#8DEBFF")}
+          onMouseLeave={e => (e.currentTarget.style.color = "rgba(141,235,255,0.7)")}>
           <ExternalLink className="w-3.5 h-3.5" />
           View on NASA Exoplanet Archive
         </a>

@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Heart, Star, Globe, BookOpen, ChevronRight, Mail } from "lucide-react";
 import Footer from "@/components/Footer";
 import MailingListForm from "@/components/MailingListForm";
+import { APP_STORE_URL } from "@/lib/links";
 
 export default function About() {
   useEffect(() => {
@@ -27,7 +28,12 @@ export default function About() {
           </p>
           <p className="mt-3 mb-0 text-[15px] leading-relaxed" style={{ color: "#C9D4DF" }}>
             On the website you can fly through the solar system in 3D, journey from the Planck length to the edge of
-            the observable universe, watch stars form and die, and find out what is in your sky tonight. The PALE app
+            the observable universe, watch stars form and die, and find out what is in your sky tonight.{" "}
+            {APP_STORE_URL ? (
+              <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: "#8DEBFF" }}>
+                The PALE app
+              </a>
+            ) : "The PALE app"}{" "}
             brings the same calm space to your phone.
           </p>
         </Section>
@@ -58,8 +64,13 @@ export default function About() {
 
         <Section icon={<BookOpen className="w-4 h-4" />} title="Who makes it" color="#8DEBFF">
           <p className="m-0 text-[15px] leading-relaxed" style={{ color: "#C9D4DF" }}>
-            PALE is made by Stellara, a not for profit space education project based in the UK. The 3D universe is
+            PALE is made by Stellara, a space education project based in the UK. The 3D universe is
             built with Three.js, and imagery comes from NASA, ESA and the James Webb Space Telescope.
+          </p>
+          <p className="mt-3 mb-0 text-[13px] leading-relaxed" style={{ color: "#7C8C9C" }}>
+            Planet positions use NASA JPL orbital elements. Planet and Sun surfaces are from{" "}
+            <a href="https://www.solarsystemscope.com/textures/" className="underline" style={{ color: "#A7B6C6" }}>Solar System Scope</a>,
+            used under CC BY 4.0. The night sky uses the Yale Bright Star Catalogue.
           </p>
         </Section>
 
@@ -75,7 +86,7 @@ export default function About() {
         </div>
 
         <div className="mt-10 text-center">
-          <Link href="/universe" className="inline-flex items-center gap-2 text-[15px] no-underline" style={{ color: "#8DEBFF" }}>
+          <Link href="/" className="inline-flex items-center gap-2 text-[15px] no-underline" style={{ color: "#8DEBFF" }}>
             Open the interactive universe <ChevronRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>

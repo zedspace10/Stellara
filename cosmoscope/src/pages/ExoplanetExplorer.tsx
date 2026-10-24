@@ -16,7 +16,7 @@ import FilterPanel from "./exoplanets/FilterPanel";
 // ── Intro animation ──────────────────────────────────────────────────────────
 
 const INTRO_LINES = [
-  "5,500 confirmed worlds.",
+  "More than 6,000 confirmed worlds.",
   "And counting.",
   "None of them are Earth.",
 ];
@@ -62,7 +62,7 @@ function IntroScreen({ onDone }: { onDone: () => void }) {
 
       {/* Text lines */}
       <div className="relative z-10 text-center">
-        <div className="text-[10px] tracking-[0.4em] text-[#4fc3f7] mb-10 uppercase">PALE · Exoplanet Explorer</div>
+        <div className="text-sm text-[#8DEBFF] mb-10">Other worlds</div>
         <div className="space-y-4 min-h-[120px] flex flex-col items-center justify-center">
           {INTRO_LINES.map((line, i) => (
             <AnimatePresence key={line}>
@@ -99,20 +99,20 @@ function LoadingState({ progress, statusMsg }: { progress: number; statusMsg: st
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
           className="absolute inset-x-0 h-px"
-          style={{ background: "linear-gradient(to right, transparent, rgba(79,195,247,0.6), rgba(255,213,79,0.4), transparent)" }}
+          style={{ background: "linear-gradient(to right, transparent, rgba(141,235,255,0.6), rgba(243,221,176,0.4), transparent)" }}
           animate={{ y: ["0vh", "100vh"] }}
           transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
         />
         <motion.div
           className="absolute inset-x-0"
-          style={{ height: 80, background: "linear-gradient(to bottom, rgba(79,195,247,0.03), transparent)", pointerEvents: "none" }}
+          style={{ height: 80, background: "linear-gradient(to bottom, rgba(141,235,255,0.03), transparent)", pointerEvents: "none" }}
           animate={{ y: ["0vh", "100vh"] }}
           transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
         />
       </div>
 
       <div className="relative z-10 flex flex-col items-center">
-        <div className="text-xs tracking-[0.35em] text-[#4fc3f7]/50 uppercase mb-6">NASA Exoplanet Archive</div>
+        <div className="text-xs tracking-[0.35em] text-[#8DEBFF]/50 uppercase mb-6">NASA Exoplanet Archive</div>
 
         <AnimatePresence mode="wait">
           <motion.div
@@ -129,7 +129,7 @@ function LoadingState({ progress, statusMsg }: { progress: number; statusMsg: st
         <div className="w-64 h-px rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
           <motion.div
             className="h-full rounded-full"
-            style={{ background: "linear-gradient(to right, #4fc3f7, #ffd54f)" }}
+            style={{ background: "linear-gradient(to right, #8DEBFF, #F3DDB0)" }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           />
@@ -153,7 +153,7 @@ function ActiveFilters({ filters, onChange }: { filters: Filters; onChange: (f: 
   return (
     <div className="flex flex-wrap gap-2 px-4 py-2">
       {pills.map(p => (
-        <span key={p.label} className="flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full border" style={{ color: "#ffd54f", borderColor: "rgba(255,213,79,0.3)", background: "rgba(255,213,79,0.06)" }}>
+        <span key={p.label} className="flex items-center gap-1 text-[10px] px-2.5 py-1 rounded-full border" style={{ color: "#F3DDB0", borderColor: "rgba(243,221,176,0.3)", background: "rgba(243,221,176,0.06)" }}>
           {p.label}
           <button onClick={p.clear} className="hover:text-white"><X className="w-2.5 h-2.5" /></button>
         </span>
@@ -208,9 +208,9 @@ export default function ExoplanetExplorer() {
       {isLoading && <LoadingState progress={progress} statusMsg={statusMsg} />}
 
       {/* Top bar */}
-      <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 z-30" style={{ background: "rgba(2,2,9,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(79,195,247,0.1)" }}>
+      <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 z-30" style={{ background: "rgba(2,2,9,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(141,235,255,0.1)" }}>
         <Link href="/">
-          <button className="flex items-center gap-2 text-[#4fc3f7] hover:text-white transition-colors text-sm">
+          <button className="flex items-center gap-2 text-[#8DEBFF] hover:text-white transition-colors text-sm">
             <ArrowLeft className="w-4 h-4" /> PALE
           </button>
         </Link>
@@ -218,7 +218,7 @@ export default function ExoplanetExplorer() {
         <div className="text-center">
           <div className="text-xs font-sans text-white/70 tracking-[0.15em]">EXOPLANET EXPLORER</div>
           {fromFallback ? (
-            <button onClick={() => window.location.reload()} className="text-[9px] text-[#ffd54f]/60 hover:text-[#ffd54f] transition-colors">
+            <button onClick={() => window.location.reload()} className="text-[9px] text-[#F3DDB0]/60 hover:text-[#F3DDB0] transition-colors">
               Featured worlds · Tap to retry live data
             </button>
           ) : fromCache && cacheDate ? (
@@ -228,11 +228,11 @@ export default function ExoplanetExplorer() {
 
         <div className="flex items-center gap-1">
           <button onClick={handleRandom} title="Random world"
-            className="p-2 rounded-lg text-white/40 hover:text-[#ffd54f] transition-colors">
+            className="p-2 rounded-lg text-white/40 hover:text-[#F3DDB0] transition-colors">
             <Shuffle className="w-4 h-4" />
           </button>
           <button onClick={() => setShowFilters(s => !s)}
-            className={`p-2 rounded-lg transition-colors ${showFilters ? "text-[#4fc3f7]" : "text-white/40 hover:text-white"}`}>
+            className={`p-2 rounded-lg transition-colors ${showFilters ? "text-[#8DEBFF]" : "text-white/40 hover:text-white"}`}>
             <SlidersHorizontal className="w-4 h-4" />
           </button>
         </div>
@@ -267,8 +267,8 @@ export default function ExoplanetExplorer() {
               key={v}
               title={title}
               onClick={() => setView(v)}
-              className={`px-3 py-1.5 transition-colors ${view === v ? "text-[#4fc3f7]" : "text-white/35 hover:text-white/60"}`}
-              style={view === v ? { background: "rgba(79,195,247,0.12)" } : {}}
+              className={`px-3 py-1.5 transition-colors ${view === v ? "text-[#8DEBFF]" : "text-white/35 hover:text-white/60"}`}
+              style={view === v ? { background: "rgba(141,235,255,0.12)" } : {}}
             >
               {icon}
             </button>

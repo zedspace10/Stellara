@@ -173,7 +173,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
 
   return (
     <motion.div 
-      className="fixed inset-0 z-[100] bg-[#0a0a1a] flex flex-col items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-[100] bg-[#05070C] flex flex-col items-center justify-center overflow-hidden"
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
     >
