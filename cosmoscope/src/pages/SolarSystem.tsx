@@ -23,14 +23,15 @@ const COMETS = [
 
 // How fast time runs in the solar system view. Planet positions are real for whatever date is shown.
 const TIME_RATES = [
-  { label: "Live", daysPerSecond: 1 / 86400 },
+  { label: "Real speed", daysPerSecond: 1 / 86400 },
   { label: "1 hour per second", daysPerSecond: 1 / 24 },
   { label: "1 day per second", daysPerSecond: 1 },
   { label: "1 week per second", daysPerSecond: 7 },
   { label: "1 month per second", daysPerSecond: 30.44 },
   { label: "1 year per second", daysPerSecond: 365.25 },
 ];
-const DEFAULT_RATE = 0;
+// Start at a week per second so the orbits are visible straight away, from where the planets really are today.
+const DEFAULT_RATE = 3;
 
 const EXPLORE_DESTINATIONS: { name: string; level: number; cameraPos: [number, number, number]; target: [number, number, number]; planetId?: string; offset?: [number, number, number] }[] = [
   { name: "Saturn's rings", level: 1, cameraPos: [42, 8, 15], target: [40, 0, 0], planetId: "saturn", offset: [2, 8, 15] },
@@ -2131,7 +2132,9 @@ export default function SolarSystem() {
                       )}
                     </div>
                     <div className="text-[11px] text-white/50">
-                      {Math.abs(simTime - Date.now()) < 3600000 ? 'Planets where they are right now' : 'Planets where they were or will be'}
+                      {rateIndex === 0
+                        ? (Math.abs(simTime - Date.now()) < 3600000 ? 'Right now, at real speed' : 'Real positions on this date')
+                        : 'Real positions on this date'}
                     </div>
                   </div>
                   <label className="sr-only" htmlFor="time-rate">Speed of time</label>
