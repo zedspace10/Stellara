@@ -88,12 +88,12 @@ export default function SimulationLayout({
           transition={{ duration: 0.6 }}
           className="absolute top-4 left-4 right-4 sm:right-auto sm:max-w-[22rem] pointer-events-none z-20"
         >
-          <div className="rounded-lg p-4" style={{ background: 'rgba(5,7,12,0.88)', border: '1px solid #1C2533' }}>
+          <div className="rounded-lg p-3 sm:p-4" style={{ background: 'rgba(5,7,12,0.82)', border: '1px solid #1C2533' }}>
             <div className="text-[13px] mb-1" style={{ color: '#8E9AA8' }}>
               Step {currentPhaseIndex + 1} of {phases.length}, {phase.timecode.charAt(0).toLowerCase() + phase.timecode.slice(1)}
             </div>
-            <div className="font-serif text-[24px] leading-tight text-[#E8ECF1] mb-2">{phase.label}</div>
-            <p className="m-0 text-[14px] text-[#C9D2DC] leading-relaxed">{phase.description}</p>
+            <div className="font-serif text-[20px] sm:text-[24px] leading-tight text-[#E8ECF1] mb-1.5 sm:mb-2">{phase.label}</div>
+            <p className="m-0 text-[13px] sm:text-[14px] text-[#C9D2DC] leading-relaxed">{phase.description}</p>
             {scienceMode && (
               <motion.p
                 initial={{ opacity: 0, height: 0 }}
@@ -202,7 +202,7 @@ export default function SimulationLayout({
               </button>
             ))}
           </div>
-          <div className="text-xs text-gray-500 tabular-nums min-w-[60px] text-right">
+          <div className="hidden sm:block text-xs text-gray-500 tabular-nums min-w-[60px] text-right">
             {(totalProgress * 100).toFixed(1)}%
           </div>
         </div>

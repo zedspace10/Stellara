@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState, useCallback } from "react";
-import * as THREE from "three";
-import SimulationLayout, { SimPhase } from "./SimulationLayout";
-import { makeCircleTex, makeBloomComposer } from "./simUtils";
+import ShaderSim from "./ShaderSim";
+import type { SimPhase } from "./SimulationLayout";
 
 const PHASES: SimPhase[] = [
   { id: "planck", label: "Planck epoch", short: "Planck", timecode: "The first 10⁻⁴³ seconds", description: "All the forces may have been one. The universe is unimaginably hot, around 10³² degrees. Our physics cannot yet describe this moment.", scienceDetail: "The Planck epoch runs from the start to about 10⁻⁴³ seconds, the Planck time. At these scales gravity should behave quantum mechanically, and we have no tested theory for that, so this era is still a mystery.", color: "#ffffff" },
@@ -14,319 +12,175 @@ const PHASES: SimPhase[] = [
   { id: "galaxies", label: "The first galaxies", short: "Galaxies", timecode: "A few hundred million years", description: "Stars gather into small galaxies that merge and grow. The James Webb Space Telescope has seen galaxies already shining less than 300 million years after the Big Bang.", scienceDetail: "Galaxies grew from the bottom up, small ones merging into larger ones inside haloes of dark matter. Black holes were already growing at the centres of some of them, earlier than many astronomers expected.", color: "#818cf8" },
   { id: "now", label: "Today", short: "Today", timecode: "13.8 billion years", description: "Hundreds of billions of galaxies. Trillions upon trillions of stars. And one pale blue dot, where you are reading this.", scienceDetail: "The observable universe is about 93 billion light years across. It is about 68% dark energy, 27% dark matter and 5% ordinary matter. Its expansion is speeding up, and star formation peaked around 10 billion years ago.", color: "#A9C3E0" },
 ];
-
-const PARTICLE_COUNT = 8000;
-
-function lerpColor(a: THREE.Color, b: THREE.Color, t: number): THREE.Color {
-  return new THREE.Color(
-    a.r + (b.r - a.r) * t,
-    a.g + (b.g - a.g) * t,
-    a.b + (b.b - a.b) * t,
-  );
+const FRAG = /* glsl */ `
+vec2 worley(vec2 p) {
+  vec2 g = floor(p), f = fract(p);
+  float f1 = 8.0, f2 = 8.0;
+  for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+    vec2 o = vec2(float(i), float(j));
+    vec2 r = o + hash2(g + o) - f;
+    float d = dot(r, r);
+    if (d < f1) { f2 = f1; f1 = d; } else if (d < f2) { f2 = d; }
+  }
+  return sqrt(vec2(f1, f2));
+}
+// The cosmic web: thin walls and threads between empty voids.
+float web1(vec2 p) { vec2 w = worley(p); return 1.0 - smoothstep(0.0, 0.12, w.y - w.x); }
+float web(vec2 p) {
+  // Warped and layered so the threads wander, thicken and break like the real thing
+  vec2 warp = vec2(fbm(p * 0.7 + 1.3), fbm(p * 0.7 - 4.1)) * 1.1;
+  float a = web1(p + warp);
+  float b = web1(p * 2.3 + warp * 1.7 + 9.0);
+  float knots = smoothstep(0.25, 0.85, fbm(p * 1.3 + 2.0));
+  return clamp((0.75 * a + 0.4 * b * a + 0.25 * b) * (0.35 + 0.9 * knots), 0.0, 1.0);
 }
 
+// Colours used for maps of the cosmic microwave background, cold blue to warm red.
+vec3 cmbmap(float x) {
+  x = clamp(x, 0.0, 1.0);
+  vec3 a = vec3(0.02, 0.12, 0.55), b = vec3(0.45, 0.75, 1.0), c = vec3(1.0, 0.97, 0.9), d = vec3(1.0, 0.55, 0.15), e = vec3(0.75, 0.08, 0.03);
+  if (x < 0.25) return mix(a, b, x / 0.25);
+  if (x < 0.5) return mix(b, c, (x - 0.25) / 0.25);
+  if (x < 0.75) return mix(c, d, (x - 0.5) / 0.25);
+  return mix(d, e, (x - 0.75) / 0.25);
+}
+
+vec3 fog(vec2 q, float t) {
+  vec2 w = q * 2.6 + vec2(fbm(q * 1.8 + t * 0.12), fbm(q * 1.8 - t * 0.1 + 4.0)) * 2.2;
+  float f = fbm(w + t * 0.05);
+  return mix(vec3(0.85, 0.2, 0.04), vec3(1.0, 0.78, 0.4), f) * (0.8 + 0.8 * f);
+}
+
+vec3 firstStars(vec2 p, float dens, float t) {
+  // One star at most per cell, and only cells that pass the cheap tests check the web.
+  vec2 cell = floor(p * dens);
+  if (hash(cell + 1.1) > 0.45 || hash(cell + 7.7) > t) return vec3(0.0);
+  vec2 cen = (cell + 0.25 + 0.5 * hash2(cell)) / dens;
+  if (hash(cell + 3.9) > web(cen * 3.0)) return vec3(0.0);
+  float d = length(p - cen) * dens;
+  return vec3(0.72, 0.84, 1.0) * (exp(-d * d * 300.0) * 2.0 + exp(-d * 9.0) * 0.12);
+}
+
+vec3 galaxies(vec2 p, float dens, float prob, float everywhere) {
+  vec3 c = vec3(0.0);
+  vec2 g = floor(p * dens);
+  for (int j = -1; j <= 1; j++) for (int i = -1; i <= 1; i++) {
+    vec2 cell = g + vec2(float(i), float(j));
+    vec2 cen = (cell + hash2(cell)) / dens;
+    // A cheap stand in for the web here, so galaxies cluster without costing too much on phones
+    float onweb = mix(smoothstep(0.42, 0.75, fbm(cen * 2.2 + 1.3)), 1.0, everywhere);
+    if (hash(cell + 0.37) < prob * (0.1 + 0.9 * onweb)) {
+      vec2 d = p - cen;
+      float a = hash(cell + 5.1) * 6.283;
+      d = vec2(cos(a) * d.x - sin(a) * d.y, sin(a) * d.x + cos(a) * d.y);
+      float sz = (0.2 + 0.8 * hash(cell + 2.2)) * 0.32 / dens;
+      float e = 0.25 + 0.75 * hash(cell + 8.8);
+      float m = exp(-(d.x * d.x + d.y * d.y / (e * e)) / (sz * sz) * 2.0);
+      float core = exp(-(d.x * d.x + d.y * d.y / (e * e)) / (sz * sz) * 14.0);
+      vec3 gc = mix(vec3(1.0, 0.82, 0.58), vec3(0.62, 0.76, 1.0), hash(cell + 3.3));
+      c += gc * (m * 0.7 + core * 0.9) * (0.5 + 0.9 * hash(cell + 4.4));
+    }
+  }
+  return c;
+}
+
+void main() {
+  vec2 q = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
+  float T = uTime;
+  vec3 col = vec3(0.0);
+
+  // 0. The first instant: unimaginably hot, with space itself flickering
+  float w = ph(0.0);
+  if (w > 0.001) {
+    float v = noise(q * 90.0 + T * 6.0) + 0.5 * noise(q * 170.0 - T * 9.0);
+    col += vec3(1.0, 0.98, 0.94) * (1.7 + 0.35 * v) * w;
+  }
+  // 1. Inflation: tiny ripples are stretched to enormous size
+  w = ph(1.0);
+  if (w > 0.001) {
+    float t = lp(1.0);
+    float s = exp(t * 5.0);
+    float pat = fbm(q * 90.0 / s + 3.0) * 0.6 + fbm(q * 260.0 / s - 7.0) * 0.4;
+    vec3 c = mix(vec3(1.0, 0.98, 0.94) * 1.7, vec3(1.0, 0.8, 0.45) * 1.25, t);
+    col += c * (0.55 + 0.75 * pat) * w;
+  }
+  // 2. A seething plasma of quarks and gluons
+  w = ph(2.0);
+  if (w > 0.001) col += fog(q, T) * 1.2 * w;
+  // 3. The first nuclei form in the cooling fog
+  w = ph(3.0);
+  if (w > 0.001) {
+    float t = lp(3.0);
+    vec3 c = fog(q, T) * mix(1.1, 0.75, t) * vec3(1.0, 0.85, 0.75);
+    vec2 g = floor(q * 140.0);
+    float spark = step(1.0 - 0.012 * t, hash(g)) * (0.6 + 0.4 * sin(T * 6.0 + hash(g + 2.0) * 6.28));
+    c += vec3(1.0, 0.95, 0.8) * spark * 1.6;
+    col += c * w;
+  }
+  // 4. The fog lifts: light streams free, and the pattern we still see today is set
+  w = ph(4.0);
+  if (w > 0.001) {
+    float t = lp(4.0);
+    float m = fbm(q * 4.0 + 11.0) * 0.62 + fbm(q * 13.0 + 2.0) * 0.38;
+    vec3 cmb = cmbmap((m - 0.25) * 1.9) * 0.85;
+    vec3 f = fog(q, T) * 0.75 * vec3(1.0, 0.85, 0.75);
+    float clear = smoothstep(0.05, 0.5, t);
+    vec3 c = mix(f, cmb, clear) * mix(1.0, 0.75, smoothstep(0.7, 1.0, t));
+    col += c * w;
+  }
+  // 5. The dark ages: no stars yet, only threads of dark matter slowly gathering gas
+  w = ph(5.0);
+  if (w > 0.001) {
+    float t = lp(5.0);
+    vec2 p = q + vec2(T * 0.003, 0.0);
+    float wv = web(p * 3.0) * (0.5 + 0.5 * fbm(p * 8.0));
+    col += (vec3(0.03, 0.05, 0.14) * wv * (0.4 + 1.2 * t) + vec3(0.004, 0.005, 0.01)) * w;
+  }
+  // 6. The first stars switch on along the threads
+  w = ph(6.0);
+  if (w > 0.001) {
+    float t = lp(6.0);
+    vec2 p = q + vec2(T * 0.003, 0.0);
+    float wv = web(p * 3.0) * (0.5 + 0.5 * fbm(p * 8.0));
+    vec3 c = vec3(0.03, 0.05, 0.14) * wv * 1.6;
+    c += firstStars(p, 34.0, t);
+    c += vec3(0.25, 0.32, 0.55) * 0.12 * wv * t;
+    col += c * w;
+  }
+  // 7. The first galaxies grow and merge
+  w = ph(7.0);
+  if (w > 0.001) {
+    float t = lp(7.0);
+    vec2 p = q * (1.0 + 0.5 * t) + vec2(T * 0.003, 0.0);
+    float wv = web(p * 3.0);
+    vec3 c = vec3(0.025, 0.04, 0.1) * wv;
+    c += firstStars(p, 34.0, 1.0) * (1.0 - t) * 0.6;
+    c += galaxies(p, 22.0, 0.25 + 0.5 * t, 0.0) * 0.9;
+    col += c * w;
+  }
+  // 8. Today: hundreds of billions of galaxies
+  w = ph(8.0);
+  if (w > 0.001) {
+    float t = lp(8.0);
+    vec2 p = q * (1.5 + 0.6 * t) + vec2(T * 0.003, 0.0);
+    vec3 c = vec3(0.02, 0.03, 0.07) * web(p * 3.0);
+    c += galaxies(p, 14.0, 0.7, 0.2) * 1.1;
+    c += galaxies(p * 1.9 + 5.0, 26.0, 0.55, 0.6) * 0.55;
+    c += stars(q, 30.0) * 0.35;
+    col += c * w;
+  }
+
+  gl_FragColor = vec4(tonemap(col), 1.0);
+}
+`;
+
 export default function BigBangSim() {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [scienceMode, setScienceMode] = useState(false);
-  const [speed, setSpeed] = useState(1);
-  const [currentPhaseIndex, setCurrentPhaseIndex] = useState(0);
-  const [totalProgress, setTotalProgress] = useState(0);
-
-  const isPausedRef = useRef(false);
-  const speedRef = useRef(1);
-  const progressRef = useRef(0); // 0-1 across all phases
-  const phaseRef = useRef(0);
-  const jumpRef = useRef<number | null>(null);
-
-  useEffect(() => { isPausedRef.current = !isPlaying; }, [isPlaying]);
-  useEffect(() => { speedRef.current = speed; }, [speed]);
-
-  useEffect(() => {
-    document.title = "The Big Bang | PALE";
-    const el = mountRef.current;
-    if (!el) return;
-
-    const W = el.clientWidth, H = el.clientHeight;
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, W / H, 0.001, 5000);
-    camera.position.set(0, 0, 80);
-
-    scene.background = new THREE.Color(0x000000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(W, H);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    el.appendChild(renderer.domElement);
-    const composer = makeBloomComposer(renderer, scene, camera, W, H);
-
-    // Ambient glow light
-    scene.add(new THREE.AmbientLight(0x111133, 2));
-
-    // Particle system
-    const positions = new Float32Array(PARTICLE_COUNT * 3);
-    const colors = new Float32Array(PARTICLE_COUNT * 3);
-    const sizes = new Float32Array(PARTICLE_COUNT);
-
-    // Store base positions for each phase
-    const phasePositions: Float32Array[] = PHASES.map((_, pi) => {
-      const arr = new Float32Array(PARTICLE_COUNT * 3);
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const idx = i * 3;
-        const r = Math.random();
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-
-        if (pi === 0) {
-          // Planck: all at origin
-          arr[idx] = (Math.random() - 0.5) * 0.01;
-          arr[idx + 1] = (Math.random() - 0.5) * 0.01;
-          arr[idx + 2] = (Math.random() - 0.5) * 0.01;
-        } else if (pi === 1) {
-          // Inflation: explosive sphere
-          const rad = 5 + r * 60;
-          arr[idx] = rad * Math.sin(phi) * Math.cos(theta);
-          arr[idx + 1] = rad * Math.sin(phi) * Math.sin(theta);
-          arr[idx + 2] = rad * Math.cos(phi);
-        } else if (pi === 2) {
-          // Plasma: dense swirling sphere
-          const rad = 2 + r * 30;
-          arr[idx] = rad * Math.sin(phi) * Math.cos(theta);
-          arr[idx + 1] = rad * Math.sin(phi) * Math.sin(theta);
-          arr[idx + 2] = rad * Math.cos(phi);
-        } else if (pi === 3) {
-          // Nucleosynthesis: expanding, cooling
-          const rad = 10 + r * 50;
-          arr[idx] = rad * Math.sin(phi) * Math.cos(theta);
-          arr[idx + 1] = rad * Math.sin(phi) * Math.sin(theta);
-          arr[idx + 2] = rad * Math.cos(phi);
-        } else if (pi === 4) {
-          // CMB: large sphere
-          const rad = 60 + r * 10;
-          arr[idx] = rad * Math.sin(phi) * Math.cos(theta);
-          arr[idx + 1] = rad * Math.sin(phi) * Math.sin(theta);
-          arr[idx + 2] = rad * Math.cos(phi);
-        } else if (pi === 5) {
-          // Dark Ages: filaments
-          const filament = Math.floor(Math.random() * 8);
-          const fAngle = (filament / 8) * Math.PI * 2;
-          const along = (Math.random() - 0.5) * 100;
-          arr[idx] = Math.cos(fAngle) * 5 + along * Math.cos(fAngle) + (Math.random() - 0.5) * 8;
-          arr[idx + 1] = (Math.random() - 0.5) * 20;
-          arr[idx + 2] = Math.sin(fAngle) * 5 + along * Math.sin(fAngle) + (Math.random() - 0.5) * 8;
-        } else if (pi === 6) {
-          // First Stars: bright clusters on filaments
-          const cl = Math.floor(Math.random() * 12);
-          const clAngle = (cl / 12) * Math.PI * 2;
-          const clR = 15 + Math.random() * 40;
-          arr[idx] = Math.cos(clAngle) * clR + (Math.random() - 0.5) * 6;
-          arr[idx + 1] = (Math.random() - 0.5) * 15;
-          arr[idx + 2] = Math.sin(clAngle) * clR + (Math.random() - 0.5) * 6;
-        } else if (pi === 7) {
-          // Galaxy formation: spiral-ish clusters
-          const arm = Math.floor(Math.random() * 4);
-          const armAngle = (arm / 4) * Math.PI * 2 + r * Math.PI;
-          const armR = 5 + r * 50;
-          arr[idx] = Math.cos(armAngle) * armR + (Math.random() - 0.5) * 10;
-          arr[idx + 1] = (Math.random() - 0.5) * 5;
-          arr[idx + 2] = Math.sin(armAngle) * armR + (Math.random() - 0.5) * 10;
-        } else {
-          // Now: cosmic web
-          const nx = (Math.random() - 0.5) * 120;
-          const ny = (Math.random() - 0.5) * 120;
-          const nz = (Math.random() - 0.5) * 120;
-          arr[idx] = nx;
-          arr[idx + 1] = ny;
-          arr[idx + 2] = nz;
-        }
-      }
-      return arr;
-    });
-
-    // Phase colours per spec — energy feel, not flat
-    const phaseColors = [
-      new THREE.Color("#ffffff"),   // Planck — pure white, intense
-      new THREE.Color("#ffe0a0"),   // Inflation — white-hot with gold tinge
-      new THREE.Color("#ff4400"),   // Quark-Gluon Plasma — deep orange-red
-      new THREE.Color("#cc2200"),   // Nucleosynthesis — cooling red
-      new THREE.Color("#fff3b0"),   // Recombination CMB — golden white
-      new THREE.Color("#180030"),   // Dark Ages — near black, deep violet
-      new THREE.Color("#cce8ff"),   // First Stars — brilliant blue-white
-      new THREE.Color("#9fa8da"),   // Galaxy Formation — blue-violet
-      new THREE.Color("#A9C3E0"),   // Today — sky blue
-    ];
-
-    for (let i = 0; i < PARTICLE_COUNT; i++) {
-      positions[i * 3] = phasePositions[0][i * 3];
-      positions[i * 3 + 1] = phasePositions[0][i * 3 + 1];
-      positions[i * 3 + 2] = phasePositions[0][i * 3 + 2];
-      colors[i * 3] = 1; colors[i * 3 + 1] = 1; colors[i * 3 + 2] = 1;
-      sizes[i] = Math.random() * 2 + 0.5;
-    }
-
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-    geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
-
-    const material = new THREE.PointsMaterial({
-      size: 2.0,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.9,
-      sizeAttenuation: true,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-      map: makeCircleTex(),
-      alphaTest: 0.005,
-    });
-
-    const points = new THREE.Points(geometry, material);
-    scene.add(points);
-
-    const PHASE_DURATION = 8; // seconds per phase at 1x speed
-    const TOTAL_DURATION = PHASES.length * PHASE_DURATION;
-
-    let animId: number;
-    let simTime = 0;
-    let lastTime = performance.now();
-    let lerpT = 0;
-    let fromPhase = 0;
-
-    function updateParticles(phaseIdx: number, t: number) {
-      const nextPhase = Math.min(phaseIdx + 1, PHASES.length - 1);
-      const fromPos = phasePositions[phaseIdx];
-      const toPos = phasePositions[nextPhase];
-      const fromCol = phaseColors[phaseIdx];
-      const toCol = phaseColors[nextPhase];
-
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        const idx = i * 3;
-        positions[idx] = fromPos[idx] + (toPos[idx] - fromPos[idx]) * t;
-        positions[idx + 1] = fromPos[idx + 1] + (toPos[idx + 1] - fromPos[idx + 1]) * t;
-        positions[idx + 2] = fromPos[idx + 2] + (toPos[idx + 2] - fromPos[idx + 2]) * t;
-
-        const c = lerpColor(fromCol, toCol, t);
-        colors[idx] = c.r;
-        colors[idx + 1] = c.g;
-        colors[idx + 2] = c.b;
-      }
-
-      (geometry.attributes.position as THREE.BufferAttribute).needsUpdate = true;
-      (geometry.attributes.color as THREE.BufferAttribute).needsUpdate = true;
-    }
-
-    function animate() {
-      animId = requestAnimationFrame(animate);
-      const now = performance.now();
-      const delta = (now - lastTime) / 1000;
-      lastTime = now;
-
-      if (jumpRef.current !== null) {
-        const target = jumpRef.current;
-        simTime = target * TOTAL_DURATION;
-        jumpRef.current = null;
-      }
-
-      if (!isPausedRef.current) {
-        simTime += delta * speedRef.current;
-        if (simTime > TOTAL_DURATION) simTime = TOTAL_DURATION - 0.001;
-      }
-
-      const rawPhase = simTime / PHASE_DURATION;
-      const phaseIdx = Math.min(Math.floor(rawPhase), PHASES.length - 1);
-      const phaseT = rawPhase - Math.floor(rawPhase);
-
-      if (phaseIdx !== fromPhase) {
-        fromPhase = phaseIdx;
-        lerpT = 0;
-      }
-      lerpT = phaseT;
-
-      updateParticles(phaseIdx, Math.min(lerpT, 1));
-      points.rotation.y += 0.001 * speedRef.current;
-
-      const overallProgress = Math.min(simTime / TOTAL_DURATION, 1);
-      setTotalProgress(overallProgress);
-      setCurrentPhaseIndex(phaseIdx);
-
-      // Phase-reactive background for dramatic atmosphere
-      const bgColors = [
-        0x000000, // planck
-        0x000005, // inflation
-        0x0a0200, // plasma
-        0x080100, // nucleosynthesis
-        0x0a0800, // cmb
-        0x000000, // dark-ages
-        0x000008, // first-stars
-        0x00000a, // galaxies
-        0x000a14, // now
-      ];
-      scene.background = new THREE.Color(bgColors[phaseIdx] ?? 0x000000);
-
-      composer.render();
-    }
-
-    animate();
-
-    const onResize = () => {
-      const w = el.clientWidth, h = el.clientHeight;
-      camera.aspect = w / h;
-      camera.updateProjectionMatrix();
-      renderer.setSize(w, h);
-      composer.setSize(w, h);
-    };
-    window.addEventListener("resize", onResize);
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", onResize);
-      composer.dispose();
-      renderer.dispose();
-      geometry.dispose();
-      material.dispose();
-      el.removeChild(renderer.domElement);
-    };
-  }, []);
-
-  const handleScrub = useCallback((p: number) => {
-    jumpRef.current = p;
-    setTotalProgress(p);
-  }, []);
-
-  const handlePhaseJump = useCallback((idx: number) => {
-    const p = idx / PHASES.length;
-    jumpRef.current = p;
-    setCurrentPhaseIndex(idx);
-    setTotalProgress(p);
-  }, []);
-
-  const handleRestart = useCallback(() => {
-    jumpRef.current = 0;
-    setTotalProgress(0);
-    setCurrentPhaseIndex(0);
-    setIsPlaying(true);
-  }, []);
-
   return (
-    <SimulationLayout
+    <ShaderSim
       title="The Big Bang"
-      subtitle="From the first moment to the universe today"
       phases={PHASES}
-      currentPhaseIndex={currentPhaseIndex}
-      totalProgress={totalProgress}
-      isPlaying={isPlaying}
-      scienceMode={scienceMode}
-      speed={speed}
-      closingQuote="Nearly every atom in you was made in the Big Bang or inside a star."
-      onPlay={() => setIsPlaying(true)}
-      onPause={() => setIsPlaying(false)}
-      onRestart={handleRestart}
-      onSpeedChange={setSpeed}
-      onPhaseJump={handlePhaseJump}
-      onScrub={handleScrub}
-      onScienceModeToggle={() => setScienceMode(v => !v)}
-    >
-      <div ref={mountRef} className="absolute inset-0 w-full h-full" />
-    </SimulationLayout>
+      fragment={FRAG}
+      closing="Nearly every atom in you was made in the Big Bang or inside a star."
+    />
   );
 }
