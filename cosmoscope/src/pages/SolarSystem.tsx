@@ -11,6 +11,7 @@ import SagittariusPanel from '@/components/SagittariusPanel';
 import UniverseInfoPanel from '@/components/UniverseInfoPanel';
 import { Button } from '@/components/ui/button';
 import { heliocentric, EPHEMERIS_MIN, EPHEMERIS_MAX } from '@/lib/ephemeris';
+import { moon as moonPhase, sunLongitude } from '@/lib/sky';
 import { Card } from '@/components/ui/card';
 import { Camera, Dice1, Compass as Compass2, Star } from 'lucide-react';
 
@@ -71,6 +72,77 @@ function makeCircleTex(innerCol = 'rgba(255,255,255,1)', outerCol = 'rgba(255,25
   ctx.fillRect(0, 0, size, size);
   return new THREE.CanvasTexture(c);
 }
+
+/** Soft round glow, used for the Sun, nebulae, clusters and distant galaxies. */
+function makeGlowTex(rgb: string, stops: [number, number][] = [[0, 1], [0.2, 0.55], [0.5, 0.15], [1, 0]]): THREE.CanvasTexture {
+  const size = 256;
+  const c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  const ctx = c.getContext('2d')!;
+  const h = size / 2;
+  const g = ctx.createRadialGradient(h, h, 0, h, h, h);
+  stops.forEach(([at, a]) => g.addColorStop(at, `rgba(${rgb},${a})`));
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+}
+
+/** A face on spiral galaxy drawn into a texture, squashed for viewing angle when used on a sprite. */
+function makeSpiralTex(): THREE.CanvasTexture {
+  const size = 512;
+  const c = document.createElement('canvas');
+  c.width = size; c.height = size;
+  const ctx = c.getContext('2d')!;
+  const h = size / 2;
+  ctx.globalCompositeOperation = 'lighter';
+  let seed = 11;
+  const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+  for (let i = 0; i < 9000; i++) {
+    const arm = i % 2;
+    const t = rand() * 3.4;
+    const r = 18 * Math.exp(0.42 * t) * (0.9 + rand() * 0.25);
+    if (r > h * 0.95) continue;
+    const a = t + arm * Math.PI + (rand() - 0.5) * 0.5;
+    const x = h + Math.cos(a) * r, y = h + Math.sin(a) * r;
+    const warm = r < h * 0.35;
+    ctx.fillStyle = warm ? 'rgba(255,226,180,0.10)' : 'rgba(190,215,255,0.08)';
+    ctx.beginPath(); ctx.arc(x, y, 1.6 + rand() * 1.4, 0, Math.PI * 2); ctx.fill();
+  }
+  const core = ctx.createRadialGradient(h, h, 0, h, h, h * 0.45);
+  core.addColorStop(0, 'rgba(255,240,215,0.95)');
+  core.addColorStop(0.3, 'rgba(255,220,170,0.35)');
+  core.addColorStop(1, 'rgba(255,220,170,0)');
+  ctx.fillStyle = core;
+  ctx.fillRect(0, 0, size, size);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
+/** Approximate colour of a star from its surface temperature. */
+function kelvinToColor(k: number): THREE.Color {
+  const t = Math.max(1000, Math.min(40000, k)) / 100;
+  let r: number, g: number, b: number;
+  if (t <= 66) {
+    r = 255;
+    g = 99.47 * Math.log(t) - 161.12;
+    b = t <= 19 ? 0 : 138.52 * Math.log(t - 10) - 305.04;
+  } else {
+    r = 329.7 * Math.pow(t - 60, -0.1332);
+    g = 288.12 * Math.pow(t - 60, -0.0755);
+    b = 255;
+  }
+  const clamp = (v: number) => Math.max(0, Math.min(255, v)) / 255;
+  // Soften towards white: stars look mostly white to the eye, with a hint of colour.
+  return new THREE.Color(0.35 + 0.65 * clamp(r), 0.35 + 0.65 * clamp(g), 0.35 + 0.65 * clamp(b));
+}
+
+const TEXTURE_FILES: Record<string, string> = {
+  sun: 'sun.webp', mercury: 'mercury.webp', venus: 'venus.webp', earth: 'earth.webp', mars: 'mars.webp',
+  jupiter: 'jupiter.webp', saturn: 'saturn.webp', uranus: 'uranus.webp', neptune: 'neptune.webp',
+};
 
 /** Returns true on low-power / mobile devices. */
 function isLowPower(): boolean {
@@ -145,6 +217,7 @@ export default function SolarSystem() {
   const sunMeshRef = useRef<THREE.Mesh | null>(null);
   const planetHitMeshesRef = useRef<Record<string, THREE.Mesh>>({});
   const planetSpeedFactorsRef = useRef<Record<string, number>>({});
+  const moonMeshRef = useRef<THREE.Mesh | null>(null);
   const mousePosScreenRef = useRef<{ x: number; y: number }>({ x: -9999, y: -9999 });
   const observatoryTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const universeFilamentGroupRef = useRef<THREE.Group | null>(null);
@@ -321,7 +394,17 @@ export default function SolarSystem() {
     }
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     mountRef.current.appendChild(renderer.domElement);
+
+    const texLoader = new THREE.TextureLoader();
+    const texBase = `${import.meta.env.BASE_URL}textures/`;
+    const loadTex = (file: string) => {
+      const t = texLoader.load(texBase + file);
+      t.colorSpace = THREE.SRGBColorSpace;
+      t.anisotropy = 4;
+      return t;
+    };
 
     // Setup CSS2DRenderer for labels
     const labelRenderer = new CSS2DRenderer();
@@ -341,10 +424,11 @@ export default function SolarSystem() {
     controlsRef.current = controls;
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+    // Faint fill so the night side of each planet is just visible, then sunlight from the Sun itself.
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.06);
     scene.add(ambientLight);
 
-    const sunLight = new THREE.PointLight(0xffffff, 2, 500);
+    const sunLight = new THREE.PointLight(0xfff6e8, 3.2, 0, 0);
     scene.add(sunLight);
 
     // ========================================================================
@@ -357,7 +441,7 @@ export default function SolarSystem() {
     // ── Sun (reduced to 1.2 units, multi-pass glow) ──
     const sunRadius = 1.2;
     const sunGeometry = new THREE.SphereGeometry(sunRadius, 32, 32);
-    const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xfffde7 });
+    const sunMaterial = new THREE.MeshBasicMaterial({ map: loadTex(TEXTURE_FILES.sun) });
     const sun = new THREE.Mesh(sunGeometry, sunMaterial);
     sun.userData = { id: 'sun', level: 1 };
     sunMeshRef.current = sun;
@@ -388,12 +472,20 @@ export default function SolarSystem() {
       [2.2, 0xffdd44, 0.07],
       [1.6, 0xffcc00, 0.14],
     ];
-    glowPasses.forEach(([rm, col, op]) => {
-      solarSystemGroup.add(new THREE.Mesh(
-        new THREE.SphereGeometry(sunRadius * rm, 32, 32),
-        new THREE.MeshBasicMaterial({ color: col, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false })
-      ));
-    });
+    void glowPasses;
+    // The Sun's glow: two soft camera facing halos rather than solid shells.
+    const sunGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: makeGlowTex('255,226,160', [[0, 0.9], [0.12, 0.55], [0.35, 0.12], [1, 0]]),
+      blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+    }));
+    sunGlow.scale.set(sunRadius * 9, sunRadius * 9, 1);
+    solarSystemGroup.add(sunGlow);
+    const sunCorona = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: makeGlowTex('255,240,210', [[0, 0.35], [0.25, 0.08], [1, 0]]),
+      blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+    }));
+    sunCorona.scale.set(sunRadius * 26, sunRadius * 26, 1);
+    solarSystemGroup.add(sunCorona);
 
     // ── Solar System Star Field (3000 stars, 3 depth layers) ──
     const lowPower = isLowPower();
@@ -442,7 +534,47 @@ export default function SolarSystem() {
       map: bgTex, alphaTest: 0.005,
     });
     const bgStars = new THREE.Points(bgGeo, bgMat);
-    scene.add(bgStars); // Not in any group — always visible at all zoom levels
+    scene.add(bgStars); // Fallback until the real sky has loaded
+
+    // ── The real night sky: about 9,000 naked eye stars from the Yale Bright Star Catalogue,
+    // each in its true direction and colour. It moves with the camera, because real stars are
+    // so far away that moving around the solar system never changes where they appear.
+    const realSky = new THREE.Group();
+    scene.add(realSky);
+    let realSkyReady = false;
+    fetch(`${import.meta.env.BASE_URL}data/bright-stars.json`)
+      .then(r => (r.ok ? r.json() : null))
+      .then((d: { stars: [number, number, number, number, number][] } | null) => {
+        if (!d) return;
+        const R = 4000;
+        const buckets = [
+          { min: -9, max: 1, size: 4.4 },
+          { min: 1, max: 2.5, size: 3.3 },
+          { min: 2.5, max: 4, size: 2.4 },
+          { min: 4, max: 99, size: 1.6 },
+        ];
+        const tex = makeCircleTex();
+        buckets.forEach(b => {
+          const sel = d.stars.filter(st => st[3] > b.min && st[3] <= b.max);
+          const pos = new Float32Array(sel.length * 3);
+          const col = new Float32Array(sel.length * 3);
+          sel.forEach((st, i) => {
+            pos[i * 3] = st[0] * R; pos[i * 3 + 1] = st[1] * R; pos[i * 3 + 2] = st[2] * R;
+            const c = kelvinToColor(st[4] * 100);
+            const fade = Math.max(0.35, Math.min(1, 1.05 - (st[3] - b.min) * 0.22));
+            col[i * 3] = c.r * fade; col[i * 3 + 1] = c.g * fade; col[i * 3 + 2] = c.b * fade;
+          });
+          const g = new THREE.BufferGeometry();
+          g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+          g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+          realSky.add(new THREE.Points(g, new THREE.PointsMaterial({
+            size: b.size, sizeAttenuation: false, vertexColors: true, map: tex,
+            transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, alphaTest: 0.01,
+          })));
+        });
+        realSkyReady = true;
+      })
+      .catch(() => { /* keep the generated star field */ });
 
     // Store twinkle data on the geometry for the animate loop
     (bgGeo as THREE.BufferGeometry & { twinklePeriod: Float32Array; twinkleOffset: Float32Array })
@@ -451,7 +583,7 @@ export default function SolarSystem() {
       .twinkleOffset = twinkleOffset;
 
     // ── God Rays from Sun ──
-    const rayCount = 14;
+    const rayCount = 0; // God rays removed: a soft glow is closer to how the Sun looks
     const rayGroup = new THREE.Group();
     solarSystemGroup.add(rayGroup);
     for (let r = 0; r < rayCount; r++) {
@@ -478,11 +610,12 @@ export default function SolarSystem() {
       pivot.rotation.y = heliocentric(p.id, simTimeRef.current)?.lon ?? 0;
       solarSystemGroup.add(pivot);
 
-      const geo = new THREE.SphereGeometry(p.radiusScale, 32, 32);
-      const mat = new THREE.MeshStandardMaterial({ 
-        color: p.color,
-        roughness: 0.7,
-        metalness: 0.1
+      const geo = new THREE.SphereGeometry(p.radiusScale, 64, 48);
+      const mat = new THREE.MeshStandardMaterial({
+        map: TEXTURE_FILES[p.id] ? loadTex(TEXTURE_FILES[p.id]) : null,
+        color: TEXTURE_FILES[p.id] ? 0xffffff : p.color,
+        roughness: 1,
+        metalness: 0,
       });
       const mesh = new THREE.Mesh(geo, mat);
       
@@ -493,16 +626,47 @@ export default function SolarSystem() {
       pivot.add(mesh);
 
       if (p.id === 'saturn') {
-        const ringGeo = new THREE.RingGeometry(p.radiusScale * 1.4, p.radiusScale * 2.2, 64);
+        // The ring image is a top down view of the rings; use its left half on a flat square.
+        const ringTex = loadTex('saturn-ring.webp');
+        ringTex.repeat.set(0.5, 1);
+        const ringSize = p.radiusScale * 2.33 * 2;
         const ringMat = new THREE.MeshStandardMaterial({
-          color: 0xe4d191,
-          side: THREE.DoubleSide,
-          transparent: true,
-          opacity: 0.7
+          map: ringTex, transparent: true, side: THREE.DoubleSide,
+          roughness: 1, metalness: 0, depthWrite: false,
         });
-        const ring = new THREE.Mesh(ringGeo, ringMat);
-        ring.rotation.x = Math.PI / 2;
+        const ring = new THREE.Mesh(new THREE.PlaneGeometry(ringSize, ringSize), ringMat);
+        ring.rotation.x = -Math.PI / 2;
         mesh.add(ring);
+      }
+
+      if (p.id === 'earth') {
+        // Clouds drift slightly faster than the ground beneath them.
+        const clouds = new THREE.Mesh(
+          new THREE.SphereGeometry(p.radiusScale * 1.012, 64, 48),
+          new THREE.MeshStandardMaterial({ map: loadTex('earth-clouds.webp'), transparent: true, depthWrite: false, roughness: 1, metalness: 0 }),
+        );
+        clouds.userData = { spin: 1.15 };
+        mesh.add(clouds);
+
+        // A thin blue atmosphere, brightest at the edge of the disc.
+        const atmosphere = new THREE.Mesh(
+          new THREE.SphereGeometry(p.radiusScale * 1.06, 48, 32),
+          new THREE.ShaderMaterial({
+            transparent: true, depthWrite: false, side: THREE.BackSide, blending: THREE.AdditiveBlending,
+            vertexShader: 'varying vec3 vN; varying vec3 vV; void main(){ vec4 mv = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }',
+            fragmentShader: 'varying vec3 vN; varying vec3 vV; void main(){ float f = pow(1.0 - abs(dot(vN, vV)), 2.5); gl_FragColor = vec4(0.42, 0.72, 1.0, 1.0) * f * 0.9; }',
+          }),
+        );
+        mesh.add(atmosphere);
+
+        // The Moon, placed each frame at its real angle from the Sun (from the lunar phase).
+        const moonMesh = new THREE.Mesh(
+          new THREE.SphereGeometry(p.radiusScale * 0.27, 48, 32),
+          new THREE.MeshStandardMaterial({ map: loadTex('moon.webp'), roughness: 1, metalness: 0 }),
+        );
+        moonMesh.userData = { id: 'earth', level: 1 };
+        pivot.add(moonMesh);
+        moonMeshRef.current = moonMesh;
       }
 
       const orbitGeo = new THREE.RingGeometry(p.orbitRadius - 0.05, p.orbitRadius + 0.05, 128);
@@ -611,21 +775,39 @@ export default function SolarSystem() {
     galaxyGroup.visible = false;
     scene.add(galaxyGroup);
 
-    // Galactic Core
-    const coreGeo = new THREE.SphereGeometry(800, 32, 32);
-    const coreMat = new THREE.MeshBasicMaterial({ color: 0xfff3b0, blending: THREE.AdditiveBlending });
-    galaxyGroup.add(new THREE.Mesh(coreGeo, coreMat));
+    const galaxyLabels: CSS2DObject[] = [];
 
-    const coreGlowGeo = new THREE.SphereGeometry(1400, 32, 32);
-    const coreGlowMat = new THREE.MeshBasicMaterial({ color: 0xffcc44, transparent: true, opacity: 0.3, blending: THREE.AdditiveBlending });
-    galaxyGroup.add(new THREE.Mesh(coreGlowGeo, coreGlowMat));
+    // Galactic core: a soft glow of old, warm stars, and the central bar the Milky Way is known to have.
+    const coreGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: makeGlowTex('255,214,160', [[0, 0.75], [0.15, 0.4], [0.45, 0.08], [1, 0]]),
+      blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+    }));
+    coreGlow.scale.set(7000, 7000, 1);
+    galaxyGroup.add(coreGlow);
 
-    const outerHaloGeo = new THREE.SphereGeometry(2500, 32, 32);
-    const outerHaloMat = new THREE.MeshBasicMaterial({ color: 0xff9900, transparent: true, opacity: 0.08, blending: THREE.AdditiveBlending });
-    galaxyGroup.add(new THREE.Mesh(outerHaloGeo, outerHaloMat));
+    const barCount = 26000;
+    const barPos = new Float32Array(barCount * 3);
+    const barCol = new Float32Array(barCount * 3);
+    const barAngle = 0.47; // the bar points about 27 degrees from the Sun to centre line
+    const gauss = () => (Math.random() + Math.random() + Math.random() + Math.random() - 2) / 2;
+    for (let i = 0; i < barCount; i++) {
+      const bx = gauss() * 2600, bz = gauss() * 900, by = gauss() * 380;
+      barPos[i * 3] = bx * Math.cos(barAngle) - bz * Math.sin(barAngle);
+      barPos[i * 3 + 1] = by;
+      barPos[i * 3 + 2] = bx * Math.sin(barAngle) + bz * Math.cos(barAngle);
+      const warm = new THREE.Color().setHSL(0.09 + Math.random() * 0.03, 0.55, 0.62 + Math.random() * 0.2);
+      barCol[i * 3] = warm.r; barCol[i * 3 + 1] = warm.g; barCol[i * 3 + 2] = warm.b;
+    }
+    const barGeo = new THREE.BufferGeometry();
+    barGeo.setAttribute('position', new THREE.BufferAttribute(barPos, 3));
+    barGeo.setAttribute('color', new THREE.BufferAttribute(barCol, 3));
+    galaxyGroup.add(new THREE.Points(barGeo, new THREE.PointsMaterial({
+      size: 16, vertexColors: true, blending: THREE.AdditiveBlending, transparent: true, opacity: 0.55,
+      sizeAttenuation: true, map: makeCircleTex(), alphaTest: 0.005, depthWrite: false,
+    })));
 
     // Sagittarius A*
-    const sagAGeo = new THREE.SphereGeometry(50, 16, 16);
+    const sagAGeo = new THREE.SphereGeometry(30, 16, 16);
     const sagAMat = new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending });
     const sagA = new THREE.Mesh(sagAGeo, sagAMat);
     sagA.userData = { id: 'sagittarius-a', level: 2 };
@@ -642,6 +824,7 @@ export default function SolarSystem() {
     const sagALabel = new CSS2DObject(sagADiv);
     sagALabel.position.set(0, 100, 0);
     sagA.add(sagALabel);
+    galaxyLabels.push(sagALabel);
 
     // Star Particles
     const totalStars = 120000;
@@ -722,11 +905,14 @@ export default function SolarSystem() {
     ];
 
     nebulaeData.forEach(n => {
-      const nGeo = new THREE.PlaneGeometry(n.s, n.s);
-      const nMat = new THREE.MeshBasicMaterial({ color: n.col, transparent: true, opacity: 0.25, blending: THREE.AdditiveBlending, side: THREE.DoubleSide });
-      const nMesh = new THREE.Mesh(nGeo, nMat);
+      const nc = new THREE.Color(n.col);
+      const nMat = new THREE.SpriteMaterial({
+        map: makeGlowTex(`${Math.round(nc.r * 255)},${Math.round(nc.g * 255)},${Math.round(nc.b * 255)}`, [[0, 0.8], [0.25, 0.45], [0.6, 0.1], [1, 0]]),
+        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+      });
+      const nMesh = new THREE.Sprite(nMat);
+      nMesh.scale.set(n.s * 1.6, n.s * 1.6, 1);
       nMesh.position.set(n.pos[0], n.pos[1], n.pos[2]);
-      nMesh.lookAt(0, 0, 0);
       nMesh.userData = { id: n.id, level: 2 };
       galaxyGroup.add(nMesh);
       
@@ -739,7 +925,9 @@ export default function SolarSystem() {
       nDiv.style.cursor = 'pointer';
       nDiv.onclick = () => handleObjectClick(n.id, 2);
       const nLabel = new CSS2DObject(nDiv);
-      nMesh.add(nLabel);
+      nLabel.position.set(n.pos[0], n.pos[1] + n.s * 0.7, n.pos[2]);
+      galaxyGroup.add(nLabel);
+      galaxyLabels.push(nLabel);
     });
 
     // You Are Here
@@ -751,13 +939,14 @@ export default function SolarSystem() {
     galaxyGroup.add(youAreHere);
 
     const yahDiv = document.createElement('div');
-    yahDiv.textContent = 'Solar System (You Are Here)';
+    yahDiv.textContent = 'You are here';
     yahDiv.style.color = '#8DEBFF';
     yahDiv.style.fontFamily = 'Inter, sans-serif';
     yahDiv.style.fontSize = '12px';
     const yahLabel = new CSS2DObject(yahDiv);
     yahLabel.position.set(0, 100, 0);
     youAreHere.add(yahLabel);
+    galaxyLabels.push(yahLabel);
 
     // Globular Clusters & Magellanic Clouds
     const clusterData = [
@@ -771,9 +960,12 @@ export default function SolarSystem() {
     ];
 
     clusterData.forEach(c => {
-      const cGeo = new THREE.SphereGeometry(c.r, 16, 16);
-      const cMat = new THREE.MeshBasicMaterial({ color: c.col, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
-      const cMesh = new THREE.Mesh(cGeo, cMat);
+      const cc = new THREE.Color(c.col);
+      const cMesh = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: makeGlowTex(`${Math.round(cc.r * 255)},${Math.round(cc.g * 255)},${Math.round(cc.b * 255)}`, [[0, 0.9], [0.2, 0.5], [0.55, 0.1], [1, 0]]),
+        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+      }));
+      cMesh.scale.set(c.r * 3, c.r * 3, 1);
       cMesh.position.set(c.pos[0], c.pos[1], c.pos[2]);
       cMesh.userData = { id: c.id, level: 2 };
       galaxyGroup.add(cMesh);
@@ -787,8 +979,9 @@ export default function SolarSystem() {
       cDiv.style.cursor = 'pointer';
       cDiv.onclick = () => handleObjectClick(c.id, 2);
       const cLabel = new CSS2DObject(cDiv);
-      cLabel.position.set(0, c.r + 50, 0);
-      cMesh.add(cLabel);
+      cLabel.position.set(c.pos[0], c.pos[1] + c.r + 50, c.pos[2]);
+      galaxyGroup.add(cLabel);
+      galaxyLabels.push(cLabel);
     });
 
     // ========================================================================
@@ -1017,7 +1210,7 @@ export default function SolarSystem() {
     universeGroup.add(labelGroup);
 
     const LANDMARKS = [
-      { id: 'milky-way-u', name: 'You are here', pos: [0, 0, 0] as [number,number,number], col: 0xffd54f, s: 1800, labelOffset: [0, 3000, 0] as [number,number,number], tier: 1 },
+      { id: 'milky-way-u', name: 'You are here', pos: [0, 0, 0] as [number,number,number], col: 0xffd54f, s: 1800, labelOffset: [0, 3600, 0] as [number,number,number], tier: 1 },
       { id: 'andromeda-u', name: 'Andromeda', pos: [12000, -800, -5000] as [number,number,number], col: 0x4fc3f7, s: 1400, labelOffset: [0, -2000, 0] as [number,number,number], tier: 2 },
       { id: 'virgo-cluster', name: 'Virgo Cluster', pos: [-32000, 2500, -22000] as [number,number,number], col: 0xffffff, s: 2200, labelOffset: [2000, 0, 0] as [number,number,number], tier: 2 },
       { id: 'coma-cluster', name: 'Coma Cluster', pos: [65000, 6000, 32000] as [number,number,number], col: 0xffcc88, s: 2800, labelOffset: [0, 2000, 0] as [number,number,number], tier: 2 },
@@ -1028,25 +1221,41 @@ export default function SolarSystem() {
     universeLandmarkMeshesRef.current = [];
     LANDMARKS.forEach(u => {
       const uGeo = new THREE.SphereGeometry(u.s, 16, 16);
-      const uMat = new THREE.MeshBasicMaterial({
-        color: u.col, transparent: true,
-        opacity: u.id === 'milky-way-u' ? 0.35 : 0.45,
-        blending: THREE.AdditiveBlending, depthWrite: false,
-      });
+      // Invisible sphere to click on; what you see is the glow or spiral added below.
+      const uMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false });
       const uMesh = new THREE.Mesh(uGeo, uMat);
       uMesh.position.set(...u.pos);
       uMesh.userData = { id: u.id, level: 3, type: 'landmark' };
       labelGroup.add(uMesh);
       universeLandmarkMeshesRef.current.push(uMesh);
 
-      // Outer glow
-      const glowGeo = new THREE.SphereGeometry(u.s * 2.5, 12, 12);
-      const glowMat = new THREE.MeshBasicMaterial({
-        color: u.col, transparent: true, opacity: 0.08, blending: THREE.AdditiveBlending, depthWrite: false,
-      });
-      const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-      glowMesh.position.copy(uMesh.position);
-      labelGroup.add(glowMesh);
+      if (u.id === 'andromeda-u') {
+        // Andromeda is a large spiral seen almost edge on, so it appears as a long oval.
+        const spiral = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: makeSpiralTex(), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, rotation: 0.6,
+        }));
+        spiral.scale.set(u.s * 6, u.s * 1.9, 1);
+        spiral.position.copy(uMesh.position);
+        labelGroup.add(spiral);
+      } else if (u.id === 'milky-way-u') {
+        // From this far out our galaxy is one small spiral, a little smaller than Andromeda.
+        const mw = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: makeSpiralTex(), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+          opacity: 0.55, color: 0xffe9c8, rotation: 0.4,
+        }));
+        mw.scale.set(u.s * 3.4, u.s * 3.4, 1);
+        mw.position.copy(uMesh.position);
+        labelGroup.add(mw);
+      } else {
+        const uc = new THREE.Color(u.col);
+        const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: makeGlowTex(`${Math.round(uc.r * 255)},${Math.round(uc.g * 255)},${Math.round(uc.b * 255)}`, [[0, 0.55], [0.2, 0.25], [0.55, 0.05], [1, 0]]),
+          blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+        }));
+        glow.scale.set(u.s * 4, u.s * 4, 1);
+        glow.position.copy(uMesh.position);
+        labelGroup.add(glow);
+      }
 
       const tierCss: Record<number, string> = {
         1: 'color:#F3DDB0;font-size:14px;font-weight:700;',
@@ -1158,6 +1367,21 @@ export default function SolarSystem() {
       lastTime = now;
       totalElapsed += dt / 1000;
 
+      // ── Real sky follows the camera; the generated field is used further out ──
+      const inSolarSystem = zoomLevelRef.current === 1;
+      realSky.visible = inSolarSystem && realSkyReady;
+      realSky.position.copy(camera.position);
+      // The generated field is only a fallback while the real sky loads. It sits around the Sun, so from
+      // the galaxy or universe views it would show up as a false bright ball at the centre.
+      bgStars.visible = inSolarSystem && !realSkyReady;
+      galaxyLabels.forEach(l => { l.visible = zoomLevelRef.current === 2; });
+      starMat.opacity = zoomLevelRef.current === 3 ? 0.3 : 0.85;
+      // The detailed Milky Way is far too big to sit among other galaxies, so once we are out past it
+      // the small spiral landmark takes its place.
+      if (galaxyGroupRef.current && zoomLevelRef.current === 3) {
+        galaxyGroupRef.current.visible = camera.position.length() < 90000;
+      }
+
       // ── Star twinkle ──
       if (bgMat && bgGeo) {
         const tp = (bgGeo as THREE.BufferGeometry & { twinklePeriod: Float32Array; twinkleOffset: Float32Array }).twinklePeriod;
@@ -1216,6 +1440,16 @@ export default function SolarSystem() {
           const pos = heliocentric(p.id, simTimeRef.current);
           if (pos) pivot.rotation.y = pos.lon;
           mesh.rotation.y += 0.01 * hoverFactor;
+          mesh.children.forEach(ch => { if (ch.userData.spin) ch.rotation.y += 0.01 * hoverFactor * (ch.userData.spin - 1); });
+
+          if (p.id === 'earth' && moonMeshRef.current) {
+            // The Moon's angle from the Sun follows its phase, so a full Moon sits opposite the Sun.
+            const ph = moonPhase(simTimeRef.current);
+            const moonLon = (sunLongitude(simTimeRef.current) + ph.fraction * 360) * Math.PI / 180;
+            const a = moonLon - pivot.rotation.y;
+            const d = p.radiusScale * 2.6;
+            moonMeshRef.current.position.set(p.orbitRadius + Math.cos(a) * d, 0, -Math.sin(a) * d);
+          }
         });
         
         asteroidMesh.rotation.y += 0.0005 * speedRef.current;
@@ -1707,7 +1941,7 @@ export default function SolarSystem() {
       {/* Top Right Controls — unified panel, always on top */}
       {!screenshotMode && (
         <div
-          className="absolute bottom-20 top-auto right-4 z-[100] flex flex-col md:top-20 md:bottom-auto"
+          className="absolute top-[68px] right-3 z-[100] flex flex-col md:top-20 md:right-4"
           style={{
             background: "rgba(13,21,32,0.92)",
             backdropFilter: "blur(16px)",

@@ -61,6 +61,11 @@ export default function About() {
             PALE is made by Stellara, a not for profit space education project based in the UK. The 3D universe is
             built with Three.js, and imagery comes from NASA, ESA and the James Webb Space Telescope.
           </p>
+          <p className="mt-3 mb-0 text-[13px] leading-relaxed" style={{ color: "#7C8C9C" }}>
+            Planet positions use NASA JPL orbital elements. Planet and Sun surfaces are from{" "}
+            <a href="https://www.solarsystemscope.com/textures/" className="underline" style={{ color: "#A7B6C6" }}>Solar System Scope</a>,
+            used under CC BY 4.0. The night sky uses the Yale Bright Star Catalogue.
+          </p>
         </Section>
 
         <div className="rounded-2xl p-6 mb-4" style={{ background: "#0D1520", border: "1px solid #1D3040" }}>
