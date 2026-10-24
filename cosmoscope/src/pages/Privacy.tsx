@@ -23,7 +23,7 @@ export default function Privacy() {
     <div className="min-h-screen px-6 pt-28 pb-20" style={{ background: "#05070C", color: "#E8ECF1" }}>
       <div className="max-w-2xl mx-auto">
         <h1 className="m-0 text-[40px] md:text-[56px] leading-[1.05]">Privacy policy</h1>
-        <p className="mt-2 mb-12 text-sm" style={{ color: "#7C8794" }}>Last updated: 24 October 2026</p>
+        <p className="mt-2 mb-12 text-sm" style={{ color: "#7C8794" }}>Last updated: 25 October 2026</p>
 
         <P>
           Stellara runs the PALE mobile app and the PALE website at stellaraspace.com. This page explains what
@@ -46,6 +46,12 @@ export default function Privacy() {
         </P>
         <P>
           Tonight does not ask for your location.
+        </P>
+        <P>
+          Notes you send to the universe are kept only in your browser, and never reach us. If you copy a note's link,
+          the note is written into the link itself, after the # sign, a part of the address browsers do not send to
+          any server. Anyone you give the link to can read the note. A calendar reminder is a file made in your
+          browser for your own calendar.
         </P>
         <P>
           Picture of the day and the Voyager view load images from NASA, and the exoplanet pages load NASA's exoplanet archive (partly through the
