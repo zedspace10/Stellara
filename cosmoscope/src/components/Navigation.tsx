@@ -12,6 +12,7 @@ const MAIN = [
   { path: "/tonight", label: "Tonight" },
   { path: "/scale", label: "Scale" },
   { path: "/simulations", label: "Simulations" },
+  { path: "/note", label: "Send a note" },
   { path: "/exoplanets", label: "Other worlds" },
   { path: "/about", label: "About" },
 ];
@@ -19,6 +20,7 @@ const MAIN = [
 // On phones the bar holds four places; the rest sit behind More.
 const PHONE_BAR = MAIN.slice(0, 4);
 const PHONE_MORE = [
+  { path: "/note", label: "Send a note to the universe" },
   { path: "/exoplanets", label: "Other worlds" },
   { path: "/constellations", label: "Constellation guide" },
   { path: "/apod", label: "Picture of the day" },
