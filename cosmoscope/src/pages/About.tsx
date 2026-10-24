@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Heart, Star, Globe, BookOpen, ChevronRight, Mail } from "lucide-react";
 import Footer from "@/components/Footer";
 import MailingListForm from "@/components/MailingListForm";
+import { APP_STORE_URL } from "@/lib/links";
 
 export default function About() {
   useEffect(() => {
@@ -27,7 +28,12 @@ export default function About() {
           </p>
           <p className="mt-3 mb-0 text-[15px] leading-relaxed" style={{ color: "#C9D4DF" }}>
             On the website you can fly through the solar system in 3D, journey from the Planck length to the edge of
-            the observable universe, watch stars form and die, and find out what is in your sky tonight. The PALE app
+            the observable universe, watch stars form and die, and find out what is in your sky tonight.{" "}
+            {APP_STORE_URL ? (
+              <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="underline" style={{ color: "#8DEBFF" }}>
+                The PALE app
+              </a>
+            ) : "The PALE app"}{" "}
             brings the same calm space to your phone.
           </p>
         </Section>
