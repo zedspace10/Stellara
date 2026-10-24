@@ -954,7 +954,7 @@ export default function ScaleOfUniverse() {
           <div key={shown.id}>
             <h1 className="m-0 text-[28px] md:text-[36px] leading-tight" style={{ color: "#E8ECF1" }}>{shown.name}</h1>
             <p className="m-0 mt-1 text-[14px]" style={{ color: "#A9C3E0" }}>{shown.sizeLabel}</p>
-            <p className="m-0 mt-3 text-[15px] leading-relaxed hidden sm:block" style={{ color: "#C9D2DC" }}>{shown.fact}</p>
+            <p className="m-0 mt-2 sm:mt-3 text-[13px] sm:text-[15px] leading-relaxed" style={{ color: "#C9D2DC" }}>{shown.fact}</p>
           </div>
         ) : inGap ? (
           <div>
@@ -967,6 +967,7 @@ export default function ScaleOfUniverse() {
         ) : (
           <h1 className="m-0 text-[28px] md:text-[36px] leading-tight" style={{ color: "#E8ECF1" }}>Scale of the universe</h1>
         )}
+        {!touched && <p className="m-0 mt-2 text-[13px] md:hidden" style={{ color: "#A3AFBC" }}>Drag up to zoom out, down to zoom in.</p>}
       </div>
 
       {!touched && (
@@ -1000,7 +1001,7 @@ export default function ScaleOfUniverse() {
                 <button
                   key={th.id}
                   onClick={() => flyTo(tz)}
-                  className="absolute -translate-x-1/2 top-4 text-[12px] whitespace-nowrap transition-colors hover:text-white"
+                  className={`absolute -translate-x-1/2 top-4 text-[12px] whitespace-nowrap transition-colors hover:text-white ${th.wideOnly ? "hidden sm:block" : ""}`}
                   style={{ left: `${((tz - Z_MIN) / (Z_MAX - Z_MIN)) * 100}%`, color: "#8E9AA8" }}
                 >
                   {th.tick}

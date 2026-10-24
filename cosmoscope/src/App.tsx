@@ -19,12 +19,9 @@ import ScaleOfUniverse from "@/pages/ScaleOfUniverse";
 import ExoplanetExplorer from "@/pages/ExoplanetExplorer";
 import SimulationsLanding from "@/pages/simulations/SimulationsLanding";
 import BigBangSim from "@/pages/simulations/BigBangSim";
-import MilkyWayBirthSim from "@/pages/simulations/MilkyWayBirthSim";
 import StarBirthSim from "@/pages/simulations/StarBirthSim";
 import StarDeathSim from "@/pages/simulations/StarDeathSim";
 import BlackHoleSim from "@/pages/simulations/BlackHoleSim";
-import InsideBlackHoleSim from "@/pages/simulations/InsideBlackHoleSim";
-import SolarSystemFormationSim from "@/pages/simulations/SolarSystemFormationSim";
 import About from "@/pages/About";
 import Privacy from "@/pages/Privacy";
 
@@ -41,6 +38,9 @@ const RETIRED: [string, string][] = [
   ["/news", "/tonight"],
   ["/launches", "/tonight"],
   ["/blackholes", "/simulations/black-hole"],
+  ["/simulations/milky-way-birth", "/simulations"],
+  ["/simulations/solar-system-formation", "/simulations"],
+  ["/simulations/inside-black-hole", "/simulations/black-hole"],
   ["/build-universe", "/simulations"],
   ["/education", "/"],
   ["/glossary", "/"],
@@ -60,12 +60,9 @@ function Router() {
         <Route path="/exoplanets" component={ExoplanetExplorer} />
         <Route path="/simulations" component={SimulationsLanding} />
         <Route path="/simulations/big-bang" component={BigBangSim} />
-        <Route path="/simulations/milky-way-birth" component={MilkyWayBirthSim} />
         <Route path="/simulations/star-birth" component={StarBirthSim} />
         <Route path="/simulations/star-death" component={StarDeathSim} />
         <Route path="/simulations/black-hole" component={BlackHoleSim} />
-        <Route path="/simulations/inside-black-hole" component={InsideBlackHoleSim} />
-        <Route path="/simulations/solar-system-formation" component={SolarSystemFormationSim} />
         <Route path="/about" component={About} />
         <Route path="/privacy" component={Privacy} />
         {RETIRED.map(([from, to]) => (

@@ -25,6 +25,8 @@ export interface ScaleThing {
   fact: string;
   /** Short name for the track at the bottom. */
   tick?: string;
+  /** Leave this tick off on narrow screens, where there is not room for every name. */
+  wideOnly?: boolean;
 }
 
 // In order from smallest to largest.
@@ -41,7 +43,7 @@ export const THINGS: ScaleThing[] = [
     fact: "The nucleus is about 100,000 times smaller than the atom around it. If the nucleus were a marble, the atom would be a kilometre across." },
   { id: "water", name: "A water molecule", size: 2.8e-10, sizeLabel: "About 0.28 nanometres",
     fact: "Two hydrogen atoms and one oxygen, joined at an angle of about 104.5 degrees. That bent shape is why water dissolves so much." },
-  { id: "dna", name: "DNA", size: 2e-9, sizeLabel: "2 nanometres wide", tick: "DNA",
+  { id: "dna", name: "DNA", size: 2e-9, sizeLabel: "2 nanometres wide", tick: "DNA", wideOnly: true,
     fact: "A twisted ladder of four chemical letters. The order of those letters is the instruction book for building you." },
   { id: "virus", name: "A flu virus", size: 1e-7, sizeLabel: "About 100 nanometres",
     fact: "About 700 of them would fit side by side across the width of a human hair." },
@@ -63,7 +65,7 @@ export const THINGS: ScaleThing[] = [
     fact: "If Earth were the size of a football, the air you could breathe would be about as thick as a sheet of paper." },
   { id: "moon", name: "Earth and the Moon", size: 7.7e8, sizeLabel: "384,400 km apart",
     fact: "Every other planet in the solar system would fit, side by side, in the gap between Earth and the Moon." },
-  { id: "inner", name: "The Sun and the inner planets", size: 4.6e11, sizeLabel: "Earth is 150 million km from the Sun", tick: "Sun",
+  { id: "inner", name: "The Sun and the inner planets", size: 4.6e11, sizeLabel: "Earth is 150 million km from the Sun", tick: "Sun", wideOnly: true,
     fact: "Sunlight takes 8 minutes 20 seconds to reach you. The planets here are where they really are today." },
   { id: "solar", name: "The solar system", size: 9e12, sizeLabel: "About 9 billion km across, out to Neptune",
     fact: "Light takes about 8 hours to cross from one side of Neptune's orbit to the other." },
@@ -72,7 +74,7 @@ export const THINGS: ScaleThing[] = [
   { id: "oort", name: "The Oort cloud", size: 3e16, sizeLabel: "Up to about 100,000 au across",
     fact: "A vast shell of icy bodies around the Sun. It has never been seen directly. We know it is there from the comets that fall in from it." },
   { id: "neighbours", name: "Our nearest stars", size: 2.4e17, sizeLabel: "About 25 light years across",
-    fact: "The nearest star, Proxima Centauri, is 4.24 light years away. At Voyager 1's speed, the trip would take about 75,000 years." , tick: "Stars" },
+    fact: "The nearest star, Proxima Centauri, is 4.24 light years away. At Voyager 1's speed, the trip would take about 75,000 years." , tick: "Stars", wideOnly: true },
   { id: "milkyway", name: "The Milky Way", size: 9.5e20, sizeLabel: "About 100,000 light years across", tick: "Galaxy",
     fact: "Between 100 and 400 billion stars. The Sun, 26,000 light years from the centre, takes about 230 million years to go round once." },
   { id: "localgroup", name: "The Local Group", size: 9.5e22, sizeLabel: "About 10 million light years across",
