@@ -173,23 +173,23 @@ export default function PlanetDetail({ planet, allPlanets, onClose, onNavigate }
         {/* If you were there */}
         <section className="rounded-xl p-4" style={{ background: "rgba(141,235,255,0.04)", border: "1px solid rgba(141,235,255,0.12)" }}>
           <div className="text-[10px] tracking-widest text-[#8DEBFF]/60 uppercase mb-2">
-            If You Were There — Speculative but Science-Based
+            If you were there: speculative, but based on the science
           </div>
           <div className="text-sm text-white/65 leading-relaxed space-y-2">
             {planet.period != null && (
               <p>A year on this world lasts {formatPeriod(planet.period)}
-                {planet.period < 5 ? " — you'd age a year every few days." : planet.period < 365 ? "." : " — longer than an Earth year."}
+                {planet.period < 5 ? ", you'd age a year every few days." : planet.period < 365 ? "." : ", longer than an Earth year."}
               </p>
             )}
             {planet.mass != null && planet.radius != null && (
               <p>Surface gravity is roughly {((planet.mass / Math.pow(planet.radius, 2))).toFixed(1)}× Earth's
-                {planet.mass / Math.pow(planet.radius, 2) > 2 ? " — you'd feel twice as heavy as on Earth." : planet.mass / Math.pow(planet.radius, 2) < 0.5 ? " — you'd feel almost weightless." : "."}
+                {planet.mass / Math.pow(planet.radius, 2) > 2 ? ", you'd feel twice as heavy as on Earth." : planet.mass / Math.pow(planet.radius, 2) < 0.5 ? ", you'd feel almost weightless." : "."}
               </p>
             )}
             {planet.spectralType && (
               <p>
                 {planet.spectralType[0] === "M"
-                  ? "The host star is a red dwarf — dimmer than our Sun. The sky might glow a perpetual twilight red."
+                  ? "The host star is a red dwarf, dimmer than our Sun. The sky might glow a perpetual twilight red."
                   : planet.spectralType[0] === "K"
                     ? "Orbiting an orange dwarf star, the sky might have a warm amber hue at midday."
                     : planet.spectralType[0] === "F"
@@ -198,7 +198,7 @@ export default function PlanetDetail({ planet, allPlanets, onClose, onNavigate }
               </p>
             )}
             {planet.period != null && planet.period < 10 && (
-              <p>Tidal locking is likely — one face permanently toward the star in eternal day, the other in endless night.</p>
+              <p>Tidal locking is likely: one face permanently toward the star in eternal day, the other in endless night.</p>
             )}
           </div>
         </section>

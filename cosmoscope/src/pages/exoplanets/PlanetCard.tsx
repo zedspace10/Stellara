@@ -66,9 +66,9 @@ export const PlanetCard = memo(function PlanetCard({ planet, onClick, featured =
       <div className="grid grid-cols-2 gap-x-3 gap-y-1.5">
         {[
           { label: "Radius", val: formatRadius(planet.radius) },
-          { label: "Temp", val: planet.temp ? `${planet.temp.toFixed(0)} K` : "—" },
+          { label: "Temp", val: planet.temp ? `${planet.temp.toFixed(0)} K` : "Unknown" },
           { label: "Distance", val: formatDistanceLY(planet.distanceLY) },
-          { label: "Found", val: planet.year?.toString() ?? "—" },
+          { label: "Found", val: planet.year?.toString() ?? "Unknown" },
         ].map(({ label, val }) => (
           <div key={label}>
             <div className="text-[9px] text-white/30 uppercase tracking-wider">{label}</div>

@@ -148,7 +148,7 @@ export default function FilterPanel({ filters, onChange, onClose, totalCount, fi
         <div>
           <div className="flex justify-between items-center mb-2">
             <div className="text-[10px] tracking-widest text-white/40 uppercase">Discovery Year</div>
-            <div className="text-xs text-[#F3DDB0]">{filters.yearMin} – {filters.yearMax}</div>
+            <div className="text-xs text-[#F3DDB0]">{filters.yearMin} to {filters.yearMax}</div>
           </div>
           <div className="space-y-2">
             <input type="range" min={1992} max={2024} value={filters.yearMin}

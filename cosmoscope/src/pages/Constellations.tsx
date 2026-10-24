@@ -20,7 +20,7 @@ interface ConstellationData {
 
 const CONSTELLATIONS: ConstellationData[] = [
   {
-    id: "orion", name: "Orion", abbr: "Ori", hemisphere: "Both", months: "Dec – Feb",
+    id: "orion", name: "Orion", abbr: "Ori", hemisphere: "Both", months: "Dec to Feb",
     mythology: "The great hunter of Greek myth, placed in the sky by Zeus.",
     brightestStar: "Rigel (β Ori)", area: 594,
     stars: [
@@ -31,7 +31,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [0, 3], [1, 5], [3, 4], [4, 5], [3, 6], [5, 7], [2, 0]],
   },
   {
-    id: "ursa-major", name: "Ursa Major", abbr: "UMa", hemisphere: "N", months: "Mar – May",
+    id: "ursa-major", name: "Ursa Major", abbr: "UMa", hemisphere: "N", months: "Mar to May",
     mythology: "Callisto, transformed into a bear by Zeus and placed among the stars.",
     brightestStar: "Alioth (ε UMa)", area: 1280,
     stars: [
@@ -42,7 +42,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [2, 6], [6, 7], [7, 1]],
   },
   {
-    id: "cassiopeia", name: "Cassiopeia", abbr: "Cas", hemisphere: "N", months: "Oct – Dec",
+    id: "cassiopeia", name: "Cassiopeia", abbr: "Cas", hemisphere: "N", months: "Oct to Dec",
     mythology: "Vain queen of Ethiopia, punished to circle the pole forever.",
     brightestStar: "Schedar (α Cas)", area: 598,
     stars: [
@@ -52,7 +52,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [3, 4]],
   },
   {
-    id: "leo", name: "Leo", abbr: "Leo", hemisphere: "N", months: "Mar – May",
+    id: "leo", name: "Leo", abbr: "Leo", hemisphere: "N", months: "Mar to May",
     mythology: "The Nemean Lion slain by Hercules as his first labour.",
     brightestStar: "Regulus (α Leo)", area: 947,
     stars: [
@@ -64,7 +64,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 0]],
   },
   {
-    id: "scorpius", name: "Scorpius", abbr: "Sco", hemisphere: "S", months: "Jun – Aug",
+    id: "scorpius", name: "Scorpius", abbr: "Sco", hemisphere: "S", months: "Jun to Aug",
     mythology: "The scorpion that killed Orion, placed opposite him in the sky.",
     brightestStar: "Antares (α Sco)", area: 497,
     stars: [
@@ -75,7 +75,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8]],
   },
   {
-    id: "cygnus", name: "Cygnus", abbr: "Cyg", hemisphere: "N", months: "Aug – Oct",
+    id: "cygnus", name: "Cygnus", abbr: "Cyg", hemisphere: "N", months: "Aug to Oct",
     mythology: "The swan form Zeus took when wooing Leda; or Orpheus transformed after death.",
     brightestStar: "Deneb (α Cyg)", area: 804,
     stars: [
@@ -86,7 +86,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [4, 1], [1, 5]],
   },
   {
-    id: "gemini", name: "Gemini", abbr: "Gem", hemisphere: "N", months: "Jan – Mar",
+    id: "gemini", name: "Gemini", abbr: "Gem", hemisphere: "N", months: "Jan to Mar",
     mythology: "Castor and Pollux, the divine twins of Zeus, patrons of sailors.",
     brightestStar: "Pollux (β Gem)", area: 514,
     stars: [
@@ -97,7 +97,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 2], [2, 4], [4, 6], [1, 3], [3, 5], [5, 7], [6, 7]],
   },
   {
-    id: "taurus", name: "Taurus", abbr: "Tau", hemisphere: "N", months: "Dec – Feb",
+    id: "taurus", name: "Taurus", abbr: "Tau", hemisphere: "N", months: "Dec to Feb",
     mythology: "Zeus in the form of a bull; also home to the Pleiades and Hyades clusters.",
     brightestStar: "Aldebaran (α Tau)", area: 797,
     stars: [
@@ -108,7 +108,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [0, 3], [3, 4], [0, 5], [5, 6]],
   },
   {
-    id: "lyra", name: "Lyra", abbr: "Lyr", hemisphere: "N", months: "Jul – Sep",
+    id: "lyra", name: "Lyra", abbr: "Lyr", hemisphere: "N", months: "Jul to Sep",
     mythology: "The lyre of Orpheus, who could charm even rocks and rivers with its music.",
     brightestStar: "Vega (α Lyr)", area: 286,
     stars: [
@@ -118,7 +118,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [0, 3], [1, 2], [2, 3], [1, 4], [4, 5], [5, 3]],
   },
   {
-    id: "andromeda", name: "Andromeda", abbr: "And", hemisphere: "N", months: "Oct – Dec",
+    id: "andromeda", name: "Andromeda", abbr: "And", hemisphere: "N", months: "Oct to Dec",
     mythology: "Ethiopian princess chained to a rock as sacrifice; rescued by Perseus.",
     brightestStar: "Alpheratz (α And)", area: 722,
     stars: [
@@ -129,7 +129,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [3, 4], [2, 5], [2, 6]],
   },
   {
-    id: "canis-major", name: "Canis Major", abbr: "CMa", hemisphere: "S", months: "Jan – Mar",
+    id: "canis-major", name: "Canis Major", abbr: "CMa", hemisphere: "S", months: "Jan to Mar",
     mythology: "One of Orion's hunting dogs, following him across the winter sky.",
     brightestStar: "Sirius (α CMa)", area: 380,
     stars: [
@@ -140,8 +140,8 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [0, 2], [1, 3], [3, 4], [4, 5]],
   },
   {
-    id: "virgo", name: "Virgo", abbr: "Vir", hemisphere: "Both", months: "Apr – Jun",
-    mythology: "Demeter or Persephone — the goddess of the harvest, holding an ear of wheat.",
+    id: "virgo", name: "Virgo", abbr: "Vir", hemisphere: "Both", months: "Apr to Jun",
+    mythology: "Demeter or Persephone, the goddess of the harvest, holding an ear of wheat.",
     brightestStar: "Spica (α Vir)", area: 1294,
     stars: [
       { x: 75, y: 75, r: 4, name: "Spica" }, { x: 60, y: 60, r: 2.5 },
@@ -151,7 +151,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 1]],
   },
   {
-    id: "sagittarius", name: "Sagittarius", abbr: "Sgr", hemisphere: "S", months: "Jul – Sep",
+    id: "sagittarius", name: "Sagittarius", abbr: "Sgr", hemisphere: "S", months: "Jul to Sep",
     mythology: "The centaur Chiron, wisest of his kind, aiming his bow at Scorpius.",
     brightestStar: "Kaus Australis (ε Sgr)", area: 867,
     stars: [
@@ -162,7 +162,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 2], [3, 6]],
   },
   {
-    id: "hercules", name: "Hercules", abbr: "Her", hemisphere: "N", months: "Jun – Aug",
+    id: "hercules", name: "Hercules", abbr: "Her", hemisphere: "N", months: "Jun to Aug",
     mythology: "The greatest of Greek heroes, performing 12 impossible labours.",
     brightestStar: "Kornephoros (β Her)", area: 1225,
     stars: [
@@ -173,7 +173,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [3, 1], [2, 4], [3, 5], [4, 6], [5, 7]],
   },
   {
-    id: "aquila", name: "Aquila", abbr: "Aql", hemisphere: "Both", months: "Aug – Oct",
+    id: "aquila", name: "Aquila", abbr: "Aql", hemisphere: "Both", months: "Aug to Oct",
     mythology: "The eagle of Zeus, who carried the thunderbolts of the king of gods.",
     brightestStar: "Altair (α Aql)", area: 652,
     stars: [
@@ -183,7 +183,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [0, 2], [0, 3], [3, 4]],
   },
   {
-    id: "perseus", name: "Perseus", abbr: "Per", hemisphere: "N", months: "Nov – Jan",
+    id: "perseus", name: "Perseus", abbr: "Per", hemisphere: "N", months: "Nov to Jan",
     mythology: "Hero who slew Medusa and rescued Andromeda from the sea monster.",
     brightestStar: "Mirfak (α Per)", area: 615,
     stars: [
@@ -194,7 +194,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [0, 2], [1, 3], [3, 5], [2, 4], [4, 6]],
   },
   {
-    id: "aquarius", name: "Aquarius", abbr: "Aqr", hemisphere: "Both", months: "Sep – Nov",
+    id: "aquarius", name: "Aquarius", abbr: "Aqr", hemisphere: "Both", months: "Sep to Nov",
     mythology: "Ganymede, the cup-bearer of the gods, eternally pouring water from the heavens.",
     brightestStar: "Sadalsuud (β Aqr)", area: 980,
     stars: [
@@ -205,7 +205,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [2, 4], [3, 5]],
   },
   {
-    id: "pisces", name: "Pisces", abbr: "Psc", hemisphere: "N", months: "Oct – Dec",
+    id: "pisces", name: "Pisces", abbr: "Psc", hemisphere: "N", months: "Oct to Dec",
     mythology: "Aphrodite and Eros transformed into fish, tied together to escape Typhon.",
     brightestStar: "Eta Piscium (η Psc)", area: 889,
     stars: [
@@ -217,7 +217,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9], [9, 0]],
   },
   {
-    id: "cancer", name: "Cancer", abbr: "Cnc", hemisphere: "N", months: "Feb – Apr",
+    id: "cancer", name: "Cancer", abbr: "Cnc", hemisphere: "N", months: "Feb to Apr",
     mythology: "The crab sent by Hera to distract Hercules during his battle with the Hydra.",
     brightestStar: "Al Tarf (β Cnc)", area: 506,
     stars: [
@@ -227,7 +227,7 @@ const CONSTELLATIONS: ConstellationData[] = [
     lines: [[0, 1], [0, 2], [1, 3], [2, 4], [1, 2]],
   },
   {
-    id: "capricornus", name: "Capricornus", abbr: "Cap", hemisphere: "S", months: "Aug – Oct",
+    id: "capricornus", name: "Capricornus", abbr: "Cap", hemisphere: "S", months: "Aug to Oct",
     mythology: "Pan, god of the wild, who transformed himself into a fish-goat to escape Typhon.",
     brightestStar: "Deneb Algedi (δ Cap)", area: 414,
     stars: [

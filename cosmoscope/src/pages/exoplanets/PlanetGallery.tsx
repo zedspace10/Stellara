@@ -60,7 +60,7 @@ export default function PlanetGallery({ planets, onSelect }: Props) {
               <h2 className="text-xl font-sans text-white mb-1">{potwPlanet.name}</h2>
               <p className="text-sm text-white/50 leading-relaxed">
                 {potwPlanet.potentiallyHabitable
-                  ? "This world sits within its star's habitable zone — one of the most compelling candidates in the known catalogue for conditions that could support liquid water."
+                  ? "This world sits within its star's habitable zone, one of the most compelling candidates in the known catalogue for conditions that could support liquid water."
                   : `Discovered in ${potwPlanet.year ?? "unknown"} by the ${potwPlanet.method} method, this world is ${(potwPlanet.radius ?? 1).toFixed(1)} times the size of Earth and orbiting ${potwPlanet.starName}.`}
               </p>
             </div>

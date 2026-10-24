@@ -170,10 +170,10 @@ export function habitabilityAssessment(planet: ExoplanetData): string {
   if (temp > 1000)
     return `At ${temp.toFixed(0)} K, this world's surface is hotter than lava. Any atmosphere would be stripped or scorched. Life as we know it is impossible here.`;
   if (temp < 100)
-    return `At ${temp.toFixed(0)} K, this world is locked in deep freeze — far colder than anywhere on Earth. Liquid water, and life, are extremely unlikely.`;
+    return `At ${temp.toFixed(0)} K, this world is locked in deep freeze, far colder than anywhere on Earth. Liquid water, and life, are extremely unlikely.`;
   if (hz) {
     if (planetType === "gas-giant" || planetType === "hot-jupiter" || planetType === "neptune-like")
-      return `This planet orbits within its star's habitable zone — where liquid water could exist. However, its large size (${radius?.toFixed(1) ?? "?"} Earth radii) suggests it is a gas or ice giant with no solid surface for life as we know it.`;
+      return `This planet orbits within its star's habitable zone, where liquid water could exist. However, its large size (${radius?.toFixed(1) ?? "?"} Earth radii) suggests it is a gas or ice giant with no solid surface for life as we know it.`;
     if (planetType === "earth-sized" || planetType === "super-earth" || planetType === "mini-neptune")
       return `This world orbits within its star's habitable zone at a promising temperature of ${temp.toFixed(0)} K. Its size suggests it may be rocky. This makes it one of the more compelling candidates for habitability in the known catalogue.`;
   }
@@ -213,7 +213,7 @@ export const GALLERY_QUOTES = [
 
 export const DISCOVERY_TIMELINE = [
   { year: 1992, count: 1, note: "First confirmed exoplanet (pulsar planet PSR B1257+12)" },
-  { year: 1995, count: 2, note: "51 Pegasi b — first around a Sun-like star" },
+  { year: 1995, count: 2, note: "51 Pegasi b, first around a Sun-like star" },
   { year: 2000, count: 30, note: "30 known worlds" },
   { year: 2009, count: 400, note: "Kepler Space Telescope launches" },
   { year: 2011, count: 700, note: "Kepler begins mass discovery" },

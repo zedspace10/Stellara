@@ -238,7 +238,7 @@ function PanelContent({ planet, colorHex, isFav, facts, scale, planetId, onClose
                 onClick={onViewInFocus}
                 style={{ background: "rgba(141,235,255,0.1)", border: "1px solid rgba(141,235,255,0.2)", color: "#8DEBFF" }}
               >
-                <Crosshair className="w-3.5 h-3.5" /> View in Focus
+                <Crosshair className="w-3.5 h-3.5" /> View up close
               </Button>
             )}
           </div>

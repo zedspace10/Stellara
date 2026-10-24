@@ -61,7 +61,7 @@ export default function ComparisonView({ planets, onSelect }: Props) {
 
       {/* Solar system reference */}
       <div className="rounded-2xl p-5 mb-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
-        <div className="text-[10px] tracking-widest text-white/30 uppercase mb-4">Our Solar System — Reference</div>
+        <div className="text-[10px] tracking-widest text-white/30 uppercase mb-4">Our solar system, for reference</div>
         <div className="flex items-end gap-3 overflow-x-auto pb-2">
           {SOLAR_SYSTEM.map(p => {
             const h = getBarH(p.radius);
@@ -149,8 +149,8 @@ export default function ComparisonView({ planets, onSelect }: Props) {
             {selected.map(({ planet }) => (
               <div key={planet.id} className="grid grid-cols-4 px-4 py-2.5 text-xs" style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
                 <span className="text-white/70 truncate font-sans text-[10px]">{planet.name}</span>
-                <span className="text-[#F3DDB0] font-mono">{planet.radius != null ? `${planet.radius.toFixed(1)}×` : "—"}</span>
-                <span className="text-white/50 font-mono">{planet.temp ? `${planet.temp.toFixed(0)} K` : "—"}</span>
+                <span className="text-[#F3DDB0] font-mono">{planet.radius != null ? `${planet.radius.toFixed(1)}×` : "Unknown"}</span>
+                <span className="text-white/50 font-mono">{planet.temp ? `${planet.temp.toFixed(0)} K` : "Unknown"}</span>
                 <span className="text-white/50 font-mono">{formatDistanceLY(planet.distanceLY)}</span>
               </div>
             ))}
@@ -160,7 +160,7 @@ export default function ComparisonView({ planets, onSelect }: Props) {
 
       {/* Habitability leaderboard */}
       <div className="mt-6 rounded-2xl p-5" style={{ background: "rgba(102,187,106,0.03)", border: "1px solid rgba(102,187,106,0.12)" }}>
-        <div className="text-[10px] tracking-widest text-[#66bb6a]/60 uppercase mb-3">Habitability Leaderboard — Top 20 Earth-like Candidates</div>
+        <div className="text-[10px] tracking-widest text-[#66bb6a]/60 uppercase mb-3">The 20 most Earth like candidates</div>
         <div className="space-y-2">
           {planets.filter(p => p.esi > 0).sort((a, b) => b.esi - a.esi).slice(0, 20).map((p, i) => (
             <button key={p.id} onClick={() => onSelect(p)} className="w-full flex items-center gap-3 py-1.5 hover:bg-white/5 rounded-lg px-2 transition-colors">
@@ -189,8 +189,8 @@ export default function ComparisonView({ planets, onSelect }: Props) {
           <div className="absolute left-16 top-0 bottom-0 w-px" style={{ background: "rgba(255,255,255,0.08)" }} />
           {[
             { year: 1992, note: "First confirmed exoplanet (pulsar)" },
-            { year: 1995, note: "51 Peg b — first around a Sun-like star" },
-            { year: 2009, note: "Kepler launches — discoveries explode" },
+            { year: 1995, note: "51 Peg b, first around a Sun-like star" },
+            { year: 2009, note: "Kepler launches and discoveries soar" },
             { year: 2014, note: "1,000 confirmed worlds" },
             { year: 2016, note: "TRAPPIST-1 announced" },
             { year: 2018, note: "TESS all-sky survey begins" },
@@ -214,8 +214,8 @@ export default function ComparisonView({ planets, onSelect }: Props) {
 
       {/* Nearest worlds */}
       <div className="mt-6 rounded-2xl p-5" style={{ background: "rgba(141,235,255,0.02)", border: "1px solid rgba(141,235,255,0.1)" }}>
-        <div className="text-[10px] tracking-widest text-[#8DEBFF]/60 uppercase mb-1">Within Reach — Nearest Confirmed Worlds</div>
-        <div className="text-[10px] text-white/25 mb-3">Exoplanets within 100 light years — the ones future technology might one day visit</div>
+        <div className="text-[10px] tracking-widest text-[#8DEBFF]/60 uppercase mb-1">Nearest confirmed worlds</div>
+        <div className="text-[10px] text-white/25 mb-3">Planets within 100 light years, the ones future technology might one day visit</div>
         <div className="space-y-2">
           {planets.filter(p => p.distanceLY != null && p.distanceLY <= 100)
             .sort((a, b) => (a.distanceLY ?? 0) - (b.distanceLY ?? 0))

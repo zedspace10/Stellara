@@ -156,7 +156,7 @@ export function useExoplanets(): ExoplanetsState {
         setState({
           planets: cached.data,
           loading: false,
-          error: "Using cached data — live fetch unavailable",
+          error: "Showing saved data. The live archive could not be reached.",
           fromCache: true,
           fromFallback: false,
           cacheDate: new Date(cached.ts),
@@ -171,7 +171,7 @@ export function useExoplanets(): ExoplanetsState {
       setState({
         planets: fallback,
         loading: false,
-        error: "Showing featured worlds — full dataset unavailable",
+        error: "Showing featured worlds. The full catalogue could not be loaded.",
         fromCache: false,
         fromFallback: true,
         cacheDate: null,

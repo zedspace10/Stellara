@@ -48,7 +48,7 @@ export default function Privacy() {
           Tonight does not ask for your location.
         </P>
         <P>
-          Picture of the day loads from NASA, the exoplanet pages load NASA's exoplanet archive (partly through the
+          Picture of the day and the Voyager view load images from NASA, the exoplanet pages load NASA's exoplanet archive (partly through the
           corsproxy.io relay), and the site loads its typeface from Google Fonts. Tonight is worked out entirely in your
           browser. As with any website, those
           services can see your IP address when your browser contacts them.

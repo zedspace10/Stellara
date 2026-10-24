@@ -3,28 +3,55 @@ export const galaxyObjects = [
     id: "halley",
     name: "Halley's Comet",
     type: "Comet",
-    distance: "Variable (orbits Sun)",
-    size: "15x8 km",
-    discovery: "240 BC (historical records)",
-    description: "Orbital period 75-76 years. Last visible 1986, next perihelion 2061. The most famous comet, observed since 240 BC."
+    distance: "Changes along its orbit",
+    size: "About 15 by 8 km",
+    discovery: "Recorded since 240 BC",
+    description: "Returns about every 76 years. It last passed the Sun in 1986 and reached the far end of its orbit, beyond Neptune, in 2023. It is on its way back now and will pass the Sun again in 2061."
   },
   {
     id: "hale-bopp",
     name: "Hale-Bopp",
     type: "Comet",
-    distance: "Variable (orbits Sun)",
-    size: "40-60 km",
+    distance: "Changes along its orbit",
+    size: "About 60 km across",
     discovery: "1995 (Alan Hale, Thomas Bopp)",
-    description: "Orbital period ~2,500 years. Passed closest to Earth in 1997, visible to the naked eye for a record 18 months."
+    description: "The great comet of 1997, visible to the naked eye for a record 18 months. It is now far beyond Neptune and will not return for about 2,500 years."
   },
   {
     id: "neowise",
     name: "NEOWISE",
     type: "Comet",
-    distance: "Variable (orbits Sun)",
-    size: "5 km",
-    discovery: "2020 (NEOWISE telescope)",
-    description: "Orbital period ~6,800 years. Discovered in March 2020 and best seen that July, it was the brightest comet seen from the Northern Hemisphere since Hale-Bopp."
+    distance: "Changes along its orbit",
+    size: "About 5 km across",
+    discovery: "2020 (NEOWISE space telescope)",
+    description: "Discovered in March 2020 and best seen that July, it was the brightest comet from the Northern Hemisphere since Hale-Bopp. It will not be back for about 6,800 years."
+  },
+  {
+    id: "voyager-1",
+    name: "Voyager 1",
+    type: "Spacecraft",
+    distance: "Further every second",
+    size: "3.7 m dish antenna",
+    discovery: "5 September 1977",
+    description: "The most distant object people have ever made. It flew past Jupiter and Saturn, crossed into interstellar space in 2012, and on 14 February 1990 turned its camera back towards home to take the Pale Blue Dot photograph. On 18 November 2026 it becomes the first spacecraft to be one light day from Earth."
+  },
+  {
+    id: "voyager-2",
+    name: "Voyager 2",
+    type: "Spacecraft",
+    distance: "Further every second",
+    size: "3.7 m dish antenna",
+    discovery: "20 August 1977",
+    description: "The only spacecraft to have visited Uranus and Neptune. It crossed into interstellar space in 2018, heading south of the planets towards the constellation Pavo."
+  },
+  {
+    id: "new-horizons",
+    name: "New Horizons",
+    type: "Spacecraft",
+    distance: "Further every second",
+    size: "About the size of a grand piano",
+    discovery: "19 January 2006",
+    description: "Gave us our first close look at Pluto in July 2015, then flew past Arrokoth, the most distant world ever explored up close, on 1 January 2019."
   },
   {
     id: "sagittarius-a",

@@ -8,6 +8,8 @@ import { Slider } from "@/components/ui/slider";
 export interface SimPhase {
   id: string;
   label: string;
+  /** One or two words for the timeline under the simulation. */
+  short?: string;
   timecode: string;
   description: string;
   scienceDetail: string;
@@ -117,11 +119,11 @@ export default function SimulationLayout({
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
           >
             <div className="bg-black/80 backdrop-blur-lg rounded-2xl border border-[#F3DDB0]/20 p-8 max-w-lg text-center mx-4">
-              <div className="text-[#F3DDB0] text-lg font-light italic leading-relaxed mb-4">
-                "{closingQuote}"
+              <div className="text-[#F3DDB0] text-lg font-light leading-relaxed mb-4">
+                {closingQuote}
               </div>
               {closingAuthor && (
-                <div className="text-gray-400 text-sm">— {closingAuthor}</div>
+                <div className="text-gray-400 text-sm">{closingAuthor}</div>
               )}
             </div>
           </motion.div>
@@ -165,7 +167,7 @@ export default function SimulationLayout({
                 }`}
                 style={{ flex: 1, textAlign: "center" }}
               >
-                {p.label.split(" ")[0]}
+                {p.short ?? p.label.split(" ")[0]}
               </button>
             ))}
           </div>

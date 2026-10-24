@@ -69,7 +69,7 @@ const UNIVERSE_DATA: Record<string, {
     categoryColor: '#F3DDB0',
     stats: [
       { label: 'Diameter', value: '~100,000 light years' },
-      { label: 'Stars', value: '100–400 billion' },
+      { label: 'Stars', value: '100 to 400 billion' },
       { label: 'Age', value: '~13.6 billion years' },
       { label: 'Type', value: 'Barred spiral galaxy' },
     ],
@@ -125,7 +125,7 @@ const UNIVERSE_DATA: Record<string, {
       { label: 'X-ray luminosity', value: 'Brightest X-ray cluster' },
       { label: 'Sound wave period', value: '10 million years' },
     ],
-    description: `One of the most massive objects in the known universe, containing thousands of galaxies immersed in a vast cloud of multimillion-degree gas. In 2003, NASA's Chandra X-ray Observatory detected pressure waves in the Perseus Cluster — sound waves with a frequency 57 octaves below middle C, caused by the central black hole.`,
+    description: `One of the most massive objects in the known universe, containing thousands of galaxies immersed in a vast cloud of multimillion-degree gas. In 2003, NASA's Chandra X-ray Observatory detected pressure waves in the Perseus Cluster, sound waves with a frequency 57 octaves below middle C, caused by the central black hole.`,
     fact: `The Perseus Cluster holds sound waves with a period of about 10 million years, the deepest note ever detected. It sits 57 octaves below middle C.`,
   },
   'great-attractor': {

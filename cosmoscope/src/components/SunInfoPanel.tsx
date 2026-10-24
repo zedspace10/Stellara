@@ -139,7 +139,7 @@ function SunContent({ onClose }: { onClose: () => void }) {
                 { label: 'Core Temp', value: '15,000,000 K', icon: <Flame className="w-3.5 h-3.5" /> },
                 { label: 'Age', value: '4.6 billion yrs', icon: <Clock className="w-3.5 h-3.5" /> },
                 { label: 'Dist. from Earth', value: '149.6 million km', icon: <Ruler className="w-3.5 h-3.5" /> },
-                { label: 'Rotation Period', value: '25–35 days', icon: <Clock className="w-3.5 h-3.5" /> },
+                { label: 'Rotation Period', value: '25 to 35 days', icon: <Clock className="w-3.5 h-3.5" /> },
                 { label: 'Planets', value: '8', icon: <Star className="w-3.5 h-3.5" /> },
               ].map((s) => (
                 <div

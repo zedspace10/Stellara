@@ -12,14 +12,11 @@ import UniverseInfoPanel from '@/components/UniverseInfoPanel';
 import { Button } from '@/components/ui/button';
 import { heliocentric, EPHEMERIS_MIN, EPHEMERIS_MAX } from '@/lib/ephemeris';
 import { moon as moonPhase, sunLongitude } from '@/lib/sky';
+import { COMETS, cometPosition, cometOrbit, SPACECRAFT, spacecraftPosition, toScene, formatKm, lightTime } from '@/lib/smallbodies';
+import VoyagerLookBack from '@/components/VoyagerLookBack';
 import { Card } from '@/components/ui/card';
 import { Camera, Dice1, Compass as Compass2, Star } from 'lucide-react';
 
-const COMETS = [
-  { id: 'halley', name: "Halley's Comet", orbitRadius: 35, orbitSpeed: 0.008, color: 0xccddff, tailLength: 8, phase: 0 },
-  { id: 'hale-bopp', name: "Hale-Bopp", orbitRadius: 50, orbitSpeed: 0.004, color: 0xaaccff, tailLength: 12, phase: Math.PI * 0.7 },
-  { id: 'neowise', name: "NEOWISE", orbitRadius: 28, orbitSpeed: 0.012, color: 0xffeedd, tailLength: 6, phase: Math.PI * 1.3 },
-];
 
 // How fast time runs in the solar system view. Planet positions are real for whatever date is shown.
 const TIME_RATES = [
@@ -32,6 +29,25 @@ const TIME_RATES = [
 ];
 // Start at a week per second so the orbits are visible straight away, from where the planets really are today.
 const DEFAULT_RATE = 3;
+
+// Distance and light time for a comet or spacecraft on the date shown in the view.
+function liveFactsFor(id: string | null, timeMs: number) {
+  if (!id) return undefined;
+  const comet = COMETS.find(c => c.id === id);
+  const craft = SPACECRAFT.find(c => c.id === id);
+  const pos = comet ? cometPosition(comet, timeMs) : craft ? spacecraftPosition(craft, timeMs) : null;
+  if (!pos) return undefined;
+  const au = pos.r < 10 ? pos.r.toFixed(2) : pos.r.toFixed(1);
+  const facts = [{ label: 'From the Sun', value: `${formatKm(pos.r)} (${au} au)` }];
+  if (craft) {
+    const earth = heliocentric('earth', timeMs);
+    const d = earth ? Math.hypot(pos.x - earth.x, pos.y - earth.y, pos.z - earth.z) : pos.r;
+    facts.push({ label: 'Its signals take', value: `${lightTime(d)} to reach us` });
+  } else {
+    facts.push({ label: 'Sunlight takes', value: `${lightTime(pos.r)} to reach it` });
+  }
+  return facts;
+}
 
 const EXPLORE_DESTINATIONS: { name: string; level: number; cameraPos: [number, number, number]; target: [number, number, number]; planetId?: string; offset?: [number, number, number] }[] = [
   { name: "Saturn's rings", level: 1, cameraPos: [42, 8, 15], target: [40, 0, 0], planetId: "saturn", offset: [2, 8, 15] },
@@ -215,6 +231,10 @@ export default function SolarSystem() {
   const solarSystemGroupRef = useRef<THREE.Group | null>(null);
   const universeGroupRef = useRef<THREE.Group | null>(null);
   const cometMeshesRef = useRef<Record<string, { mesh: THREE.Mesh, tail: THREE.Line }>>({});
+  const cometOrbitGroupRef = useRef<THREE.Group | null>(null);
+  const spacecraftRef = useRef<Record<string, { marker: THREE.Mesh; trail: THREE.Line }>>({});
+  const showCometsRef = useRef(true);
+  const selectedObjectRef = useRef<string | null>(null);
   const sunMeshRef = useRef<THREE.Mesh | null>(null);
   const planetHitMeshesRef = useRef<Record<string, THREE.Mesh>>({});
   const planetSpeedFactorsRef = useRef<Record<string, number>>({});
@@ -236,6 +256,9 @@ export default function SolarSystem() {
   const [screenshotMode, setScreenshotMode] = useState(false);
   const [paleBlueDot, setPaleBlueDot] = useState(false);
   const [showComets, setShowComets] = useState(true);
+  const [lookBack, setLookBack] = useState(false);
+  useEffect(() => { showCometsRef.current = showComets; }, [showComets]);
+  useEffect(() => { selectedObjectRef.current = selectedGalaxyObject; }, [selectedGalaxyObject]);
   const [exploreToast, setExploreToast] = useState<string | null>(null);
   const [externalLevelRequest, setExternalLevelRequest] = useState<number | null>(null);
   const [selectedSun, setSelectedSun] = useState(false);
@@ -732,40 +755,95 @@ export default function SolarSystem() {
     }
     solarSystemGroup.add(asteroidMesh);
 
-    // Create Comets
+    // Labels that need to keep out of each other's way, most important first.
+    const labelSlots: { obj: CSS2DObject; el: HTMLElement; w: number }[] = [];
+    labelSlots.push({ obj: sunLabel, el: sunLabelDiv, w: 0 });
+    [...planets].sort((a, b) => b.radiusScale - a.radiusScale).forEach(p => {
+      const l = planetMeshesRef.current[p.id]?.label;
+      if (l) labelSlots.push({ obj: l, el: l.element, w: 0 });
+    });
+
+    // Comets on their real orbits. A comet's whole orbit is drawn when you select it, and the
+    // tail only grows when a comet comes in close to the Sun, as real tails do.
+    const cometOrbitGroup = new THREE.Group();
+    cometOrbitGroupRef.current = cometOrbitGroup;
+    solarSystemGroup.add(cometOrbitGroup);
     COMETS.forEach(c => {
-      const cGeo = new THREE.SphereGeometry(0.3, 16, 16);
-      const cMat = new THREE.MeshBasicMaterial({ color: c.color, blending: THREE.AdditiveBlending });
-      const cMesh = new THREE.Mesh(cGeo, cMat);
-      
+      const cc = new THREE.Color(c.color);
+      const rgb = `${Math.round(cc.r * 255)},${Math.round(cc.g * 255)},${Math.round(cc.b * 255)}`;
+      const orbitPts = cometOrbit(c).map(v => { const q = toScene(v); return new THREE.Vector3(q.x, q.y, q.z); });
+      const orbitLine = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(orbitPts),
+        new THREE.LineBasicMaterial({ color: c.color, transparent: true, opacity: 0.35, depthWrite: false }),
+      );
+      orbitLine.userData.cometId = c.id;
+      cometOrbitGroup.add(orbitLine);
+
+      // An invisible sphere to click, with a soft point of light inside it.
+      const cMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(0.8, 8, 8),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }),
+      );
       cMesh.userData = { id: c.id, level: 1, isComet: true };
+      const cGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: makeGlowTex(rgb, [[0, 1], [0.25, 0.45], [1, 0]]),
+        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+      }));
+      cGlow.scale.set(1.3, 1.3, 1);
+      cMesh.add(cGlow);
       solarSystemGroup.add(cMesh);
 
-      // Tail
       const tailGeo = new THREE.BufferGeometry();
       tailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(6), 3));
-      const tailMat = new THREE.LineBasicMaterial({ color: c.color, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending });
-      const tailLine = new THREE.Line(tailGeo, tailMat);
+      const tailLine = new THREE.Line(tailGeo, new THREE.LineBasicMaterial({ color: c.color, transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending }));
       solarSystemGroup.add(tailLine);
 
       const cDiv = document.createElement('div');
       cDiv.className = 'planet-label';
       cDiv.textContent = c.name;
-      cDiv.style.color = '#ffffff';
-      cDiv.style.fontFamily = 'Inter, sans-serif';
-      cDiv.style.fontSize = '10px';
-      cDiv.style.pointerEvents = 'auto';
-      cDiv.style.cursor = 'pointer';
-      cDiv.onclick = () => {
-        setSelectedGalaxyObject(c.id);
-        setSelectedPlanet(null);
-      };
-      
+      cDiv.style.cssText = 'color:rgba(255,255,255,0.75);font-family:Inter,sans-serif;font-size:11px;pointer-events:auto;cursor:pointer;white-space:nowrap;';
+      cDiv.onclick = () => { setSelectedGalaxyObject(c.id); setSelectedPlanet(null); setSelectedSun(false); };
       const cLabel = new CSS2DObject(cDiv);
-      cLabel.position.set(0, 1.5, 0);
+      cLabel.position.set(0, 1.4, 0);
       cMesh.add(cLabel);
+      labelSlots.push({ obj: cLabel, el: cDiv, w: 0 });
 
       cometMeshesRef.current[c.id] = { mesh: cMesh, tail: tailLine };
+    });
+
+    // Spacecraft leaving the solar system, at their real distance and direction from the Sun.
+    // The faint line shows the straight path they have taken since passing Neptune's distance.
+    SPACECRAFT.forEach(sc => {
+      const marker = new THREE.Mesh(
+        new THREE.SphereGeometry(1.4, 8, 8),
+        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }),
+      );
+      marker.userData = { id: sc.id, level: 1, isComet: true };
+      const dot = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: makeGlowTex('141,235,255', [[0, 1], [0.2, 0.5], [1, 0]]),
+        blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+      }));
+      dot.scale.set(1.5, 1.5, 1);
+      marker.add(dot);
+      solarSystemGroup.add(marker);
+
+      const trail = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3()]),
+        new THREE.LineBasicMaterial({ color: 0x8debff, transparent: true, opacity: 0.22, depthWrite: false }),
+      );
+      solarSystemGroup.add(trail);
+
+      const sDiv = document.createElement('div');
+      sDiv.className = 'planet-label';
+      sDiv.textContent = sc.name;
+      sDiv.style.cssText = 'color:#8DEBFF;font-family:Inter,sans-serif;font-size:11px;pointer-events:auto;cursor:pointer;white-space:nowrap;';
+      sDiv.onclick = () => { setSelectedGalaxyObject(sc.id); setSelectedPlanet(null); setSelectedSun(false); };
+      const sLabel = new CSS2DObject(sDiv);
+      sLabel.position.set(0, 1.6, 0);
+      marker.add(sLabel);
+      labelSlots.push({ obj: sLabel, el: sDiv, w: 0 });
+
+      spacecraftRef.current[sc.id] = { marker, trail };
     });
 
     // ========================================================================
@@ -1294,7 +1372,8 @@ export default function SolarSystem() {
         // Use enlarged hit meshes for planets, plus sun hit mesh
         interactables.push(...Object.values(planetHitMeshesRef.current));
         if (sunMeshRef.current) interactables.push(sunHitMesh);
-        if (showComets) interactables.push(...Object.values(cometMeshesRef.current).map(c => c.mesh));
+        if (showCometsRef.current) interactables.push(...Object.values(cometMeshesRef.current).map(c => c.mesh));
+        interactables.push(...Object.values(spacecraftRef.current).map(sc => sc.marker).filter(m => m.visible));
       } else if (zoomLevelRef.current === 2 && galaxyGroupRef.current) {
         galaxyGroupRef.current.children.forEach(c => { if(c.userData.id) interactables.push(c); });
       } else if (zoomLevelRef.current === 3) {
@@ -1361,6 +1440,15 @@ export default function SolarSystem() {
     let lastTime = performance.now();
     let totalElapsed = 0; // seconds
     
+    // Earth's axis is tilted 23.44 degrees, with the north pole leaning towards where the Sun
+    // appears at the June solstice.
+    const Y_AXIS = new THREE.Vector3(0, 1, 0);
+    const EARTH_TILT = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(1, 0, 0), -23.44 * Math.PI / 180);
+    const earthSpinQ = new THREE.Quaternion();
+    const earthWorldQ = new THREE.Quaternion();
+    let earthSpinAngle = 0;
+    const labelPos = new THREE.Vector3();
+
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
       const now = performance.now();
@@ -1377,6 +1465,33 @@ export default function SolarSystem() {
       bgStars.visible = inSolarSystem && !realSkyReady;
       galaxyLabels.forEach(l => { l.visible = zoomLevelRef.current === 2; });
       starMat.opacity = zoomLevelRef.current === 3 ? 0.3 : 0.85;
+
+      // Keep labels from sitting on top of each other: if a label would overlap one already
+      // placed, nudge it up or down until it is clear.
+      if (inSolarSystem) {
+        const hw = renderer.domElement.clientWidth / 2;
+        const hh = renderer.domElement.clientHeight / 2;
+        const placed: [number, number, number, number][] = [];
+        for (const slot of labelSlots) {
+          let shown = slot.obj.visible;
+          for (let o = slot.obj.parent; o && shown; o = o.parent) shown = o.visible;
+          if (!shown) continue;
+          slot.obj.getWorldPosition(labelPos).project(camera);
+          if (labelPos.z > 1) continue;
+          const x = labelPos.x * hw + hw;
+          const y = -labelPos.y * hh + hh;
+          if (!slot.w) slot.w = slot.el.offsetWidth;
+          const half = (slot.w || 60) / 2 + 2;
+          let chosen = 0;
+          for (const off of [0, -14, 14, -28, 28, -42, 42]) {
+            const clear = !placed.some(b => x - half < b[2] && x + half > b[0] && y + off - 7 < b[3] && y + off + 7 > b[1]);
+            if (clear) { chosen = off; break; }
+          }
+          const mt = `${chosen}px`;
+          if (slot.el.style.marginTop !== mt) slot.el.style.marginTop = mt;
+          placed.push([x - half, y + chosen - 7, x + half, y + chosen + 7]);
+        }
+      }
       // The detailed Milky Way is far too big to sit among other galaxies, so once we are out past it
       // the small spiral landmark takes its place.
       if (galaxyGroupRef.current && zoomLevelRef.current === 3) {
@@ -1440,7 +1555,22 @@ export default function SolarSystem() {
           const { pivot, mesh } = planetMeshesRef.current[p.id];
           const pos = heliocentric(p.id, simTimeRef.current);
           if (pos) pivot.rotation.y = pos.lon;
-          mesh.rotation.y += 0.01 * hoverFactor;
+          if (p.id === 'earth') {
+            // Earth turns to its real angle for this moment, with its axis fixed in space, so the
+            // side facing the Sun is the side where it is daytime. At a week per second or faster
+            // the real spin would flicker, so it turns smoothly instead until time slows down.
+            if (daysPerSecond <= 1) {
+              const jd = simTimeRef.current / 86400000 + 2440587.5;
+              earthSpinAngle = ((280.46061837 + 360.98564736629 * (jd - 2451545.0)) % 360) * Math.PI / 180;
+            } else {
+              earthSpinAngle += (Math.PI * 2 * stepMs / 1000) * hoverFactor;
+            }
+            earthSpinQ.setFromAxisAngle(Y_AXIS, earthSpinAngle);
+            earthWorldQ.copy(EARTH_TILT).multiply(earthSpinQ);
+            mesh.quaternion.copy(pivot.quaternion).invert().multiply(earthWorldQ);
+          } else {
+            mesh.rotation.y += 0.01 * hoverFactor;
+          }
           mesh.children.forEach(ch => { if (ch.userData.spin) ch.rotation.y += 0.01 * hoverFactor * (ch.userData.spin - 1); });
 
           if (p.id === 'earth' && moonMeshRef.current) {
@@ -1455,30 +1585,49 @@ export default function SolarSystem() {
         
         asteroidMesh.rotation.y += 0.0005 * speedRef.current;
 
-        // Animate Comets
+        // Comets and spacecraft at their real positions for the date shown
+        const showC = showCometsRef.current;
+        if (cometOrbitGroupRef.current) {
+          cometOrbitGroupRef.current.visible = showC;
+          cometOrbitGroupRef.current.children.forEach(o => { o.visible = o.userData.cometId === selectedObjectRef.current; });
+        }
         COMETS.forEach(c => {
           const entry = cometMeshesRef.current[c.id];
           if (!entry) return;
           const { mesh, tail } = entry;
-          
-          mesh.visible = showComets;
-          tail.visible = showComets;
-          if (!showComets) return;
+          mesh.visible = showC;
+          if (!showC) { tail.visible = false; return; }
 
-          mesh.position.x = Math.cos(time * c.orbitSpeed + c.phase) * c.orbitRadius;
-          mesh.position.z = Math.sin(time * c.orbitSpeed + c.phase) * c.orbitRadius * 0.3;
-          
-          const sunPos = new THREE.Vector3(0,0,0);
-          const dir = new THREE.Vector3().subVectors(mesh.position, sunPos).normalize();
-          
-          const tailPositions = tail.geometry.attributes.position.array as Float32Array;
-          tailPositions[0] = mesh.position.x;
-          tailPositions[1] = mesh.position.y;
-          tailPositions[2] = mesh.position.z;
-          tailPositions[3] = mesh.position.x + dir.x * c.tailLength;
-          tailPositions[4] = mesh.position.y + dir.y * c.tailLength;
-          tailPositions[5] = mesh.position.z + dir.z * c.tailLength;
-          tail.geometry.attributes.position.needsUpdate = true;
+          const pos = cometPosition(c, simTimeRef.current);
+          const q = toScene(pos);
+          mesh.position.set(q.x, q.y, q.z);
+
+          // Tails form inside about 5 au, growing as the comet nears the Sun, and point away from it.
+          const tailLength = pos.r < 5 ? Math.min(10, (5 - pos.r) * 2.5) : 0;
+          tail.visible = tailLength > 0;
+          if (tailLength > 0) {
+            const dir = mesh.position.clone().normalize();
+            const tp = tail.geometry.attributes.position.array as Float32Array;
+            tp[0] = q.x; tp[1] = q.y; tp[2] = q.z;
+            tp[3] = q.x + dir.x * tailLength; tp[4] = q.y + dir.y * tailLength; tp[5] = q.z + dir.z * tailLength;
+            tail.geometry.attributes.position.needsUpdate = true;
+          }
+        });
+
+        SPACECRAFT.forEach(sc => {
+          const entry = spacecraftRef.current[sc.id];
+          if (!entry) return;
+          const pos = spacecraftPosition(sc, simTimeRef.current);
+          entry.marker.visible = !!pos;
+          entry.trail.visible = !!pos && pos.r > 30.07;
+          if (!pos) return;
+          const q = toScene(pos);
+          entry.marker.position.set(q.x, q.y, q.z);
+          const start = toScene({ x: sc.dir.x * 30.07, y: sc.dir.y * 30.07, z: sc.dir.z * 30.07 });
+          const tp = entry.trail.geometry.attributes.position.array as Float32Array;
+          tp[0] = start.x; tp[1] = start.y; tp[2] = start.z;
+          tp[3] = q.x; tp[4] = q.y; tp[5] = q.z;
+          entry.trail.geometry.attributes.position.needsUpdate = true;
         });
       }
 
@@ -1776,6 +1925,7 @@ export default function SolarSystem() {
       )}
       
       {paleBlueDot && <PaleBlueDotSequence onComplete={() => setPaleBlueDot(false)} />}
+      {lookBack && <VoyagerLookBack onClose={() => setLookBack(false)} />}
       
       {exploreToast && (
         <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 bg-black/80 border border-[#8DEBFF] text-white px-6 py-3 rounded-full text-sm font-sans shadow-[0_0_15px_rgba(141,235,255,0.3)] animate-in fade-in zoom-in duration-300">
@@ -1847,7 +1997,7 @@ export default function SolarSystem() {
                 ["R", "Reset Camera"],
                 ["O", "Night vision"],
                 ["0", "Focus the Sun"],
-                ["1 – 8", "Focus planet by order"],
+                ["1 to 8", "Focus planet by order"],
                 ["ESC", "Close panels"],
                 ["?", "This overlay"],
               ].map(([key, desc]) => (
@@ -2101,7 +2251,7 @@ export default function SolarSystem() {
             <div className={`w-2 h-2 rounded-full ${zoomLevel === 2 ? 'bg-[#8DEBFF]' : 'bg-white/20'}`} />
             <div className={`w-2 h-2 rounded-full ${zoomLevel === 3 ? 'bg-[#8DEBFF]' : 'bg-white/20'}`} />
           </div>
-          <div className="text-[10px] text-[#8DEBFF]">You Are Here</div>
+          <div className="text-[10px] text-[#8DEBFF]">You are here</div>
         </div>
       )}
       
@@ -2160,7 +2310,7 @@ export default function SolarSystem() {
                 <Button variant="secondary" size="sm" onClick={handleRandomExplore} className="gap-2">
                   <Compass2 className="w-4 h-4" /> Explore
                 </Button>
-                <Button variant="secondary" size="sm" onClick={(e) => safeTransition(2, e)}>Zoom to Galaxy</Button>
+                <Button variant="secondary" size="sm" onClick={(e) => safeTransition(2, e)}>Out to the galaxy</Button>
               </div>
             </div>
           )}
@@ -2169,15 +2319,15 @@ export default function SolarSystem() {
             <div className="flex items-center justify-between w-full gap-2 flex-wrap">
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" onClick={() => setIsEdgeOn(!isEdgeOn)}>
-                  {isEdgeOn ? "Face-on View" : "Edge-on View"}
+                  {isEdgeOn ? "Face on view" : "Edge on view"}
                 </Button>
               </div>
               <div className="flex gap-2">
                 <Button variant="secondary" size="sm" onClick={handleRandomExplore} className="gap-2">
                   <Compass2 className="w-4 h-4" /> Explore
                 </Button>
-                <Button variant="secondary" size="sm" onClick={(e) => safeTransition(1, e)}>Zoom to Solar System</Button>
-                <Button variant="secondary" size="sm" onClick={(e) => safeTransition(3, e)}>Zoom Out to Universe</Button>
+                <Button variant="secondary" size="sm" onClick={(e) => safeTransition(1, e)}>In to the solar system</Button>
+                <Button variant="secondary" size="sm" onClick={(e) => safeTransition(3, e)}>Out to the universe</Button>
               </div>
             </div>
           )}
@@ -2187,7 +2337,7 @@ export default function SolarSystem() {
               <Button variant="secondary" size="sm" onClick={handleRandomExplore} className="gap-2">
                 <Compass2 className="w-4 h-4" /> Explore
               </Button>
-              <Button variant="secondary" size="sm" onClick={(e) => safeTransition(2, e)}>Zoom to Milky Way</Button>
+              <Button variant="secondary" size="sm" onClick={(e) => safeTransition(2, e)}>In to the Milky Way</Button>
             </div>
           )}
 
@@ -2248,7 +2398,12 @@ export default function SolarSystem() {
       {!screenshotMode && (
         <>
           <PlanetInfoPanel planetId={selectedPlanet} onClose={() => setSelectedPlanet(null)} onViewInFocus={handleViewPlanet} />
-          <GalaxyInfoPanel objectId={selectedGalaxyObject} onClose={() => setSelectedGalaxyObject(null)} />
+          <GalaxyInfoPanel
+            objectId={selectedGalaxyObject}
+            onClose={() => setSelectedGalaxyObject(null)}
+            liveFacts={liveFactsFor(selectedGalaxyObject, simTime)}
+            action={selectedGalaxyObject === 'voyager-1' ? { label: 'Look back at Earth', onClick: () => setLookBack(true) } : undefined}
+          />
           <SagittariusPanel open={selectedSagittarius} onClose={() => setSelectedSagittarius(false)} />
           <UniverseInfoPanel objectId={selectedUniverseObject} onClose={() => setSelectedUniverseObject(null)} />
         </>

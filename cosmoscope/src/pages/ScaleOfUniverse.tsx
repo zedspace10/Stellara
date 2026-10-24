@@ -11,7 +11,7 @@ const SCALE_OBJECTS = [
     renderStyle: 'quantum',
     displayRadius: 4,
     description: 'The smallest meaningful unit of space. Below this our understanding of physics breaks down completely.',
-    fact: 'At this scale space itself becomes uncertain — foamy and undefined.',
+    fact: 'At this scale space itself becomes uncertain, foamy and undefined.',
     comparison: '10²⁰ times smaller than a proton',
   },
   {
