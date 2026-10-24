@@ -458,7 +458,7 @@ export default function ScaleOfUniverse() {
       }
 
       // ── The Sun and planets, where they are today ─────────────────────────
-      const planetsA = vis(9e12, 6, 3);
+      const planetsA = vis(9e12, 6, 1e12);
       if (planetsA > 0) {
         PLANET_ROWS.forEach((p) => {
           const rad = p.a * AU;
@@ -934,7 +934,7 @@ export default function ScaleOfUniverse() {
   // What is on screen now: the thing whose size is closest to the width of the view.
   const fits = THINGS.filter((th) => {
     const l = Math.log10(th.size);
-    return l <= z + 0.05 && l >= z - 2.0;
+    return l <= z + 0.12 && l >= z - 2.0;
   });
   const inGap = z < -19.6 && z > -33.4;
   const shown = !inGap && fits.length ? fits[fits.length - 1] : null;
@@ -996,7 +996,7 @@ export default function ScaleOfUniverse() {
             <div className="absolute left-0 right-0 top-3 h-px" style={{ background: "#2A3546" }} />
             <div className="absolute top-1.5 w-[2px] h-4 -translate-x-1/2" style={{ left: `${((z - Z_MIN) / (Z_MAX - Z_MIN)) * 100}%`, background: "#E8ECF1" }} />
             {ticks.map((th) => {
-              const tz = Math.log10(th.size) + 0.45;
+              const tz = Math.log10(th.size) + 0.3;
               return (
                 <button
                   key={th.id}
