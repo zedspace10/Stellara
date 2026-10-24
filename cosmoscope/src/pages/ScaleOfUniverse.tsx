@@ -17,17 +17,72 @@ function rng(seed: number) {
 const clamp = (v: number, a = 0, b = 1) => Math.max(a, Math.min(b, v));
 
 // ── Pictures drawn once and reused at any size ─────────────────────────────────
-function offscreen(size: number, draw: (c: CanvasRenderingContext2D, s: number) => void) {
+// Each picture is built a little at a time (each yield is a safe place to pause), so making
+// them never holds up the zoom.
+type Build = Generator<void, void, void>;
+function* offscreen(size: number, draw: (c: CanvasRenderingContext2D, s: number) => Build): Generator<void, HTMLCanvasElement, void> {
   const c = document.createElement("canvas");
   c.width = c.height = size;
   const ctx = c.getContext("2d")!;
-  draw(ctx, size);
+  yield* draw(ctx, size);
   return c;
 }
 
-function drawSpiral(c: CanvasRenderingContext2D, s: number, seed: number, arms: number, warm: string, cool: string, bar: boolean) {
+// Thousands of faint dots of light, added up in memory and drawn in one go. Asking the canvas to
+// draw each dot separately took over a second on a phone.
+class Glow {
+  private buf: Float32Array;
+  constructor(private s: number) { this.buf = new Float32Array(s * s * 3); }
+  dot(x: number, y: number, size: number, rgb: [number, number, number], a: number) {
+    const x1 = x + size, y1 = y + size;
+    const s = this.s;
+    for (let yy = Math.max(0, Math.floor(y)); yy < Math.min(s, Math.ceil(y1)); yy++) {
+      const cy = Math.min(yy + 1, y1) - Math.max(yy, y);
+      for (let xx = Math.max(0, Math.floor(x)); xx < Math.min(s, Math.ceil(x1)); xx++) {
+        const w = (Math.min(xx + 1, x1) - Math.max(xx, x)) * cy * a;
+        const i = (yy * s + xx) * 3;
+        this.buf[i] += rgb[0] * w;
+        this.buf[i + 1] += rgb[1] * w;
+        this.buf[i + 2] += rgb[2] * w;
+      }
+    }
+  }
+  /** Adds the light onto a canvas, as the "lighter" blend would have. */
+  *paint(c: CanvasRenderingContext2D): Build {
+    const s = this.s, b = this.buf;
+    const ROWS = 64;
+    for (let y0 = 0; y0 < s; y0 += ROWS) {
+      const rows = Math.min(ROWS, s - y0);
+      const img = new ImageData(s, rows);
+      const d = img.data;
+      for (let i = y0 * s * 3, j = 0; j < s * rows * 4; i += 3, j += 4) {
+        const r = Math.min(255, b[i]), g = Math.min(255, b[i + 1]), bl = Math.min(255, b[i + 2]);
+        const m = Math.max(r, g, bl);
+        if (m < 0.5) continue;
+        d[j] = (r / m) * 255;
+        d[j + 1] = (g / m) * 255;
+        d[j + 2] = (bl / m) * 255;
+        d[j + 3] = m;
+      }
+      // A fresh strip each time: some browsers lose the picture if one strip canvas is reused.
+      const tmp = document.createElement("canvas");
+      tmp.width = s;
+      tmp.height = rows;
+      tmp.getContext("2d")!.putImageData(img, 0, 0);
+      c.save();
+      c.globalCompositeOperation = "lighter";
+      c.drawImage(tmp, 0, 0, s, rows, 0, y0, s, rows);
+      c.restore();
+      yield;
+    }
+  }
+}
+type RGB = [number, number, number];
+
+function* drawSpiral(c: CanvasRenderingContext2D, s: number, seed: number, arms: number, warm: RGB, cool: RGB, bar: boolean): Build {
   const r = rng(seed);
   const h = s / 2;
+  const glow = new Glow(s);
   c.globalCompositeOperation = "lighter";
   const core = c.createRadialGradient(h, h, 0, h, h, h * 0.32);
   core.addColorStop(0, `rgba(${warm},0.9)`);
@@ -36,58 +91,50 @@ function drawSpiral(c: CanvasRenderingContext2D, s: number, seed: number, arms: 
   c.fillStyle = core;
   c.fillRect(0, 0, s, s);
   if (bar) {
-    c.save();
-    c.translate(h, h);
-    c.rotate(0.45);
+    const ca = Math.cos(0.45), sa = Math.sin(0.45);
     for (let i = 0; i < 2600; i++) {
       const x = (r() - 0.5) * s * 0.3;
       const y = (r() - 0.5) * s * 0.06 * (1 - Math.abs(x) / (s * 0.15));
-      c.fillStyle = `rgba(${warm},0.12)`;
-      c.fillRect(x, y, 2, 2);
+      glow.dot(h + x * ca - y * sa, h + x * sa + y * ca, 2, warm, 0.12);
     }
-    c.restore();
+    yield;
   }
   for (let i = 0; i < 26000; i++) {
+    if (i % 5000 === 4999) yield;
     const arm = i % arms;
     const t = r() * 3.6;
     const rad = s * 0.07 * Math.exp(0.36 * t) * (0.86 + r() * 0.28);
     if (rad > h * 0.97) continue;
     const a = t + (arm * Math.PI * 2) / arms + (r() - 0.5) * 0.55 + 0.45;
-    const x = h + Math.cos(a) * rad;
-    const y = h + Math.sin(a) * rad;
     const inner = rad < h * 0.3;
-    c.fillStyle = inner ? `rgba(${warm},0.07)` : `rgba(${cool},0.08)`;
-    c.fillRect(x, y, 1.6, 1.6);
+    glow.dot(h + Math.cos(a) * rad, h + Math.sin(a) * rad, 1.6, inner ? warm : cool, inner ? 0.07 : 0.08);
   }
   // A thin haze of old stars across the whole disc
   for (let i = 0; i < 9000; i++) {
     const rad = Math.pow(r(), 1.6) * h * 0.95;
     const a = r() * Math.PI * 2;
-    c.fillStyle = `rgba(${warm},0.03)`;
-    c.fillRect(h + Math.cos(a) * rad, h + Math.sin(a) * rad, 1.4, 1.4);
+    glow.dot(h + Math.cos(a) * rad, h + Math.sin(a) * rad, 1.4, warm, 0.03);
   }
+  yield* glow.paint(c);
 }
 
 function makeUniverse() {
-  return offscreen(1400, (c, s) => {
+  return offscreen(1400, function* (c, s) {
     const r = rng(7);
     const h = s / 2;
-    c.save();
-    c.beginPath();
-    c.arc(h, h, h * 0.985, 0, Math.PI * 2);
-    c.clip();
+    const glow = new Glow(s);
     c.fillStyle = "#04050A";
     c.fillRect(0, 0, s, s);
     // Nodes of the cosmic web, joined by thin filaments of galaxies
     const nodes: [number, number][] = [];
     for (let i = 0; i < 190; i++) nodes.push([r() * s, r() * s]);
     // A faint sprinkle of galaxies everywhere
-    for (let i = 0; i < 9000; i++) {
-      c.fillStyle = "rgba(200,210,230,0.08)";
-      c.fillRect(r() * s, r() * s, 1, 1);
-    }
+    for (let i = 0; i < 9000; i++) glow.dot(r() * s, r() * s, 1, [200, 210, 230], 0.08);
+    yield;
     c.globalCompositeOperation = "lighter";
-    nodes.forEach((a, i) => {
+    for (let i = 0; i < nodes.length; i++) {
+      const a = nodes[i];
+      if (i % 12 === 11) yield;
       const near = nodes.map((b, j) => ({ j, d: Math.hypot(a[0] - b[0], a[1] - b[1]) })).filter((o) => o.j !== i).sort((p, q) => p.d - q.d).slice(0, 3);
       near.forEach(({ j }) => {
         const b = nodes[j];
@@ -98,8 +145,7 @@ function makeUniverse() {
           const spread = (r() + r() + r() - 1.5) * 9;
           const x = a[0] + (b[0] - a[0]) * t - (b[1] - a[1]) * sw + spread;
           const y = a[1] + (b[1] - a[1]) * t + (b[0] - a[0]) * sw + (r() + r() + r() - 1.5) * 9;
-          c.fillStyle = "rgba(190,205,235,0.07)";
-          c.fillRect(x, y, 1.4, 1.4);
+          glow.dot(x, y, 1.4, [190, 205, 235], 0.07);
         }
       });
       const g = c.createRadialGradient(a[0], a[1], 0, a[0], a[1], 16);
@@ -107,8 +153,14 @@ function makeUniverse() {
       g.addColorStop(1, "rgba(235,225,205,0)");
       c.fillStyle = g;
       c.fillRect(a[0] - 16, a[1] - 16, 32, 32);
-    });
-    c.restore();
+    }
+    yield* glow.paint(c);
+    // Keep only the round part: everything we can see
+    c.globalCompositeOperation = "destination-in";
+    c.beginPath();
+    c.arc(h, h, h * 0.985, 0, Math.PI * 2);
+    c.fillStyle = "#000";
+    c.fill();
     // The edge: light from the young universe, the cosmic microwave background
     c.globalCompositeOperation = "lighter";
     const edge = c.createRadialGradient(h, h, h * 0.9, h, h, h);
@@ -121,10 +173,10 @@ function makeUniverse() {
 }
 
 function makeLaniakea() {
-  return offscreen(1200, (c, s) => {
+  return offscreen(1200, function* (c, s) {
     const r = rng(11);
     const h = s / 2;
-    c.globalCompositeOperation = "lighter";
+    const glow = new Glow(s);
     // Galaxies drift along streams that all lead towards one region
     for (let k = 0; k < 160; k++) {
       let a = r() * Math.PI * 2;
@@ -133,12 +185,14 @@ function makeLaniakea() {
       for (let i = 0; i < 70; i++) {
         const x = h + Math.cos(a) * rad;
         const y = h + Math.sin(a) * rad;
-        c.fillStyle = `rgba(200,212,235,${0.05 + 0.25 * (1 - rad / h)})`;
-        c.fillRect(x + (r() - 0.5) * 6, y + (r() - 0.5) * 6, 1.5, 1.5);
+        glow.dot(x + (r() - 0.5) * 6, y + (r() - 0.5) * 6, 1.5, [200, 212, 235], 0.05 + 0.25 * (1 - rad / h));
         rad *= 0.965;
         a += curl * 0.02;
       }
+      if (k % 40 === 39) yield;
     }
+    yield* glow.paint(c);
+    c.globalCompositeOperation = "lighter";
     const g = c.createRadialGradient(h, h, 0, h, h, h * 0.18);
     g.addColorStop(0, "rgba(240,225,200,0.35)");
     g.addColorStop(1, "rgba(240,225,200,0)");
@@ -146,6 +200,30 @@ function makeLaniakea() {
     c.fillRect(0, 0, s, s);
   });
 }
+
+// A picture built quietly in the background. Until it is ready it simply is not drawn, and it
+// fades in when it arrives.
+function later(make: () => Generator<void, HTMLCanvasElement, void>) {
+  let it: Generator<void, HTMLCanvasElement, void> | null = null;
+  let v: HTMLCanvasElement | null = null;
+  return {
+    get: () => v,
+    ready: () => v !== null,
+    /** Works on the picture until the time runs out. */
+    step(untilMs: number) {
+      it ??= make();
+      while (!v && performance.now() < untilMs) {
+        const r = it.next();
+        if (r.done) v = r.value;
+      }
+    },
+  };
+}
+
+const SKIN_TONES = [0, 1, 2, 3].map((k) => {
+  const tn = (k + 0.5) / 4;
+  return `rgb(${Math.round(226 + tn * 14)},${Math.round(176 + tn * 12)},${Math.round(156 + tn * 10)})`;
+});
 
 function makeSkinField() {
   // A patch of skin cells, each about 30 micrometres across, around the point we zoom into.
@@ -160,7 +238,7 @@ function makeSkinField() {
         x: MICRO_C[0] + i * step + (j % 2 ? step / 2 : 0) + (r() - 0.5) * step * 0.25,
         y: MICRO_C[1] + j * step * 0.87 + (r() - 0.5) * step * 0.25,
         rad: step * (0.43 + r() * 0.07),
-        tone: r(),
+        tone: Math.floor(r() * SKIN_TONES.length),
       });
     }
   }
@@ -197,11 +275,26 @@ function loadImg(src: string) {
   return i;
 }
 
+// What is on screen: the biggest thing that still fits in the view.
+function describe(z: number) {
+  const inGap = z < -19.6 && z > -33.4;
+  const fits = THINGS.filter((th) => {
+    const l = Math.log10(th.size);
+    return l <= z + 0.12 && l >= z - 2.0;
+  });
+  const shown = !inGap && fits.length ? fits[fits.length - 1] : null;
+  return { inGap, shown, key: inGap ? "gap" : shown ? shown.id : "none" };
+}
+
 export default function ScaleOfUniverse() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const zRef = useRef(Z_START);
   const targetRef = useRef(Z_START);
   const [z, setZ] = useState(Z_START);
+  const barRef = useRef<HTMLDivElement>(null);
+  const barLabelRef = useRef<HTMLDivElement>(null);
+  const widthRef = useRef<HTMLSpanElement>(null);
+  const markerRef = useRef<HTMLDivElement>(null);
   const [touched, setTouched] = useState(false);
 
   useEffect(() => {
@@ -222,22 +315,36 @@ export default function ScaleOfUniverse() {
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
     let W = 0, H = 0, dpr = 1;
+    let dirty0 = () => {};
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       W = canvas.clientWidth;
       H = canvas.clientHeight;
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
+      dirty0();
     };
     resize();
     window.addEventListener("resize", resize);
 
     const imgs = { earth: loadImg("earth.webp"), moon: loadImg("moon.webp"), sun: loadImg("sun.webp") };
-    const milkyWay = offscreen(1100, (c, s) => drawSpiral(c, s, 21, 2, "255,226,185", "170,195,240", true));
-    const andromeda = offscreen(900, (c, s) => drawSpiral(c, s, 33, 2, "255,232,200", "190,205,240", false));
-    const triangulum = offscreen(400, (c, s) => drawSpiral(c, s, 41, 2, "240,230,215", "180,200,240", false));
-    const universe = makeUniverse();
-    const laniakea = makeLaniakea();
+    const milkyWay = later(() => offscreen(1100, (c, s) => drawSpiral(c, s, 21, 2, [255, 226, 185], [170, 195, 240], true)));
+    const andromeda = later(() => offscreen(900, (c, s) => drawSpiral(c, s, 33, 2, [255, 232, 200], [190, 205, 240], false)));
+    const triangulum = later(() => offscreen(400, (c, s) => drawSpiral(c, s, 41, 2, [240, 230, 215], [180, 200, 240], false)));
+    const universe = later(makeUniverse);
+    const laniakea = later(makeLaniakea);
+    // Build them in the gaps between frames, a few milliseconds at a time, in the order a zoom
+    // outward meets them.
+    const queue = [milkyWay, andromeda, triangulum, laniakea, universe];
+    let warmTimer = 0;
+    const warm = () => {
+      const next = queue.find((q) => !q.ready());
+      if (!next) return;
+      next.step(performance.now() + 6);
+      if (next.ready()) dirty = true;
+      warmTimer = window.setTimeout(warm, 10);
+    };
+    warmTimer = window.setTimeout(warm, 400);
     const skin = makeSkinField();
     const r = rng(5);
     const dwarfs = Array.from({ length: 70 }, () => {
@@ -273,6 +380,14 @@ export default function ScaleOfUniverse() {
     let raf = 0;
     let last = performance.now();
     let t = 0;
+    // Only draw when something has changed: the zoom, the window, a picture arriving, or
+    // something on screen that moves by itself. Standing still costs nothing.
+    let drawnZ = NaN;
+    let dirty = true;
+    let animating = false;
+    const markDirty = () => { dirty = true; };
+    dirty0 = markDirty;
+    Object.values(imgs).forEach((im) => im.addEventListener("load", markDirty));
 
     const frame = () => {
       raf = requestAnimationFrame(frame);
@@ -285,6 +400,9 @@ export default function ScaleOfUniverse() {
       zRef.current += diff * Math.min(1, dt * 5);
       if (Math.abs(diff) < 1e-4) zRef.current = targetRef.current;
       const zz = zRef.current;
+      if (!dirty && !animating && zz === drawnZ) return;
+      dirty = false;
+      drawnZ = zz;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.globalAlpha = 1;
@@ -346,8 +464,8 @@ export default function ScaleOfUniverse() {
         ctx.fillStyle = color;
         ctx.fill();
       };
-      const image = (img: HTMLImageElement | HTMLCanvasElement, x: number, y: number, diameter: number, alpha: number, rot = 0, squash = 1) => {
-        if (alpha <= 0.01) return;
+      const image = (img: HTMLImageElement | HTMLCanvasElement | null, x: number, y: number, diameter: number, alpha: number, rot = 0, squash = 1) => {
+        if (alpha <= 0.01 || !img) return;
         const d = px(diameter);
         ctx.save();
         ctx.globalAlpha = alpha;
@@ -382,14 +500,14 @@ export default function ScaleOfUniverse() {
       // ── The cosmic scales, largest first ───────────────────────────────────
       let a = vis(8.8e26, 4, 2.2);
       if (a > 0) {
-        image(universe, 0, 0, 8.8e26, a);
+        image(universe.get(), 0, 0, 8.8e26, a);
         label("The edge of what we can see", sx(0) + px(4.4e26) * 0.7, sy(0) - px(4.4e26) * 0.7, a, "rgba(230,170,130,0.9)");
         dot(0, 0, 2.5, "rgba(198,220,245,1)");
         label("You are here", sx(0), sy(0), a * clamp((zz - 25.3) * 2));
       }
       a = vis(4.9e24, 4, 2.5);
       if (a > 0) {
-        image(laniakea, GREAT_ATTRACTOR[0], GREAT_ATTRACTOR[1], 4.9e24, a);
+        image(laniakea.get(), GREAT_ATTRACTOR[0], GREAT_ATTRACTOR[1], 4.9e24, a);
         dot(GC[0], GC[1], 2.5, "rgba(198,220,245,1)");
         label("The Milky Way", sx(GC[0]), sy(GC[1]), a * clamp((25.2 - zz) * 2) * clamp((zz - 23.5) * 2));
         label("Great Attractor", sx(GREAT_ATTRACTOR[0]), sy(GREAT_ATTRACTOR[1]), a * clamp((zz - 23.6) * 2) * clamp((25.6 - zz) * 2), "rgba(240,225,200,0.8)");
@@ -401,9 +519,9 @@ export default function ScaleOfUniverse() {
         ctx.globalAlpha = 1;
         dot(ANDROMEDA_C[0], ANDROMEDA_C[1], 1.8, `rgba(255,236,210,${a})`, 12);
         dot(GC[0], GC[1], 1.8, `rgba(255,236,210,${a})`, 10);
-        image(andromeda, ANDROMEDA_C[0], ANDROMEDA_C[1], 2.2e21, a, -0.5, 0.32);
+        image(andromeda.get(), ANDROMEDA_C[0], ANDROMEDA_C[1], 2.2e21, a, -0.5, 0.32);
         const tri: [number, number] = [ANDROMEDA_C[0] + 0.75e6 * LY * Math.cos(-1.1), ANDROMEDA_C[1] + 0.75e6 * LY * Math.sin(-1.1)];
-        image(triangulum, tri[0], tri[1], 6e20, a, 0.3, 0.7);
+        image(triangulum.get(), tri[0], tri[1], 6e20, a, 0.3, 0.7);
         const la = a * clamp((zz - 21.6) * 2) * clamp((24.2 - zz) * 2);
         label("Andromeda", sx(ANDROMEDA_C[0]), sy(ANDROMEDA_C[1]) + 18, la, undefined, -30, 0);
         label("Triangulum", sx(tri[0]), sy(tri[1]) + 14, la, undefined, -30, 0);
@@ -411,7 +529,7 @@ export default function ScaleOfUniverse() {
       }
       a = vis(9.5e20, 4, 2.4);
       if (a > 0) {
-        image(milkyWay, GC[0], GC[1], 1.0e21, a, 0.2);
+        image(milkyWay.get(), GC[0], GC[1], 1.0e21, a, 0.2);
         const la = a * clamp((zz - 19.8) * 2) * clamp((22.3 - zz) * 2);
         dot(SUN_C[0], SUN_C[1], 2.5, `rgba(198,220,245,${la})`);
         label("You are here", sx(SUN_C[0]), sy(SUN_C[1]), la);
@@ -438,7 +556,8 @@ export default function ScaleOfUniverse() {
       a = vis(3e16, 60, 2.2);
       if (a > 0) {
         ctx.globalAlpha = a * 0.8;
-        oort.forEach(([x, y]) => { const X = sx(x), Y = sy(y); if (X > -2 && X < W + 2 && Y > -2 && Y < H + 2) { ctx.fillStyle = "rgba(200,215,235,0.55)"; ctx.fillRect(X, Y, 1.2, 1.2); } });
+        ctx.fillStyle = "rgba(200,215,235,0.55)";
+        oort.forEach(([x, y]) => { const X = sx(x), Y = sy(y); if (X > -2 && X < W + 2 && Y > -2 && Y < H + 2) ctx.fillRect(X, Y, 1.2, 1.2); });
         ctx.globalAlpha = 1;
         label("The Oort cloud", sx(SUN_C[0]) + px(60000 * AU) * 0.72, sy(SUN_C[1]) - px(60000 * AU) * 0.72, a * clamp((17 - zz) * 2), "rgba(200,215,235,0.8)");
       }
@@ -637,22 +756,32 @@ export default function ScaleOfUniverse() {
       if (skinA > 0) {
         ctx.fillStyle = `rgba(214,170,150,${0.85 * skinA})`;
         ctx.fillRect(0, 0, W, H);
+        // All the cells in a few batches, rather than one drawing call each
+        const fills = SKIN_TONES.map(() => new Path2D());
+        const outline = new Path2D();
+        const nuclei = new Path2D();
+        let anyNuclei = false;
         skin.forEach((c) => {
           if (!onScreen(c.x, c.y, c.rad)) return;
-          ctx.beginPath();
-          ctx.arc(sx(c.x), sy(c.y), Math.max(0.5, px(c.rad)), 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(${226 + c.tone * 14},${176 + c.tone * 12},${156 + c.tone * 10},${skinA})`;
-          ctx.fill();
-          ctx.strokeStyle = `rgba(150,95,85,${0.5 * skinA})`;
-          ctx.lineWidth = 1;
-          ctx.stroke();
-          if (px(c.rad) > 6) {
-            ctx.beginPath();
-            ctx.arc(sx(c.x), sy(c.y), px(c.rad * 0.2), 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(150,90,110,${0.6 * skinA})`;
-            ctx.fill();
+          const X = sx(c.x), Y = sy(c.y), R = Math.max(0.5, px(c.rad));
+          const f = fills[c.tone];
+          f.moveTo(X + R, Y);
+          f.arc(X, Y, R, 0, Math.PI * 2);
+          outline.moveTo(X + R, Y);
+          outline.arc(X, Y, R, 0, Math.PI * 2);
+          if (R > 6) {
+            nuclei.moveTo(X + R * 0.2, Y);
+            nuclei.arc(X, Y, R * 0.2, 0, Math.PI * 2);
+            anyNuclei = true;
           }
         });
+        ctx.globalAlpha = skinA;
+        SKIN_TONES.forEach((tone, i) => { ctx.fillStyle = tone; ctx.fill(fills[i]); });
+        ctx.strokeStyle = "rgba(150,95,85,0.5)";
+        ctx.lineWidth = 1;
+        ctx.stroke(outline);
+        if (anyNuclei) { ctx.fillStyle = "rgba(150,90,110,0.6)"; ctx.fill(nuclei); }
+        ctx.globalAlpha = 1;
       }
       // A hair growing beside the cell
       a = vis(7e-5, 6, 3) * clamp((-1.4 - zz) * 2);
@@ -815,7 +944,9 @@ export default function ScaleOfUniverse() {
         ctx.fillRect(X - R * 1.3, Y - R * 1.3, R * 2.6, R * 2.6);
         // Where an electron might be found: denser near the middle, thinning out
         ctx.fillStyle = "rgba(190,210,245,0.55)";
-        electron.forEach(([ex, ey]) => ctx.fillRect(X + ex * R, Y + ey * R, 1.5, 1.5));
+        ctx.beginPath();
+        electron.forEach(([ex, ey]) => ctx.rect(X + ex * R, Y + ey * R, 1.5, 1.5));
+        ctx.fill();
         dot(MICRO_C[0], MICRO_C[1], 1.5, "#F3DDB0");
         label("Nucleus, far too small to see at this size", X, Y, atomA * clamp((-9.6 - zz) * 2) * clamp((zz + 11.2) * 2), "rgba(243,221,176,0.85)", 8, 4);
         ctx.globalAlpha = 1;
@@ -832,6 +963,7 @@ export default function ScaleOfUniverse() {
       }
       // A proton up close: three quarks
       const pA = clamp((-13.9 - zz) * 1.5) * vis(1.7e-15, 6, 3);
+      animating = pA > 0 || clamp((-33.2 - zz) * 1.2) > 0;
       if (pA > 0) {
         const X = sx(MICRO_C[0]), Y = sy(MICRO_C[1]);
         const R = px(0.85e-15);
@@ -875,7 +1007,15 @@ export default function ScaleOfUniverse() {
         ctx.stroke();
       }
 
-      setZ((prev) => (Math.abs(prev - zz) > 0.002 ? zz : prev));
+      // The scale bar and track follow every frame without asking React to redraw the page;
+      // React only hears about it when the thing being named changes.
+      const bar = niceLength(Math.pow(10, zz) * 0.18);
+      if (barRef.current) barRef.current.style.width = `${(bar.metres / Math.pow(10, zz)) * 100}vw`;
+      if (barLabelRef.current) barLabelRef.current.textContent = bar.label;
+      if (widthRef.current) widthRef.current.textContent = `The view is ${lengthLabel(Math.pow(10, zz))} wide, about ${pow10Label(Math.round(zz))} metres`;
+      if (markerRef.current) markerRef.current.style.left = `${((zz - Z_MIN) / (Z_MAX - Z_MIN)) * 100}%`;
+      const key = describe(zz).key;
+      setZ((prev) => (describe(prev).key !== key ? zz : prev));
     };
     raf = requestAnimationFrame(frame);
 
@@ -919,6 +1059,7 @@ export default function ScaleOfUniverse() {
     window.addEventListener("keydown", onKey);
     return () => {
       cancelAnimationFrame(raf);
+      clearTimeout(warmTimer);
       window.removeEventListener("resize", resize);
       canvas.removeEventListener("wheel", onWheel);
       canvas.removeEventListener("pointerdown", onPointerDown);
@@ -931,17 +1072,8 @@ export default function ScaleOfUniverse() {
     };
   }, []);
 
-  // What is on screen now: the thing whose size is closest to the width of the view.
-  const fits = THINGS.filter((th) => {
-    const l = Math.log10(th.size);
-    return l <= z + 0.12 && l >= z - 2.0;
-  });
-  const inGap = z < -19.6 && z > -33.4;
-  const shown = !inGap && fits.length ? fits[fits.length - 1] : null;
-
-  const scaleBar = niceLength(Math.pow(10, z) * 0.18);
-  const barPct = (scaleBar.metres / Math.pow(10, z)) * 100;
-  const widthLabel = lengthLabel(Math.pow(10, z));
+  const { shown, inGap } = describe(z);
+  const scaleBar = niceLength(Math.pow(10, Z_START) * 0.18);
   const ticks = THINGS.filter((th) => th.tick);
 
   return (
@@ -981,11 +1113,11 @@ export default function ScaleOfUniverse() {
         <div className="max-w-[1100px] mx-auto">
           <div className="flex items-end justify-between gap-4 mb-3">
             <div className="min-w-0">
-              <div style={{ width: `${barPct}vw`, maxWidth: "40vw", height: 6, borderLeft: "1px solid #E8ECF1", borderRight: "1px solid #E8ECF1", borderBottom: "1px solid #E8ECF1" }} />
-              <div className="mt-1 text-[13px] tabular-nums whitespace-nowrap" style={{ color: "#E8ECF1" }}>{scaleBar.label}</div>
+              <div ref={barRef} style={{ width: `${(scaleBar.metres / Math.pow(10, Z_START)) * 100}vw`, maxWidth: "40vw", height: 6, borderLeft: "1px solid #E8ECF1", borderRight: "1px solid #E8ECF1", borderBottom: "1px solid #E8ECF1" }} />
+              <div ref={barLabelRef} className="mt-1 text-[13px] tabular-nums whitespace-nowrap" style={{ color: "#E8ECF1" }}>{scaleBar.label}</div>
             </div>
             <div className="hidden sm:block text-right text-[13px] tabular-nums" style={{ color: "#8E9AA8" }}>
-              The view is {widthLabel} wide, about {pow10Label(Math.round(z))} metres
+              <span ref={widthRef} />
             </div>
             <div className="flex gap-2 shrink-0">
               <button onClick={() => zoomBy(-1)} className="rounded-md px-3 py-1.5 text-[14px] transition-colors hover:bg-white/5" style={{ border: "1px solid #2A3546", color: "#E8ECF1" }}>Zoom in</button>
@@ -994,7 +1126,7 @@ export default function ScaleOfUniverse() {
           </div>
           <div className="relative h-9">
             <div className="absolute left-0 right-0 top-3 h-px" style={{ background: "#2A3546" }} />
-            <div className="absolute top-1.5 w-[2px] h-4 -translate-x-1/2" style={{ left: `${((z - Z_MIN) / (Z_MAX - Z_MIN)) * 100}%`, background: "#E8ECF1" }} />
+            <div ref={markerRef} className="absolute top-1.5 w-[2px] h-4 -translate-x-1/2" style={{ left: `${((Z_START - Z_MIN) / (Z_MAX - Z_MIN)) * 100}%`, background: "#E8ECF1" }} />
             {ticks.map((th) => {
               const tz = Math.log10(th.size) + 0.3;
               return (

@@ -1,94 +1,80 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from "react";
+import { useLocation } from "wouter";
 
+// Most pages paint their own solid background or fill the screen with a picture, so the stars
+// would never be seen there. Only draw them where they show.
+const SHOWN = (path: string) => path === "/apod" || path.startsWith("/exoplanets");
+
+const LAYERS = 3;
+
+// The stars are drawn once, split across three layers. Each layer fades in and out on its own
+// slow cycle, so the sky twinkles, and the browser does that without any work from the page.
 export default function StarField() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [path] = useLocation();
+  const covered = !SHOWN(path);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let stars: Array<{ x: number; y: number; size: number; speed: number; opacity: number; opacityChange: number }> = [];
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      initStars();
-    };
-
-    const initStars = () => {
-      stars = [];
-      const numStars = Math.floor((canvas.width * canvas.height) / 3000); // Responsive star count
-      for (let i = 0; i < numStars; i++) {
-        stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: Math.random() * 1.5 + 0.5,
-          speed: Math.random() * 0.05 + 0.01,
-          opacity: Math.random(),
-          opacityChange: Math.random() * 0.02 - 0.01,
-        });
-      }
-    };
-
-    let mouseX = 0;
-    let mouseY = 0;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX = (e.clientX - canvas.width / 2) * 0.005;
-      mouseY = (e.clientY - canvas.height / 2) * 0.005;
-    };
-
-    window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', handleMouseMove);
-    
-    resize();
+    const wrap = wrapRef.current;
+    if (covered || !wrap) return;
+    const canvases = Array.from(wrap.querySelectorAll("canvas"));
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      stars.forEach((star) => {
-        // Twinkle
-        star.opacity += star.opacityChange;
-        if (star.opacity <= 0.1 || star.opacity >= 1) {
-          star.opacityChange = -star.opacityChange;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const W = window.innerWidth, H = window.innerHeight;
+      const count = Math.floor((W * H) / 3000);
+      let seed = 7;
+      const rnd = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+      canvases.forEach((c, layer) => {
+        c.width = Math.round(W * dpr);
+        c.height = Math.round(H * dpr);
+        const ctx = c.getContext("2d");
+        if (!ctx) return;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        for (let i = layer; i < count; i += LAYERS) {
+          const size = rnd() * 1.5 + 0.5;
+          ctx.fillStyle = `rgba(255,255,255,${(0.25 + rnd() * 0.75).toFixed(2)})`;
+          ctx.beginPath();
+          ctx.arc(rnd() * W, rnd() * H, size, 0, Math.PI * 2);
+          ctx.fill();
         }
-
-        // Parallax
-        let drawX = star.x - mouseX * star.size;
-        let drawY = star.y - mouseY * star.size;
-
-        if (drawX < 0) drawX += canvas.width;
-        if (drawX > canvas.width) drawX -= canvas.width;
-        if (drawY < 0) drawY += canvas.height;
-        if (drawY > canvas.height) drawY -= canvas.height;
-
-        ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-        ctx.beginPath();
-        ctx.arc(drawX, drawY, star.size, 0, Math.PI * 2);
-        ctx.fill();
       });
-
-      animationFrameId = requestAnimationFrame(draw);
     };
-
     draw();
+    let resizeTimer = 0;
+    const onResize = () => { clearTimeout(resizeTimer); resizeTimer = window.setTimeout(draw, 150); };
+    window.addEventListener("resize", onResize);
 
-    return () => {
-      window.removeEventListener('resize', resize);
-      window.removeEventListener('mousemove', handleMouseMove);
-      cancelAnimationFrame(animationFrameId);
+    // A gentle drift with the mouse, nearer layers moving further
+    let raf = 0, mx = 0, my = 0;
+    const onMove = (e: MouseEvent) => {
+      mx = (e.clientX - window.innerWidth / 2) * 0.005;
+      my = (e.clientY - window.innerHeight / 2) * 0.005;
+      if (!raf) raf = requestAnimationFrame(() => {
+        raf = 0;
+        canvases.forEach((c, i) => { c.style.transform = `translate3d(${-mx * (i + 1) * 0.6}px, ${-my * (i + 1) * 0.6}px, 0)`; });
+      });
     };
-  }, []);
+    window.addEventListener("mousemove", onMove);
+    return () => {
+      clearTimeout(resizeTimer);
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", onResize);
+      window.removeEventListener("mousemove", onMove);
+    };
+  }, [covered]);
 
+  if (covered) return null;
   return (
-    <canvas
-      ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-[-1]"
-      aria-hidden="true"
-    />
+    <div ref={wrapRef} className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden" aria-hidden="true">
+      {Array.from({ length: LAYERS }, (_, i) => (
+        <canvas
+          key={i}
+          className="absolute inset-0 w-full h-full"
+          style={{ animation: `pale-twinkle ${5 + i * 2.3}s ease-in-out ${-i * 1.7}s infinite alternate` }}
+        />
+      ))}
+      <style>{`@keyframes pale-twinkle { from { opacity: 1 } to { opacity: 0.35 } } @media (prefers-reduced-motion: reduce) { [style*="pale-twinkle"] { animation: none !important } }`}</style>
+    </div>
   );
 }
