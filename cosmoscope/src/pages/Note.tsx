@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "wouter";
 import Footer from "@/components/Footer";
 import {
   Note, Milestone, MAX_NOTE, C_KM_S,
@@ -283,6 +284,11 @@ function Journey({
       )}
 
       <section className="mt-12 flex flex-wrap gap-3">
+        {saved && (
+          <Link href="/?note" className="rounded-md px-4 py-2 text-[15px] no-underline" style={{ background: TEXT, color: BG }}>
+            See it in the universe
+          </Link>
+        )}
         <Button onClick={copy}>{copied ? "Link copied" : "Copy a link to follow it anywhere"}</Button>
         <Button onClick={onWrite}>Write another note</Button>
         {saved && !confirming && <Button onClick={() => setConfirming(true)}>Let it go</Button>}
