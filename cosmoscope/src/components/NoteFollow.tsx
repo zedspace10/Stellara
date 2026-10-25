@@ -15,7 +15,7 @@ import {
 // the note at that moment. Distances are squeezed by powers of ten so the Moon and Andromeda fit in
 // one view; things that are close look close, and things that are far look far.
 
-type View = "behind" | "home" | "map" | "side";
+type View = "ride" | "behind" | "home" | "map" | "side";
 
 const TEXT = "#E8ECF1";
 const BODY = "#C9D2DC";
@@ -72,8 +72,8 @@ const mapR = (r: number) => 12 * Math.log10(1 + r / 0.05);
 
 export default function NoteFollow({ note, dest }: { note: Note; dest: Destination }) {
   const mountRef = useRef<HTMLDivElement>(null);
-  const [view, setView] = useState<View>("behind");
-  const viewRef = useRef<View>("behind");
+  const [view, setView] = useState<View>("ride");
+  const viewRef = useRef<View>("ride");
   // 0 shows now; up to 1 looks ahead to the day it arrives, spaced by powers of ten.
   const [ahead, setAhead] = useState(0);
   const aheadRef = useRef(0);
@@ -207,11 +207,42 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
       return new THREE.Vector3().crossVectors(d, up).cross(d).normalize();
     };
 
+    // Riding on the note: fine specks of dust stream past, so you can feel it moving.
+    const DUST = 700;
+    const dustU = sideOf(destDir);
+    const dustW = new THREE.Vector3().crossVectors(destDir, dustU).normalize();
+    const dustState = new Float32Array(DUST * 3); // distance ahead, then two offsets across
+    {
+      let s2 = 11;
+      const rnd = () => ((s2 = (s2 * 1664525 + 1013904223) >>> 0) / 4294967296);
+      for (let i = 0; i < DUST; i++) {
+        const a = rnd() * Math.PI * 2, rad = 1.2 + Math.pow(rnd(), 0.7) * 8;
+        dustState.set([rnd() * 44 - 4, Math.cos(a) * rad, Math.sin(a) * rad], i * 3);
+      }
+    }
+    const dustGeo = new THREE.BufferGeometry();
+    dustGeo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(DUST * 3), 3));
+    dustGeo.setAttribute("color", new THREE.BufferAttribute(new Float32Array(DUST * 3), 3));
+    const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({
+      vertexColors: true, size: 0.06, sizeAttenuation: true, transparent: true, opacity: 0.85,
+      depthWrite: false, blending: THREE.AdditiveBlending,
+    }));
+    scene.add(dust);
+
     let lastView: View | null = null;
     // In the side view the camera keeps pace with the note, so it stays in frame as it moves.
     const followed = new THREE.Vector3();
     const placeCamera = (v: View, homeDir: THREE.Vector3, noteAt: THREE.Vector3) => {
-      if (v === "side") {
+      controls.enableZoom = v !== "ride";
+      camera.fov = v === "ride" ? 68 : 55;
+      camera.updateProjectionMatrix();
+      if (v === "ride") {
+        // The camera is the note. Dragging turns your head; it does not move you.
+        controls.minDistance = 0.05;
+        controls.maxDistance = 0.05;
+        controls.target.copy(destDir).multiplyScalar(0.05);
+        camera.position.set(0, 0, 0);
+      } else if (v === "side") {
         controls.minDistance = 8;
         controls.maxDistance = 220;
         const across = new THREE.Vector3().crossVectors(destDir, new THREE.Vector3(0, 1, 0));
@@ -243,8 +274,12 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
     io.observe(el);
 
+    let lastFrame = performance.now();
     const frame = () => {
       raf = requestAnimationFrame(frame);
+      const nowF = performance.now();
+      const dt = Math.min(0.1, (nowF - lastFrame) / 1000);
+      lastFrame = nowF;
       if (!visible) return;
       const view = viewRef.current;
       const t = shownAt(aheadRef.current, Date.now());
@@ -264,6 +299,26 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
         followed.copy(noteAt);
       }
       orbits.visible = map;
+      const riding = view === "ride";
+      dust.visible = riding;
+      if (riding) {
+        const da = dustGeo.attributes.position.array as Float32Array;
+        const dc = dustGeo.attributes.color.array as Float32Array;
+        for (let i = 0; i < DUST; i++) {
+          let along = dustState[i * 3] - dt * 7;
+          if (along < -4) along += 44;
+          dustState[i * 3] = along;
+          const a = dustState[i * 3 + 1], b2 = dustState[i * 3 + 2];
+          da[i * 3] = destDir.x * along + dustU.x * a + dustW.x * b2;
+          da[i * 3 + 1] = destDir.y * along + dustU.y * a + dustW.y * b2;
+          da[i * 3 + 2] = destDir.z * along + dustU.z * a + dustW.z * b2;
+          // Faint far ahead, brightest as each speck rushes by, gone once it is behind.
+          const k = Math.min(1, Math.max(0, (40 - along) / 32)) ** 2 * Math.min(1, Math.max(0, (along + 4) / 4));
+          dc[i * 3] = 0.87 * k; dc[i * 3 + 1] = 0.9 * k; dc[i * 3 + 2] = 0.94 * k;
+        }
+        dustGeo.attributes.position.needsUpdate = true;
+        dustGeo.attributes.color.needsUpdate = true;
+      }
 
       // Where each body sits in this view.
       const place = (P: Vec3, out: THREE.Vector3) => {
@@ -298,6 +353,7 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
 
       if (map) place(N, noteSprite.position); else noteSprite.position.set(0, 0, 0);
       noteSprite.scale.setScalar(map ? 2.2 : 0.3);
+      noteSprite.visible = !riding;
       noteLabel.visible = map;
 
       // The path: travelled so far, then the rest of the way, both spaced by powers of ten.
@@ -322,6 +378,8 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
       aheadGeo.computeBoundingSphere();
       pathAhead.computeLineDistances();
       pathDone.visible = map;
+      // Riding along, the way ahead would only be a point straight in front, so it is left out.
+      pathAhead.visible = !riding;
 
       controls.update();
       renderer.render(scene, camera);
@@ -402,6 +460,7 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
     <div>
       <div className="flex flex-wrap gap-2">
         {([
+          ["ride", "From the note"],
           ["behind", "Behind the note"],
           ["home", "Looking back home"],
           ["map", "Map from above"],
@@ -428,7 +487,7 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
           {previewing && <><br /><span style={{ color: WARM }}>Showing {fmtDate(t)}</span></>}
         </div>
         <p className="absolute right-3 bottom-2 m-0 text-[11px] pointer-events-none" style={{ color: "#6B7686" }}>
-          Drag to look around. Distances squeezed to fit.
+          {view === "ride" ? "Drag to look around. The specks show you moving; distances squeezed to fit." : "Drag to look around. Distances squeezed to fit."}
         </p>
       </div>
 
