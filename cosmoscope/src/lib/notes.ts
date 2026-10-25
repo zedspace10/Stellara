@@ -4,7 +4,7 @@
 // sending, travelling outward at 299,792 km every second.
 
 import { heliocentric } from "@/lib/ephemeris";
-import { SPACECRAFT, spacecraftPosition, AU_KM } from "@/lib/smallbodies";
+import { SPACECRAFT, spacecraftPosition, AU_KM, eqToEcliptic, Vec3 } from "@/lib/smallbodies";
 
 export const C_KM_S = 299792.458;
 const LY_KM = 9460730472580.8;
@@ -14,6 +14,64 @@ export interface Note {
   id: string;
   text: string;
   sentAt: number;
+  /** Where the person aimed it: one of DESTINATIONS. Light spreads every way, so this is the path we follow. */
+  to?: string;
+}
+
+// ── Where a note can be sent ───────────────────────────────────────────────────
+export interface Destination {
+  id: string;
+  name: string;
+  /** Right ascension in hours and declination in degrees, so the note heads the real way. */
+  ra: number;
+  dec: number;
+  ly: number;
+  constellation: string;
+  line: string;
+}
+
+export const DESTINATIONS: Destination[] = [
+  { id: "proxima", name: "Proxima Centauri", ra: 14.4953, dec: -62.679, ly: 4.24, constellation: "Centaurus", line: "The nearest star to the Sun." },
+  { id: "sirius", name: "Sirius", ra: 6.7525, dec: -16.716, ly: 8.6, constellation: "Canis Major", line: "The brightest star in the night sky." },
+  { id: "tau-ceti", name: "Tau Ceti", ra: 1.7345, dec: -15.937, ly: 11.9, constellation: "Cetus", line: "A quiet star much like the Sun." },
+  { id: "vega", name: "Vega", ra: 18.6156, dec: 38.784, ly: 25, constellation: "Lyra", line: "A bright blue white star, once the North Star." },
+  { id: "trappist", name: "TRAPPIST-1", ra: 23.1081, dec: -5.041, ly: 40.7, constellation: "Aquarius", line: "A small star with seven rocky planets." },
+  { id: "pleiades", name: "The Pleiades", ra: 3.7908, dec: 24.117, ly: 444, constellation: "Taurus", line: "The Seven Sisters, a cluster of young stars." },
+  { id: "betelgeuse", name: "Betelgeuse", ra: 5.9195, dec: 7.407, ly: 550, constellation: "Orion", line: "A red supergiant near the end of its life." },
+  { id: "orion", name: "The Orion Nebula", ra: 5.5881, dec: -5.391, ly: 1344, constellation: "Orion", line: "A cloud where new stars are being born." },
+  { id: "centre", name: "The centre of the Milky Way", ra: 17.7611, dec: -29.008, ly: 26000, constellation: "Sagittarius", line: "The heart of our galaxy." },
+  { id: "andromeda", name: "The Andromeda Galaxy", ra: 0.7123, dec: 41.269, ly: 2.5e6, constellation: "Andromeda", line: "The nearest big galaxy." },
+];
+
+export const DEFAULT_DESTINATION = "proxima";
+
+export function destinationOf(n: Note): Destination | undefined {
+  return DESTINATIONS.find((d) => d.id === n.to);
+}
+
+/** Unit vector towards a destination, heliocentric ecliptic. */
+export function directionOf(d: Destination): Vec3 {
+  return eqToEcliptic(d.ra, d.dec);
+}
+
+const YEAR_MS = 365.25 * 86400000;
+export function arrivalOf(n: Note, d: Destination) {
+  return n.sentAt + d.ly * YEAR_MS;
+}
+
+/** Where the note is at time t, in au from the Sun (heliocentric ecliptic). */
+export function notePosition(n: Note, d: Destination, t: number): Vec3 {
+  const e = heliocentric("earth", n.sentAt) ?? { x: 1, y: 0, z: 0 };
+  const dir = directionOf(d);
+  const r = kmTravelled(n.sentAt, t) / AU_KM;
+  return { x: e.x + dir.x * r, y: e.y + dir.y * r, z: e.z + dir.z * r };
+}
+
+/** The way it is heading, as an astronomer would write it, without signs: "14h 30m, 62° 41′ south". */
+export function headingLabel(d: Destination) {
+  const h = Math.floor(d.ra), m = Math.round((d.ra - h) * 60);
+  const a = Math.abs(d.dec), deg = Math.floor(a), min = Math.round((a - deg) * 60);
+  return `${h}h ${String(m).padStart(2, "0")}m, ${deg}° ${String(min).padStart(2, "0")}′ ${d.dec >= 0 ? "north" : "south"}`;
 }
 
 // ── Keeping notes on this device ───────────────────────────────────────────────
@@ -55,9 +113,9 @@ export function markSeen(t = Date.now()) {
   }
 }
 
-export function newNote(text: string): Note {
+export function newNote(text: string, to?: string): Note {
   const id = Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
-  return { id, text: text.trim().slice(0, MAX_NOTE), sentAt: Date.now() };
+  return { id, text: text.trim().slice(0, MAX_NOTE), sentAt: Date.now(), ...(to ? { to } : {}) };
 }
 
 // ── Links that carry a note ─────────────────────────────────────────────────────
@@ -75,7 +133,7 @@ function fromBase64Url(s: string) {
 }
 
 export function noteLink(n: Note) {
-  const payload = toBase64Url(JSON.stringify({ t: n.text, s: n.sentAt }));
+  const payload = toBase64Url(JSON.stringify({ t: n.text, s: n.sentAt, ...(n.to ? { d: n.to } : {}) }));
   return `${window.location.origin}${import.meta.env.BASE_URL.replace(/\/$/, "")}/note#n=${payload}`;
 }
 
@@ -83,9 +141,10 @@ export function noteFromHash(hash: string): Note | null {
   const m = hash.match(/n=([A-Za-z0-9_-]+)/);
   if (!m) return null;
   try {
-    const { t, s } = JSON.parse(fromBase64Url(m[1])) as { t: unknown; s: unknown };
+    const { t, s, d } = JSON.parse(fromBase64Url(m[1])) as { t: unknown; s: unknown; d?: unknown };
     if (typeof t !== "string" || typeof s !== "number" || s > Date.now() + 60000) return null;
-    return { id: `link-${s}`, text: t.slice(0, MAX_NOTE), sentAt: s };
+    const to = typeof d === "string" && DESTINATIONS.some((x) => x.id === d) ? d : undefined;
+    return { id: `link-${s}`, text: t.slice(0, MAX_NOTE), sentAt: s, ...(to ? { to } : {}) };
   } catch {
     return null;
   }

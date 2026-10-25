@@ -15,7 +15,7 @@ import { moon as moonPhase, sunLongitude } from '@/lib/sky';
 import { COMETS, cometPosition, cometOrbit, SPACECRAFT, spacecraftPosition, toScene, formatKm, lightTime } from '@/lib/smallbodies';
 import VoyagerLookBack from '@/components/VoyagerLookBack';
 import NoteUniversePanel from '@/components/NoteUniversePanel';
-import { loadNotes, kmTravelled, Note } from '@/lib/notes';
+import { loadNotes, kmTravelled, Note, destinationOf, notePosition, directionOf, Destination } from '@/lib/notes';
 import { AU_KM, sceneRadius } from '@/lib/smallbodies';
 import { Card } from '@/components/ui/card';
 import { Camera, Dice1, Compass as Compass2, Star } from 'lucide-react';
@@ -311,6 +311,8 @@ export default function SolarSystem() {
       cameraTargetRef.current = new THREE.Vector3(0, r * 1.3, r * 2.4);
       lookAtTargetRef.current = new THREE.Vector3(0, 0, 0);
       transitioningRef.current = true;
+      // Switch the clock at once, so not even one frame runs at the faster speed.
+      rateRef.current = 0;
       setRateIndex(0);
       simTimeRef.current = Date.now();
       setSimTime(simTimeRef.current);
@@ -878,7 +880,11 @@ export default function SolarSystem() {
 
     // The light of the person's note: a ring spreading out from where Earth was when they sent it,
     // with a fainter ring across it so it reads as a sphere. It follows the real clock.
-    let noteRing: { ring: THREE.LineLoop; meridian: THREE.LineLoop; anchor: THREE.Object3D; earth: { x: number; y: number; z: number }; sentAt: number } | null = null;
+    let noteRing: {
+      ring: THREE.LineLoop; meridian: THREE.LineLoop; anchor: THREE.Object3D; earth: { x: number; y: number; z: number }; sentAt: number;
+      // When the person chose a star, the note itself and the path it has taken.
+      path?: { dot: THREE.Sprite; line: THREE.Line; dest: Destination; note: Note };
+    } | null = null;
     const myNote = noteRef.current;
     const noteEarth = myNote ? heliocentric('earth', myNote.sentAt) : null;
     if (myNote && noteEarth) {
@@ -901,6 +907,20 @@ export default function SolarSystem() {
       anchor.add(nLabel);
       labelSlots.push({ obj: nLabel, el: nDiv, w: 0 });
       noteRing = { ring, meridian, anchor, earth: noteEarth, sentAt: myNote.sentAt };
+      const dest = destinationOf(myNote);
+      if (dest) {
+        const dot = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: makeGlowTex('255,244,218', [[0, 1], [0.2, 0.6], [1, 0]]),
+          blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+        }));
+        dot.scale.set(2.2, 2.2, 1);
+        const lg = new THREE.BufferGeometry();
+        lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(48 * 3), 3));
+        const line = new THREE.Line(lg, new THREE.LineBasicMaterial({ color: 0xf3ddb0, transparent: true, opacity: 0.7, depthWrite: false }));
+        solarSystemGroup.add(dot, line);
+        nDiv.textContent = `Your note, to ${dest.name.replace(/^The /, 'the ')}`;
+        noteRing.path = { dot, line, dest, note: myNote };
+      }
     }
 
     // ========================================================================
@@ -1707,6 +1727,25 @@ export default function SolarSystem() {
         }
         noteRing.ring.geometry.attributes.position.needsUpdate = true;
         noteRing.meridian.geometry.attributes.position.needsUpdate = true;
+        if (noteRing.path) {
+          // The note itself, and the straight path behind it, drawn through the same squeezed scale.
+          const { dot, line, dest, note } = noteRing.path;
+          const P = notePosition(note, dest, Date.now());
+          const q = toScene(P);
+          dot.position.set(q.x, q.y, q.z);
+          noteRing.anchor.position.set(q.x, q.y, q.z);
+          const dir = directionOf(dest);
+          const la = line.geometry.attributes.position.array as Float32Array;
+          const nPts = la.length / 3;
+          for (let k = 0; k < nPts; k++) {
+            const f = k / (nPts - 1);
+            const r = f === 0 ? 0 : Math.min(R, 1e-3 * Math.pow(Math.max(R, 1e-3) / 1e-3, f));
+            const w = toScene({ x: E.x + dir.x * r, y: E.y + dir.y * r, z: E.z + dir.z * r });
+            la[k * 3] = w.x; la[k * 3 + 1] = w.y; la[k * 3 + 2] = w.z;
+          }
+          line.geometry.attributes.position.needsUpdate = true;
+          line.geometry.computeBoundingSphere();
+        }
         noteRing.ring.geometry.computeBoundingSphere();
         noteRing.meridian.geometry.computeBoundingSphere();
         (noteRing.ring.material as THREE.LineBasicMaterial).opacity = 0.45 + 0.12 * Math.sin(totalElapsed * 1.6);
@@ -2484,7 +2523,7 @@ export default function SolarSystem() {
             open={noteOpen}
             onClose={() => setNoteOpen(false)}
             live={rateIndex === 0 && Math.abs(simTime - Date.now()) < 120000}
-            onShowNow={() => { setRateIndex(0); jumpToNow(); }}
+            onShowNow={() => { rateRef.current = 0; setRateIndex(0); jumpToNow(); }}
           />
           <UniverseInfoPanel objectId={selectedUniverseObject} onClose={() => setSelectedUniverseObject(null)} />
         </>

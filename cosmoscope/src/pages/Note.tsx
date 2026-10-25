@@ -5,7 +5,9 @@ import {
   Note, Milestone, MAX_NOTE, C_KM_S,
   loadNotes, saveNotes, lastSeen, markSeen, newNote, noteLink, noteFromHash,
   milestonesFor, kmTravelled, whenReached, duration, bigKm, dateLabel, calendarFile, inSentence,
+  DESTINATIONS, DEFAULT_DESTINATION, destinationOf, arrivalOf,
 } from "@/lib/notes";
+import NoteFollow from "@/components/NoteFollow";
 
 const BG = "#05070C";
 const TEXT = "#E8ECF1";
@@ -51,14 +53,46 @@ function Button({ children, onClick, primary, disabled }: { children: React.Reac
   );
 }
 
+const YEAR_MS = 365.25 * 86400000;
+function travelTime(ly: number) {
+  if (ly < 100) return duration(ly * YEAR_MS);
+  return `${Math.round(ly).toLocaleString("en-GB")} years`;
+}
+
+// ── Choosing where it goes ─────────────────────────────────────────────────────
+function DestinationPicker({ value, onChange }: { value: string; onChange: (id: string) => void }) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      {DESTINATIONS.map((d) => {
+        const on = d.id === value;
+        return (
+          <button
+            key={d.id}
+            type="button"
+            onClick={() => onChange(d.id)}
+            aria-pressed={on}
+            className="text-left rounded-lg px-4 py-2.5 sm:py-3 transition-colors hover:bg-white/[0.03]"
+            style={{ background: on ? "rgba(243,221,176,0.06)" : PANEL, border: `1px solid ${on ? WARM : RULE}` }}
+          >
+            <span className="block text-[16px]" style={{ color: TEXT }}>{d.name}</span>
+            <span className="hidden sm:block mt-0.5 text-[13px] leading-snug" style={{ color: MUTED }}>{d.line}</span>
+            <span className="block mt-0.5 sm:mt-1.5 text-[13px]" style={{ color: on ? WARM : MUTED }}>Arrives in {travelTime(d.ly)}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Writing the note ───────────────────────────────────────────────────────────
-function Compose({ onSend, hasOthers, onCancel }: { onSend: (text: string) => void; hasOthers: boolean; onCancel: () => void }) {
+function Compose({ onSend, hasOthers, onCancel }: { onSend: (text: string, to: string) => void; hasOthers: boolean; onCancel: () => void }) {
   const [text, setText] = useState("");
+  const [to, setTo] = useState(DEFAULT_DESTINATION);
   const [leaving, setLeaving] = useState(false);
   const send = () => {
     if (!text.trim() || leaving) return;
     setLeaving(true);
-    window.setTimeout(() => onSend(text), 900);
+    window.setTimeout(() => onSend(text, to), 900);
   };
   return (
     <div className="max-w-[40rem] mx-auto px-5 md:px-0 pt-14 pb-16">
@@ -88,6 +122,13 @@ function Compose({ onSend, hasOthers, onCancel }: { onSend: (text: string) => vo
         </div>
       </div>
 
+      <div className="mt-10" style={{ opacity: leaving ? 0 : 1, transition: "opacity 600ms" }}>
+        <p className="m-0 text-[14px] mb-3" style={{ color: MUTED }}>
+          Its light will spread out in every direction. Choose the star you want to follow it to.
+        </p>
+        <DestinationPicker value={to} onChange={setTo} />
+      </div>
+
       <div className="mt-8 flex gap-3">
         <Button primary onClick={send} disabled={!text.trim() || leaving}>{leaving ? "Sending" : "Send it"}</Button>
         {hasOthers && !leaving && <Button onClick={onCancel}>Back to my notes</Button>}
@@ -99,7 +140,7 @@ function Compose({ onSend, hasOthers, onCancel }: { onSend: (text: string) => vo
 // ── Following it ───────────────────────────────────────────────────────────────
 function Journey({
   note, saved, since, justSent, others,
-  onKeep, onLetGo, onWrite, onOpen,
+  onKeep, onLetGo, onWrite, onOpen, onChoose,
 }: {
   note: Note;
   saved: boolean;
@@ -110,7 +151,10 @@ function Journey({
   onLetGo: () => void;
   onWrite: () => void;
   onOpen: (id: string) => void;
+  onChoose: (to: string) => void;
 }) {
+  const dest = destinationOf(note);
+  const [picking, setPicking] = useState(DEFAULT_DESTINATION);
   const milestones = useMemo(() => milestonesFor(note.sentAt), [note.sentAt]);
   const [now, setNow] = useState(Date.now());
   const [copied, setCopied] = useState(false);
@@ -197,6 +241,30 @@ function Journey({
           from home, and {Math.round(C_KM_S).toLocaleString("en-GB")} km further every second.
           {km > 9.46e12 ? ` That is ${bigKm(km)}.` : ""}
         </p>
+      </section>
+
+      {/* Following it, like a tracker: where it is, where it is going, and the view from it */}
+      <section className="mt-12">
+        <h2 className="m-0 text-[22px] font-normal" style={{ color: TEXT }}>Follow it</h2>
+        {dest ? (
+          <>
+            <p className="m-0 mt-2 mb-4 text-[15px] leading-relaxed" style={{ color: BODY }}>
+              On its way to {inSentence(dest.name)}, in {dest.constellation}. It arrives on{" "}
+              {arrivalOf(note, dest) - now < 100 * YEAR_MS
+                ? new Date(arrivalOf(note, dest)).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+                : `a day about ${Math.round((arrivalOf(note, dest) - now) / YEAR_MS).toLocaleString("en-GB")} years from now`}.
+            </p>
+            <NoteFollow note={note} dest={dest} />
+          </>
+        ) : (
+          <>
+            <p className="m-0 mt-2 mb-4 text-[15px] leading-relaxed" style={{ color: BODY }}>
+              Its light is spreading out in every direction. Choose a star to follow it to.
+            </p>
+            <DestinationPicker value={picking} onChange={setPicking} />
+            <div className="mt-4"><Button primary onClick={() => onChoose(picking)}>Follow it there</Button></div>
+          </>
+        )}
       </section>
 
       {/* The track: every step on the way, spaced by powers of ten */}
@@ -375,8 +443,8 @@ export default function NotePage() {
     setLinked(null);
   };
 
-  const send = (text: string) => {
-    const n = newNote(text);
+  const send = (text: string, to: string) => {
+    const n = newNote(text, to);
     const list = [...notes, n];
     saveNotes(list);
     setNotes(list);
@@ -394,6 +462,16 @@ export default function NotePage() {
     setNotes(list);
     clearHash();
     setActiveId(n.id);
+  };
+  const choose = (to: string) => {
+    if (!active) return;
+    if (activeSaved) {
+      const list = notes.map((n) => (n.id === active.id ? { ...n, to } : n));
+      saveNotes(list);
+      setNotes(list);
+    } else if (linked) {
+      setLinked({ ...linked, to });
+    }
   };
   const letGo = () => {
     if (!active) return;
@@ -424,6 +502,7 @@ export default function NotePage() {
           onLetGo={letGo}
           onWrite={() => { setComposing(true); setJustSent(false); window.scrollTo({ top: 0 }); }}
           onOpen={(id) => { clearHash(); setActiveId(id); setJustSent(false); window.scrollTo({ top: 0 }); }}
+          onChoose={choose}
         />
       )}
       <Footer />

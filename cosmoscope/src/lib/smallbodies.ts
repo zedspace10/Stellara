@@ -111,7 +111,8 @@ export interface Spacecraft {
 
 const SPACECRAFT_REF = Date.UTC(2026, 9, 24, 1, 0, 0);
 
-function eqToEcliptic(raHours: number, decDeg: number): Vec3 {
+/** A direction on the sky (right ascension in hours, declination in degrees) as a unit vector, heliocentric ecliptic. */
+export function eqToEcliptic(raHours: number, decDeg: number): Vec3 {
   const eps = 23.4392911 * DEG;
   const ra = raHours * 15 * DEG, dec = decDeg * DEG;
   const x = Math.cos(dec) * Math.cos(ra);
