@@ -15,7 +15,7 @@ import {
 // the note at that moment. Distances are squeezed by powers of ten so the Moon and Andromeda fit in
 // one view; things that are close look close, and things that are far look far.
 
-type View = "behind" | "home" | "map";
+type View = "behind" | "home" | "map" | "side";
 
 const TEXT = "#E8ECF1";
 const BODY = "#C9D2DC";
@@ -208,8 +208,19 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
     };
 
     let lastView: View | null = null;
-    const placeCamera = (v: View, homeDir: THREE.Vector3) => {
-      if (v === "map") {
+    // In the side view the camera keeps pace with the note, so it stays in frame as it moves.
+    const followed = new THREE.Vector3();
+    const placeCamera = (v: View, homeDir: THREE.Vector3, noteAt: THREE.Vector3) => {
+      if (v === "side") {
+        controls.minDistance = 8;
+        controls.maxDistance = 220;
+        const across = new THREE.Vector3().crossVectors(destDir, new THREE.Vector3(0, 1, 0));
+        if (across.lengthSq() < 1e-6) across.set(1, 0, 0);
+        across.normalize();
+        controls.target.copy(noteAt);
+        camera.position.copy(noteAt).addScaledVector(across, 42).add(new THREE.Vector3(0, 9, 0));
+        followed.copy(noteAt);
+      } else if (v === "map") {
         controls.minDistance = 30;
         controls.maxDistance = 420;
         controls.target.set(0, 0, 0);
@@ -238,11 +249,20 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
       const view = viewRef.current;
       const t = shownAt(aheadRef.current, Date.now());
       const N = notePosition(note, dest, t);
-      const map = view === "map";
+      // The map and the side view share the same layout around the Sun; only the camera differs.
+      const map = view === "map" || view === "side";
 
       const homeVec = toThree({ x: -N.x, y: -N.y, z: -N.z });
       const homeDir = homeVec.lengthSq() > 0 ? homeVec.normalize() : destDir.clone().multiplyScalar(-1);
-      if (view !== lastView) { placeCamera(view, homeDir); lastView = view; }
+      const rN = Math.hypot(N.x, N.y, N.z);
+      const noteAt = rN > 0 ? toThree(N).normalize().multiplyScalar(mapR(rN)) : new THREE.Vector3();
+      if (view !== lastView) { placeCamera(view, homeDir, noteAt); lastView = view; }
+      if (view === "side") {
+        const step = noteAt.clone().sub(followed);
+        camera.position.add(step);
+        controls.target.add(step);
+        followed.copy(noteAt);
+      }
       orbits.visible = map;
 
       // Where each body sits in this view.
@@ -310,6 +330,12 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
       const w = el.clientWidth, h = el.clientHeight;
       // The tracker box in the top corner is off limits.
       const taken: [number, number, number, number][] = [[0, 0, 200, 70]];
+      // The note's own label comes first.
+      if (noteLabel.visible) {
+        proj.copy(noteSprite.position).project(camera);
+        const x = (proj.x + 1) * w / 2, y = (1 - proj.y) * h / 2;
+        taken.push([x - 34, y - 24, x + 34, y - 6]);
+      }
       [...sprites].sort((a, b) => a.b.priority - b.b.priority).forEach(({ sp, label, div }) => {
         if (!sp.visible) { label.visible = false; return; }
         proj.copy(sp.position).project(camera);
@@ -379,6 +405,7 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
           ["behind", "Behind the note"],
           ["home", "Looking back home"],
           ["map", "Map from above"],
+          ["side", "Side view"],
         ] as [View, string][]).map(([v, label]) => (
           <button
             key={v}
