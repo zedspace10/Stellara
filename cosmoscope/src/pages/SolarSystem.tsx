@@ -14,6 +14,9 @@ import { heliocentric, EPHEMERIS_MIN, EPHEMERIS_MAX } from '@/lib/ephemeris';
 import { moon as moonPhase, sunLongitude } from '@/lib/sky';
 import { COMETS, cometPosition, cometOrbit, SPACECRAFT, spacecraftPosition, toScene, formatKm, lightTime } from '@/lib/smallbodies';
 import VoyagerLookBack from '@/components/VoyagerLookBack';
+import NoteUniversePanel from '@/components/NoteUniversePanel';
+import { loadNotes, kmTravelled, Note } from '@/lib/notes';
+import { AU_KM, sceneRadius } from '@/lib/smallbodies';
 import { Card } from '@/components/ui/card';
 import { Camera, Dice1, Compass as Compass2, Star } from 'lucide-react';
 
@@ -262,6 +265,15 @@ export default function SolarSystem() {
   const [exploreToast, setExploreToast] = useState<string | null>(null);
   const [externalLevelRequest, setExternalLevelRequest] = useState<number | null>(null);
   const [selectedSun, setSelectedSun] = useState(false);
+  // The person's latest note, if they have sent one, shown as its light spreading out from Earth.
+  const noteRef = useRef<Note | null>(null);
+  if (noteRef.current === null && typeof window !== 'undefined') {
+    noteRef.current = loadNotes().sort((a, b) => b.sentAt - a.sentAt)[0] ?? null;
+  }
+  const [noteOpen, setNoteOpen] = useState(false);
+  useEffect(() => {
+    if (selectedPlanet || selectedGalaxyObject || selectedSun) setNoteOpen(false);
+  }, [selectedPlanet, selectedGalaxyObject, selectedSun]);
   const [isObservatory, setIsObservatory] = useState(false);
   const [isTelescopeMode, setIsTelescopeMode] = useState(false);
   const [darkSkyMinutes, setDarkSkyMinutes] = useState(0);
@@ -288,6 +300,24 @@ export default function SolarSystem() {
     simTimeRef.current = Date.now();
     setSimTime(simTimeRef.current);
   };
+
+  // Arriving from the note page (/?note): set the sky to now and pull back until the note's light is in view.
+  useEffect(() => {
+    if (!new URLSearchParams(window.location.search).has('note') || !noteRef.current) return;
+    const sentAt = noteRef.current.sentAt;
+    const t = window.setTimeout(() => {
+      // Far enough back to see the whole ring, but never so far that the view moves on to the galaxy.
+      const r = Math.min(130, Math.max(14, sceneRadius(kmTravelled(sentAt, Date.now()) / AU_KM)));
+      cameraTargetRef.current = new THREE.Vector3(0, r * 1.3, r * 2.4);
+      lookAtTargetRef.current = new THREE.Vector3(0, 0, 0);
+      transitioningRef.current = true;
+      setRateIndex(0);
+      simTimeRef.current = Date.now();
+      setSimTime(simTimeRef.current);
+      setNoteOpen(true);
+    }, 1200);
+    return () => clearTimeout(t);
+  }, []);
 
   // Universe HUD visibility sync
   useEffect(() => {
@@ -845,6 +875,33 @@ export default function SolarSystem() {
 
       spacecraftRef.current[sc.id] = { marker, trail };
     });
+
+    // The light of the person's note: a ring spreading out from where Earth was when they sent it,
+    // with a fainter ring across it so it reads as a sphere. It follows the real clock.
+    let noteRing: { ring: THREE.LineLoop; meridian: THREE.LineLoop; anchor: THREE.Object3D; earth: { x: number; y: number; z: number }; sentAt: number } | null = null;
+    const myNote = noteRef.current;
+    const noteEarth = myNote ? heliocentric('earth', myNote.sentAt) : null;
+    if (myNote && noteEarth) {
+      const N = 256;
+      const loop = (opacity: number) => {
+        const g = new THREE.BufferGeometry();
+        g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(N * 3), 3));
+        return new THREE.LineLoop(g, new THREE.LineBasicMaterial({ color: 0xf3ddb0, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending }));
+      };
+      const ring = loop(0.55);
+      const meridian = loop(0.16);
+      const anchor = new THREE.Object3D();
+      solarSystemGroup.add(ring, meridian, anchor);
+      const nDiv = document.createElement('div');
+      nDiv.className = 'planet-label';
+      nDiv.textContent = 'Your note';
+      nDiv.style.cssText = 'color:#F3DDB0;font-family:"Instrument Sans",sans-serif;font-size:12px;pointer-events:auto;cursor:pointer;white-space:nowrap;';
+      nDiv.onclick = () => { setNoteOpen(true); setSelectedGalaxyObject(null); setSelectedPlanet(null); setSelectedSun(false); };
+      const nLabel = new CSS2DObject(nDiv);
+      anchor.add(nLabel);
+      labelSlots.push({ obj: nLabel, el: nDiv, w: 0 });
+      noteRing = { ring, meridian, anchor, earth: noteEarth, sentAt: myNote.sentAt };
+    }
 
     // ========================================================================
     // LEVEL 2: MILKY WAY GALAXY
@@ -1631,6 +1688,30 @@ export default function SolarSystem() {
         });
       }
 
+      if (noteRing && zoomLevelRef.current === 1) {
+        const R = kmTravelled(noteRing.sentAt, Date.now()) / AU_KM;
+        const E = noteRing.earth;
+        const ra = noteRing.ring.geometry.attributes.position.array as Float32Array;
+        const ma = noteRing.meridian.geometry.attributes.position.array as Float32Array;
+        const n = ra.length / 3;
+        // The label sits on the left of the ring, clear of the panels and controls.
+        let best = Infinity;
+        for (let k = 0; k < n; k++) {
+          const th = (k / n) * Math.PI * 2;
+          const c = Math.cos(th) * R, sn = Math.sin(th) * R;
+          const q = toScene({ x: E.x + c, y: E.y + sn, z: E.z });
+          ra[k * 3] = q.x; ra[k * 3 + 1] = q.y; ra[k * 3 + 2] = q.z;
+          if (q.x < best) { best = q.x; noteRing.anchor.position.set(q.x, q.y, q.z); }
+          const m = toScene({ x: E.x + c, y: E.y, z: E.z + sn });
+          ma[k * 3] = m.x; ma[k * 3 + 1] = m.y; ma[k * 3 + 2] = m.z;
+        }
+        noteRing.ring.geometry.attributes.position.needsUpdate = true;
+        noteRing.meridian.geometry.attributes.position.needsUpdate = true;
+        noteRing.ring.geometry.computeBoundingSphere();
+        noteRing.meridian.geometry.computeBoundingSphere();
+        (noteRing.ring.material as THREE.LineBasicMaterial).opacity = 0.45 + 0.12 * Math.sin(totalElapsed * 1.6);
+      }
+
       if (!isPausedRef.current && zoomLevelRef.current === 2) {
         galaxyGroup.rotation.y += 0.000005 * dt;
       }
@@ -2398,6 +2479,13 @@ export default function SolarSystem() {
             action={selectedGalaxyObject === 'voyager-1' ? { label: 'Look back at Earth', onClick: () => setLookBack(true) } : undefined}
           />
           <SagittariusPanel open={selectedSagittarius} onClose={() => setSelectedSagittarius(false)} />
+          <NoteUniversePanel
+            note={noteRef.current}
+            open={noteOpen}
+            onClose={() => setNoteOpen(false)}
+            live={rateIndex === 0 && Math.abs(simTime - Date.now()) < 120000}
+            onShowNow={() => { setRateIndex(0); jumpToNow(); }}
+          />
           <UniverseInfoPanel objectId={selectedUniverseObject} onClose={() => setSelectedUniverseObject(null)} />
         </>
       )}
