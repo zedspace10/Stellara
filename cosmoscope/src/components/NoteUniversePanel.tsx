@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import { X } from "lucide-react";
-import { Note, milestonesFor, kmTravelled, whenReached, duration, bigKm, dateLabel } from "@/lib/notes";
+import { Note, milestonesFor, kmTravelled, whenReached, duration, bigKm, dateLabel, destinationOf } from "@/lib/notes";
 
 const TEXT = "#E8ECF1";
 const BODY = "#C9D2DC";
@@ -35,7 +35,9 @@ export default function NoteUniversePanel({
   const next = milestones.find((m) => m.km > km);
   const last = passed[passed.length - 1];
 
+  const dest = destinationOf(note);
   const rows: [string, string][] = [
+    ...(dest ? [["Heading to", dest.name] as [string, string]] : []),
     ["From Earth", bigKm(km)],
     ...(last ? [["Last passed", last.name] as [string, string]] : []),
     ...(next ? [["Next", `${next.name}, in ${duration(whenReached(next, note.sentAt) - now)}`] as [string, string]] : []),
