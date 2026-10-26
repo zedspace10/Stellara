@@ -72,7 +72,9 @@ export default function About() {
             Planet positions use NASA JPL orbital elements. Planet and Sun surfaces are from{" "}
             <a href="https://www.solarsystemscope.com/textures/" className="underline underline-offset-2" style={{ color: BODY }}>Solar System Scope</a>,
             used under CC BY 4.0. The night sky uses the Yale Bright Star Catalogue. The typefaces are Newsreader and
-            Instrument Sans, both under the SIL Open Font License.
+            Instrument Sans, both under the SIL Open Font License. The galaxies near us come from the Local Volume
+            Database.{" "}
+            <Link href="/credits" className="underline underline-offset-2" style={{ color: BODY }}>Every source and credit</Link>.
           </p>
         </Section>
 
