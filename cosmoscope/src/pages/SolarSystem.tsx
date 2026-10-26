@@ -15,6 +15,9 @@ import { moon as moonPhase, sunLongitude } from '@/lib/sky';
 import { COMETS, cometPosition, cometOrbit, SPACECRAFT, spacecraftPosition, toScene, formatKm, lightTime } from '@/lib/smallbodies';
 import VoyagerLookBack from '@/components/VoyagerLookBack';
 import NoteUniversePanel from '@/components/NoteUniversePanel';
+import NearbyGalaxyPanel from '@/components/NearbyGalaxyPanel';
+import { BIG_GALAXIES, DWARF_GALAXIES, LOCAL_VOLUME_MLY } from '@/data/localVolume';
+import { galacticToScene, universeR, FAR_LANDMARKS } from '@/lib/universeMap';
 import { loadNotes, kmTravelled, Note, destinationOf, notePosition, directionOf, Destination } from '@/lib/notes';
 import { AU_KM, sceneRadius } from '@/lib/smallbodies';
 import { Card } from '@/components/ui/card';
@@ -52,6 +55,12 @@ function liveFactsFor(id: string | null, timeMs: number) {
   return facts;
 }
 
+// Andromeda's real place in the universe view.
+const ANDROMEDA = BIG_GALAXIES.find(g => g.id === 'm31')!;
+const ANDROMEDA_U = galacticToScene(ANDROMEDA.l, ANDROMEDA.b, ANDROMEDA.mly);
+// Every galaxy inside this distance is drawn from the catalogue; beyond it the cosmic web is illustrative.
+const LOCAL_VOLUME_R = universeR(LOCAL_VOLUME_MLY);
+
 const EXPLORE_DESTINATIONS: { name: string; level: number; cameraPos: [number, number, number]; target: [number, number, number]; planetId?: string; offset?: [number, number, number] }[] = [
   { name: "Saturn's rings", level: 1, cameraPos: [42, 8, 15], target: [40, 0, 0], planetId: "saturn", offset: [2, 8, 15] },
   { name: "Jupiter close-up", level: 1, cameraPos: [30, 6, 12], target: [28, 0, 0], planetId: "jupiter", offset: [2, 6, 12] },
@@ -61,7 +70,8 @@ const EXPLORE_DESTINATIONS: { name: string; level: number; cameraPos: [number, n
   { name: "Eagle Nebula", level: 2, cameraPos: [-3000, 2000, 5000], target: [-3000, 50, 2000] },
   { name: "Omega Centauri", level: 2, cameraPos: [-8000, 3000, 0], target: [-8000, 2000, -3000] },
   { name: "The Cosmic Web", level: 3, cameraPos: [0, 150000, 280000], target: [0, 0, 0] },
-  { name: "Andromeda Galaxy", level: 3, cameraPos: [12000, 5000, 0], target: [10000, -1000, -5000] },
+  { name: "Andromeda Galaxy", level: 3, cameraPos: ANDROMEDA_U.clone().add(new THREE.Vector3(5000, 2500, 6000)).toArray(), target: ANDROMEDA_U.toArray() },
+  { name: "Our galaxy neighbourhood", level: 3, cameraPos: [0, 24000, 72000], target: [0, 0, 0] },
 ];
 
 function checkWebGLSupport(): boolean {
@@ -296,6 +306,17 @@ export default function SolarSystem() {
     return () => clearInterval(id);
   }, []);
 
+  // Choosing a real galaxy flies the camera over to it.
+  useEffect(() => {
+    if (!selectedUniverseObject?.startsWith('lv:')) return;
+    const g = BIG_GALAXIES.find(x => `lv:${x.id}` === selectedUniverseObject);
+    if (!g) return;
+    const pos = galacticToScene(g.l, g.b, g.mly);
+    cameraTargetRef.current = pos.clone().add(new THREE.Vector3(3500, 2000, 6000));
+    lookAtTargetRef.current = pos;
+    transitioningRef.current = true;
+  }, [selectedUniverseObject]);
+
   const jumpToNow = () => {
     simTimeRef.current = Date.now();
     setSimTime(simTimeRef.current);
@@ -387,15 +408,20 @@ export default function SolarSystem() {
       cameraTargetRef.current = new THREE.Vector3(0, 50, 100);
       lookAtTargetRef.current = new THREE.Vector3(0, 0, 0);
       if (solarSystemGroupRef.current) solarSystemGroupRef.current.visible = true;
+      // The universe view is laid out at its own scale, so it is hidden closer in.
+      if (universeGroupRef.current) universeGroupRef.current.visible = false;
     } else if (targetLevel === 2) {
       cameraTargetRef.current = new THREE.Vector3(0, 8000, 12000);
       lookAtTargetRef.current = new THREE.Vector3(0, 0, 0);
       if (galaxyGroupRef.current) galaxyGroupRef.current.visible = true;
       if (solarSystemGroupRef.current) solarSystemGroupRef.current.visible = false;
+      if (universeGroupRef.current) universeGroupRef.current.visible = false;
     } else if (targetLevel === 3) {
       cameraTargetRef.current = new THREE.Vector3(0, 150000, 300000);
       lookAtTargetRef.current = new THREE.Vector3(0, 0, 0);
       if (universeGroupRef.current) universeGroupRef.current.visible = true;
+      if (solarSystemGroupRef.current) solarSystemGroupRef.current.visible = false;
+      if (galaxyGroupRef.current) galaxyGroupRef.current.visible = false;
       
       setShowUniverseText(true);
       setTimeout(() => setShowUniverseText(false), 3000);
@@ -1241,10 +1267,9 @@ export default function SolarSystem() {
         );
       }
 
-      // Density falloff: reject centre-heavy positions
+      // The neighbourhood is drawn from real data below, so the illustrative cloud stays outside it.
       const dc = pos.length();
-      if (dc < 15000 && Math.random() >= 0.4) continue;
-      if (dc < 30000 && Math.random() >= 0.7) continue;
+      if (dc < LOCAL_VOLUME_R * 1.15) continue;
 
       acceptedPos.push(pos.x, pos.y, pos.z);
 
@@ -1366,15 +1391,18 @@ export default function SolarSystem() {
     universeGroup.add(labelGroup);
 
     const LANDMARKS = [
-      { id: 'milky-way-u', name: 'You are here', pos: [0, 0, 0] as [number,number,number], col: 0xffd54f, s: 1800, labelOffset: [0, 3600, 0] as [number,number,number], tier: 1 },
-      { id: 'andromeda-u', name: 'Andromeda', pos: [12000, -800, -5000] as [number,number,number], col: 0x4fc3f7, s: 1400, labelOffset: [0, -2000, 0] as [number,number,number], tier: 2 },
-      { id: 'virgo-cluster', name: 'Virgo Cluster', pos: [-32000, 2500, -22000] as [number,number,number], col: 0xffffff, s: 2200, labelOffset: [2000, 0, 0] as [number,number,number], tier: 2 },
-      { id: 'coma-cluster', name: 'Coma Cluster', pos: [65000, 6000, 32000] as [number,number,number], col: 0xffcc88, s: 2800, labelOffset: [0, 2000, 0] as [number,number,number], tier: 2 },
-      { id: 'perseus-cluster', name: 'Perseus Cluster', pos: [-52000, -3500, 42000] as [number,number,number], col: 0xffffff, s: 2400, labelOffset: [-2000, 0, 0] as [number,number,number], tier: 2 },
-      { id: 'great-attractor', name: 'Great Attractor', pos: [-45000, 1000, -70000] as [number,number,number], col: 0x9c27b0, s: 3200, labelOffset: [0, -2000, 0] as [number,number,number], tier: 2 },
+      // Sized to match the real neighbourhood around it: about 100,000 light years across.
+      { id: 'milky-way-u', name: 'You are here', pos: [0, 0, 0] as [number,number,number], col: 0xffd54f, s: 700, labelOffset: [0, 1500, 0] as [number,number,number], tier: 1 },
+      { id: 'andromeda-u', name: 'Andromeda', pos: ANDROMEDA_U.toArray() as [number,number,number], col: 0x4fc3f7, s: 800, labelOffset: [0, -1300, 0] as [number,number,number], tier: 2 },
+      { id: 'virgo-cluster', name: 'Virgo Cluster', pos: (() => { const f = FAR_LANDMARKS['virgo-cluster']; return galacticToScene(f.l, f.b, f.mly).toArray() as [number,number,number]; })(), col: 0xffffff, s: 2200, labelOffset: [2000, 0, 0] as [number,number,number], tier: 2 },
+      { id: 'coma-cluster', name: 'Coma Cluster', pos: (() => { const f = FAR_LANDMARKS['coma-cluster']; return galacticToScene(f.l, f.b, f.mly).toArray() as [number,number,number]; })(), col: 0xffcc88, s: 2800, labelOffset: [0, 2000, 0] as [number,number,number], tier: 2 },
+      { id: 'perseus-cluster', name: 'Perseus Cluster', pos: (() => { const f = FAR_LANDMARKS['perseus-cluster']; return galacticToScene(f.l, f.b, f.mly).toArray() as [number,number,number]; })(), col: 0xffffff, s: 2400, labelOffset: [-2000, 0, 0] as [number,number,number], tier: 2 },
+      { id: 'great-attractor', name: 'Great Attractor', pos: (() => { const f = FAR_LANDMARKS['great-attractor']; return galacticToScene(f.l, f.b, f.mly).toArray() as [number,number,number]; })(), col: 0x9c27b0, s: 3200, labelOffset: [0, -2000, 0] as [number,number,number], tier: 2 },
     ];
 
     universeLandmarkMeshesRef.current = [];
+    // Names in the universe view, in order of importance; ones that would overlap a more important one wait.
+    const lvLabels: { obj: CSS2DObject; el: HTMLElement; w: number }[] = [];
     LANDMARKS.forEach(u => {
       const uGeo = new THREE.SphereGeometry(u.s, 16, 16);
       // Invisible sphere to click on; what you see is the glow or spiral added below.
@@ -1397,7 +1425,7 @@ export default function SolarSystem() {
         // From this far out our galaxy is one small spiral, a little smaller than Andromeda.
         const mw = new THREE.Sprite(new THREE.SpriteMaterial({
           map: makeSpiralTex(), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
-          opacity: 0.55, color: 0xffe9c8, rotation: 0.4,
+          opacity: 0.85, color: 0xffe9c8, rotation: 0.4,
         }));
         mw.scale.set(u.s * 3.4, u.s * 3.4, 1);
         mw.position.copy(uMesh.position);
@@ -1431,7 +1459,72 @@ export default function SolarSystem() {
       const uLabel = new CSS2DObject(uDiv);
       uLabel.position.set(...u.labelOffset);
       uMesh.add(uLabel);
+      lvLabels.push({ obj: uLabel, el: uDiv, w: 0 });
     });
+
+    // Step 6: Our real neighbourhood. Every galaxy within about 40 million light years that the
+    // Local Volume Database lists, at its measured direction and distance.
+    {
+      const nD = DWARF_GALAXIES.length / 3;
+      const dPos = new Float32Array(nD * 3);
+      for (let i = 0; i < nD; i++) {
+        const v = galacticToScene(DWARF_GALAXIES[i * 3], DWARF_GALAXIES[i * 3 + 1], DWARF_GALAXIES[i * 3 + 2]);
+        dPos.set([v.x, v.y, v.z], i * 3);
+      }
+      const dGeo = new THREE.BufferGeometry();
+      dGeo.setAttribute('position', new THREE.BufferAttribute(dPos, 3));
+      universeGroup.add(new THREE.Points(dGeo, new THREE.PointsMaterial({
+        map: makeCircleTex(), size: isMobile ? 320 : 200, sizeAttenuation: true, color: 0xcfd9e8,
+        transparent: true, opacity: 0.8, blending: THREE.AdditiveBlending, depthWrite: false, alphaTest: 0.005,
+      })));
+
+      BIG_GALAXIES.forEach(g => {
+        if (g.id === 'm31') return; // Andromeda is drawn as a landmark above
+        const pos = galacticToScene(g.l, g.b, g.mly);
+        const bright = Math.min(1, Math.max(0, (-(g.mv ?? -19) - 16) / 6));
+        const size = 450 + 1200 * bright;
+        const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: makeGlowTex(bright > 0.6 ? '255,236,205' : '220,230,245', [[0, 1], [0.15, 0.55], [0.45, 0.12], [1, 0]]),
+          blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
+        }));
+        glow.scale.set(size * 2, size * 2, 1);
+        glow.position.copy(pos);
+        universeGroup.add(glow);
+        const hit = new THREE.Mesh(new THREE.SphereGeometry(Math.max(700, size), 8, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
+        hit.position.copy(pos);
+        hit.userData = { id: `lv:${g.id}`, level: 3, type: 'nearby' };
+        labelGroup.add(hit);
+        universeLandmarkMeshesRef.current.push(hit);
+        const gDiv = document.createElement('div');
+        gDiv.textContent = g.name;
+        gDiv.style.cssText = `color:rgba(232,236,241,${bright > 0.6 ? 0.85 : 0.62});font-size:${bright > 0.6 ? 12 : 11}px;font-family:"Instrument Sans",sans-serif;pointer-events:auto;cursor:pointer;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.8);`;
+        gDiv.onclick = (e) => {
+          e.stopPropagation();
+          if (clickGuardRef.current || transitioningRef.current || zoomLevelRef.current !== 3) return;
+          handleObjectClick(`lv:${g.id}`, 3);
+        };
+        const gLabel = new CSS2DObject(gDiv);
+        gLabel.position.set(0, -size * 0.9, 0);
+        hit.add(gLabel);
+        lvLabels.push({ obj: gLabel, el: gDiv, w: 0 });
+      });
+
+      // The edge of the real data, so it is clear what is measured and what is illustration.
+      const ringPts: THREE.Vector3[] = [];
+      for (let k = 0; k <= 160; k++) {
+        const a = (k / 160) * Math.PI * 2;
+        ringPts.push(new THREE.Vector3(Math.cos(a) * LOCAL_VOLUME_R, 0, Math.sin(a) * LOCAL_VOLUME_R));
+      }
+      const ring = new THREE.Line(new THREE.BufferGeometry().setFromPoints(ringPts), new THREE.LineBasicMaterial({ color: 0xa9c3e0, transparent: true, opacity: 0.22, depthWrite: false }));
+      universeGroup.add(ring);
+      const rDiv = document.createElement('div');
+      rDiv.textContent = 'Inside this ring, every galaxy is real';
+      rDiv.style.cssText = 'color:rgba(169,195,224,0.8);font-size:11px;font-family:"Instrument Sans",sans-serif;white-space:nowrap;letter-spacing:0.03em;text-shadow:0 1px 4px rgba(0,0,0,0.8);';
+      const rLabel = new CSS2DObject(rDiv);
+      rLabel.position.set(0, 0, LOCAL_VOLUME_R);
+      labelGroup.add(rLabel);
+      lvLabels.push({ obj: rLabel, el: rDiv, w: 0 });
+    }
 
     // Raycaster
     const raycaster = new THREE.Raycaster();
@@ -1569,10 +1662,29 @@ export default function SolarSystem() {
           placed.push([x - half, y + chosen - 7, x + half, y + chosen + 7]);
         }
       }
+      // Real galaxy names in the universe view: the nearest and brightest first, others hidden if they would overlap.
+      if (zoomLevelRef.current === 3 && universeGroupRef.current?.visible) {
+        const hw3 = renderer.domElement.clientWidth / 2;
+        const hh3 = renderer.domElement.clientHeight / 2;
+        const placed3: [number, number, number, number][] = [];
+        for (const slot of lvLabels) {
+          slot.obj.getWorldPosition(labelPos).project(camera);
+          if (labelPos.z > 1) { slot.obj.visible = false; continue; }
+          const x = labelPos.x * hw3 + hw3;
+          const y = -labelPos.y * hh3 + hh3;
+          if (!slot.w) slot.w = slot.el.offsetWidth || 80;
+          const half = slot.w / 2 + 3;
+          const clash = placed3.some(b => x - half < b[2] && x + half > b[0] && y - 8 < b[3] && y + 8 > b[1]);
+          slot.obj.visible = !clash;
+          if (!clash) placed3.push([x - half, y - 8, x + half, y + 8]);
+        }
+      }
       // The detailed Milky Way is far too big to sit among other galaxies, so once we are out past it
       // the small spiral landmark takes its place.
       if (galaxyGroupRef.current && zoomLevelRef.current === 3) {
-        galaxyGroupRef.current.visible = camera.position.length() < 90000;
+        // Our neighbourhood is drawn from real data at this scale, where the Milky Way is only a
+        // small spiral, so the detailed model of it stays hidden.
+        galaxyGroupRef.current.visible = false;
       }
 
       // ── Star twinkle ──
@@ -1795,7 +1907,8 @@ export default function SolarSystem() {
         }
       } else { thresholdCounterRef.current['2to3'] = 0; }
 
-      if (zoomLevelRef.current === 3 && dist < 50000 && !transitioningRef.current) {
+      // Only head back into the Milky Way when centred on home, not while looking at another galaxy.
+      if (zoomLevelRef.current === 3 && dist < 50000 && controls.target.length() < 1500 && !transitioningRef.current) {
         thresholdCounterRef.current['3to2']++;
         if (thresholdCounterRef.current['3to2'] >= THRESHOLD_FRAMES) {
           thresholdCounterRef.current['3to2'] = 0;
@@ -2526,6 +2639,10 @@ export default function SolarSystem() {
             onShowNow={() => { rateRef.current = 0; setRateIndex(0); jumpToNow(); }}
           />
           <UniverseInfoPanel objectId={selectedUniverseObject} onClose={() => setSelectedUniverseObject(null)} />
+          <NearbyGalaxyPanel
+            galaxy={selectedUniverseObject?.startsWith('lv:') ? BIG_GALAXIES.find(g => `lv:${g.id}` === selectedUniverseObject) ?? null : null}
+            onClose={() => setSelectedUniverseObject(null)}
+          />
         </>
       )}
     </div>
