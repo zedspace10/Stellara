@@ -23,6 +23,7 @@ import StarBirthSim from "@/pages/simulations/StarBirthSim";
 import StarDeathSim from "@/pages/simulations/StarDeathSim";
 import BlackHoleSim from "@/pages/simulations/BlackHoleSim";
 import About from "@/pages/About";
+import Discoveries from "@/pages/Discoveries";
 import Credits from "@/pages/Credits";
 import NotePage from "@/pages/Note";
 import Privacy from "@/pages/Privacy";
@@ -66,6 +67,7 @@ function Router() {
         <Route path="/simulations/star-death" component={StarDeathSim} />
         <Route path="/simulations/black-hole" component={BlackHoleSim} />
         <Route path="/note" component={NotePage} />
+        <Route path="/discoveries" component={Discoveries} />
         <Route path="/about" component={About} />
         <Route path="/credits" component={Credits} />
         <Route path="/privacy" component={Privacy} />
