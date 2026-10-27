@@ -18,7 +18,7 @@ import NoteUniversePanel from '@/components/NoteUniversePanel';
 import NearbyGalaxyPanel from '@/components/NearbyGalaxyPanel';
 import { BIG_GALAXIES, DWARF_GALAXIES, LOCAL_VOLUME_MLY } from '@/data/localVolume';
 import { galacticToScene, universeR, FAR_LANDMARKS } from '@/lib/universeMap';
-import { loadNotes, kmTravelled, Note, destinationOf, notePosition, directionOf, Destination } from '@/lib/notes';
+import { loadNotes, kmTravelled, Note, destinationOf, notePosition, directionOf, Destination, bigKm } from '@/lib/notes';
 import { AU_KM, sceneRadius } from '@/lib/smallbodies';
 import { Card } from '@/components/ui/card';
 import { Camera, Dice1, Compass as Compass2, Star } from 'lucide-react';
@@ -53,6 +53,19 @@ function liveFactsFor(id: string | null, timeMs: number) {
     facts.push({ label: 'Sunlight takes', value: `${lightTime(pos.r)} to reach it` });
   }
   return facts;
+}
+
+// A camera position that shows both the Sun and the note: looking at the line between them from
+// the side and a little above, far enough back for both to fit, but not so far the view moves on.
+function frameNote(q: THREE.Vector3) {
+  const len = Math.max(14, q.length());
+  const qd = q.lengthSq() > 0 ? q.clone().normalize() : new THREE.Vector3(1, 0, 0);
+  const perp = new THREE.Vector3().crossVectors(qd, new THREE.Vector3(0, 1, 0));
+  if (perp.lengthSq() < 1e-4) perp.set(1, 0, 0);
+  perp.normalize();
+  const dir = perp.multiplyScalar(0.8).add(new THREE.Vector3(0, 0.6, 0)).normalize();
+  const look = q.clone().multiplyScalar(0.5);
+  return { cam: look.clone().addScaledVector(dir, Math.min(330, len * 1.7 + 25)), look };
 }
 
 // Andromeda's real place in the universe view.
@@ -281,6 +294,7 @@ export default function SolarSystem() {
     noteRef.current = loadNotes().sort((a, b) => b.sentAt - a.sentAt)[0] ?? null;
   }
   const [noteOpen, setNoteOpen] = useState(false);
+  const noteChipRef = useRef<HTMLButtonElement | null>(null);
   useEffect(() => {
     if (selectedPlanet || selectedGalaxyObject || selectedSun) setNoteOpen(false);
   }, [selectedPlanet, selectedGalaxyObject, selectedSun]);
@@ -327,10 +341,13 @@ export default function SolarSystem() {
     if (!new URLSearchParams(window.location.search).has('note') || !noteRef.current) return;
     const sentAt = noteRef.current.sentAt;
     const t = window.setTimeout(() => {
-      // Far enough back to see the whole ring, but never so far that the view moves on to the galaxy.
-      const r = Math.min(130, Math.max(14, sceneRadius(kmTravelled(sentAt, Date.now()) / AU_KM)));
-      cameraTargetRef.current = new THREE.Vector3(0, r * 1.3, r * 2.4);
-      lookAtTargetRef.current = new THREE.Vector3(0, 0, 0);
+      // Far enough back to see both the Sun and the note, but never so far that the view moves on to the galaxy.
+      const n = noteRef.current;
+      const d = n ? destinationOf(n) : undefined;
+      const q = n && d ? toScene(notePosition(n, d, Date.now())) : { x: 0, y: 0, z: 0 };
+      const { cam, look } = frameNote(new THREE.Vector3(q.x, q.y, q.z));
+      cameraTargetRef.current = cam;
+      lookAtTargetRef.current = look;
       transitioningRef.current = true;
       // Switch the clock at once, so not even one frame runs at the faster speed.
       rateRef.current = 0;
@@ -904,49 +921,78 @@ export default function SolarSystem() {
       spacecraftRef.current[sc.id] = { marker, trail };
     });
 
-    // The light of the person's note: a ring spreading out from where Earth was when they sent it,
-    // with a fainter ring across it so it reads as a sphere. It follows the real clock.
-    let noteRing: {
-      ring: THREE.LineLoop; meridian: THREE.LineLoop; anchor: THREE.Object3D; earth: { x: number; y: number; z: number }; sentAt: number;
-      // When the person chose a star, the note itself and the path it has taken.
-      path?: { dot: THREE.Sprite; line: THREE.Line; dest: Destination; note: Note };
+    // The person's latest note: one clear point of light where it is right now, with a soft pulse
+    // around it, a short fading tail showing which way it is going, and its distance from Earth.
+    // It is placed with the same squeezed scale as the planets and spacecraft, so it passes each of
+    // them on screen when it really does.
+    let noteMark: {
+      core: THREE.Sprite; halo: THREE.Sprite; tail: THREE.Line; anchor: THREE.Object3D;
+      dist: HTMLSpanElement; note: Note; dest: Destination; lastText: number;
+      chip: HTMLButtonElement; arrow: HTMLSpanElement;
     } | null = null;
     const myNote = noteRef.current;
-    const noteEarth = myNote ? heliocentric('earth', myNote.sentAt) : null;
-    if (myNote && noteEarth) {
-      const N = 256;
-      const loop = (opacity: number) => {
-        const g = new THREE.BufferGeometry();
-        g.setAttribute('position', new THREE.BufferAttribute(new Float32Array(N * 3), 3));
-        return new THREE.LineLoop(g, new THREE.LineBasicMaterial({ color: 0xf3ddb0, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending }));
-      };
-      const ring = loop(0.55);
-      const meridian = loop(0.16);
+    const myDest = myNote ? destinationOf(myNote) : undefined;
+    if (myNote && myDest) {
+      const core = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: makeGlowTex('255,244,218', [[0, 1], [0.18, 0.85], [0.4, 0.25], [1, 0]]),
+        blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, transparent: true,
+      }));
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: makeGlowTex('243,221,176', [[0, 0], [0.62, 0], [0.74, 0.7], [0.86, 0], [1, 0]]),
+        blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, transparent: true,
+      }));
+      const TAIL = 32;
+      const tg = new THREE.BufferGeometry();
+      tg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(TAIL * 3), 3));
+      const tc = new Float32Array(TAIL * 3);
+      for (let k = 0; k < TAIL; k++) {
+        // Brightest at the note, fading to nothing behind it.
+        const f = Math.pow(k / (TAIL - 1), 1.6);
+        tc.set([0.95 * f, 0.87 * f, 0.69 * f], k * 3);
+      }
+      tg.setAttribute('color', new THREE.BufferAttribute(tc, 3));
+      const tail = new THREE.Line(tg, new THREE.LineBasicMaterial({ vertexColors: true, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }));
       const anchor = new THREE.Object3D();
-      solarSystemGroup.add(ring, meridian, anchor);
+      solarSystemGroup.add(tail, halo, core, anchor);
+
       const nDiv = document.createElement('div');
       nDiv.className = 'planet-label';
-      nDiv.textContent = 'Your note';
-      nDiv.style.cssText = 'color:#F3DDB0;font-family:"Instrument Sans",sans-serif;font-size:12px;pointer-events:auto;cursor:pointer;white-space:nowrap;';
+      nDiv.style.cssText = 'font-family:"Instrument Sans",sans-serif;pointer-events:auto;cursor:pointer;white-space:nowrap;text-align:center;line-height:1.25;';
+      // Sits above the point of light; an inner box, because the label spacing code sets the outer margin.
+      const inner = document.createElement('div');
+      inner.style.cssText = 'transform:translateY(-30px);';
+      const title = document.createElement('span');
+      title.textContent = 'Your note';
+      title.style.cssText = 'display:block;color:#F3DDB0;font-size:12px;';
+      const dist = document.createElement('span');
+      dist.style.cssText = 'display:block;color:rgba(243,221,176,0.7);font-size:11px;font-variant-numeric:tabular-nums;';
+      inner.append(title, dist);
+      nDiv.append(inner);
       nDiv.onclick = () => { setNoteOpen(true); setSelectedGalaxyObject(null); setSelectedPlanet(null); setSelectedSun(false); };
       const nLabel = new CSS2DObject(nDiv);
       anchor.add(nLabel);
-      labelSlots.push({ obj: nLabel, el: nDiv, w: 0 });
-      noteRing = { ring, meridian, anchor, earth: noteEarth, sentAt: myNote.sentAt };
-      const dest = destinationOf(myNote);
-      if (dest) {
-        const dot = new THREE.Sprite(new THREE.SpriteMaterial({
-          map: makeGlowTex('255,244,218', [[0, 1], [0.2, 0.6], [1, 0]]),
-          blending: THREE.AdditiveBlending, depthWrite: false, transparent: true,
-        }));
-        dot.scale.set(2.2, 2.2, 1);
-        const lg = new THREE.BufferGeometry();
-        lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(48 * 3), 3));
-        const line = new THREE.Line(lg, new THREE.LineBasicMaterial({ color: 0xf3ddb0, transparent: true, opacity: 0.7, depthWrite: false }));
-        solarSystemGroup.add(dot, line);
-        nDiv.textContent = `Your note, to ${dest.name.replace(/^The /, 'the ')}`;
-        noteRing.path = { dot, line, dest, note: myNote };
-      }
+      labelSlots.unshift({ obj: nLabel, el: nDiv, w: 0 });
+      // When the note is off screen, a small chip at the edge points the way and flies you there.
+      const chip = document.createElement('button');
+      chip.type = 'button';
+      chip.setAttribute('aria-label', 'Show your note');
+      chip.style.cssText = 'position:absolute;display:none;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(10,15,23,0.85);border:1px solid rgba(243,221,176,0.45);color:#F3DDB0;font:12px "Instrument Sans",sans-serif;white-space:nowrap;pointer-events:auto;cursor:pointer;transform:translate(-50%,-50%);z-index:3;';
+      const arrow = document.createElement('span');
+      arrow.textContent = '➜';
+      arrow.style.cssText = 'display:inline-block;';
+      const chipText = document.createElement('span');
+      chipText.textContent = 'Your note';
+      chip.append(arrow, chipText);
+      labelMountRef.current.appendChild(chip);
+      chip.onclick = () => {
+        const { cam, look } = frameNote(core.position.clone());
+        cameraTargetRef.current = cam;
+        lookAtTargetRef.current = look;
+        transitioningRef.current = true;
+        setNoteOpen(true); setSelectedGalaxyObject(null); setSelectedPlanet(null); setSelectedSun(false);
+      };
+      noteChipRef.current = chip;
+      noteMark = { core, halo, tail, anchor, dist, note: myNote, dest: myDest, lastText: 0, chip, arrow };
     }
 
     // ========================================================================
@@ -1820,47 +1866,62 @@ export default function SolarSystem() {
         });
       }
 
-      if (noteRing && zoomLevelRef.current === 1) {
-        const R = kmTravelled(noteRing.sentAt, Date.now()) / AU_KM;
-        const E = noteRing.earth;
-        const ra = noteRing.ring.geometry.attributes.position.array as Float32Array;
-        const ma = noteRing.meridian.geometry.attributes.position.array as Float32Array;
-        const n = ra.length / 3;
-        // The label sits on the left of the ring, clear of the panels and controls.
-        let best = Infinity;
-        for (let k = 0; k < n; k++) {
-          const th = (k / n) * Math.PI * 2;
-          const c = Math.cos(th) * R, sn = Math.sin(th) * R;
-          const q = toScene({ x: E.x + c, y: E.y + sn, z: E.z });
-          ra[k * 3] = q.x; ra[k * 3 + 1] = q.y; ra[k * 3 + 2] = q.z;
-          if (q.x < best) { best = q.x; noteRing.anchor.position.set(q.x, q.y, q.z); }
-          const m = toScene({ x: E.x + c, y: E.y, z: E.z + sn });
-          ma[k * 3] = m.x; ma[k * 3 + 1] = m.y; ma[k * 3 + 2] = m.z;
+      if (noteMark && zoomLevelRef.current === 1) {
+        const { core, halo, tail, anchor, note, dest } = noteMark;
+        const nowMs = Date.now();
+        const P = notePosition(note, dest, nowMs);
+        const q = toScene(P);
+        core.position.set(q.x, q.y, q.z);
+        halo.position.copy(core.position);
+        anchor.position.copy(core.position);
+        // The same size on screen however far in or out the view is.
+        const camDist = camera.position.distanceTo(core.position);
+        core.scale.setScalar(camDist * 0.045);
+        const pulse = (totalElapsed * 0.6) % 1;
+        halo.scale.setScalar(camDist * (0.05 + 0.1 * pulse));
+        (halo.material as THREE.SpriteMaterial).opacity = 0.9 * (1 - pulse);
+        // The tail: the last stretch of its path, which shows the way it is heading.
+        const R = kmTravelled(note.sentAt, nowMs) / AU_KM;
+        const E = notePosition(note, dest, note.sentAt);
+        const dir = directionOf(dest);
+        const ta = tail.geometry.attributes.position.array as Float32Array;
+        const nT = ta.length / 3;
+        for (let k = 0; k < nT; k++) {
+          const r = R * (0.45 + 0.55 * (k / (nT - 1)));
+          const w = toScene({ x: E.x + dir.x * r, y: E.y + dir.y * r, z: E.z + dir.z * r });
+          ta[k * 3] = w.x; ta[k * 3 + 1] = w.y; ta[k * 3 + 2] = w.z;
         }
-        noteRing.ring.geometry.attributes.position.needsUpdate = true;
-        noteRing.meridian.geometry.attributes.position.needsUpdate = true;
-        if (noteRing.path) {
-          // The note itself, and the straight path behind it, drawn through the same squeezed scale.
-          const { dot, line, dest, note } = noteRing.path;
-          const P = notePosition(note, dest, Date.now());
-          const q = toScene(P);
-          dot.position.set(q.x, q.y, q.z);
-          noteRing.anchor.position.set(q.x, q.y, q.z);
-          const dir = directionOf(dest);
-          const la = line.geometry.attributes.position.array as Float32Array;
-          const nPts = la.length / 3;
-          for (let k = 0; k < nPts; k++) {
-            const f = k / (nPts - 1);
-            const r = f === 0 ? 0 : Math.min(R, 1e-3 * Math.pow(Math.max(R, 1e-3) / 1e-3, f));
-            const w = toScene({ x: E.x + dir.x * r, y: E.y + dir.y * r, z: E.z + dir.z * r });
-            la[k * 3] = w.x; la[k * 3 + 1] = w.y; la[k * 3 + 2] = w.z;
-          }
-          line.geometry.attributes.position.needsUpdate = true;
-          line.geometry.computeBoundingSphere();
+        tail.geometry.attributes.position.needsUpdate = true;
+        tail.geometry.computeBoundingSphere();
+        if (nowMs - noteMark.lastText > 500) {
+          noteMark.lastText = nowMs;
+          noteMark.dist.textContent = `${bigKm(kmTravelled(note.sentAt, nowMs))} from Earth`;
         }
-        noteRing.ring.geometry.computeBoundingSphere();
-        noteRing.meridian.geometry.computeBoundingSphere();
-        (noteRing.ring.material as THREE.LineBasicMaterial).opacity = 0.45 + 0.12 * Math.sin(totalElapsed * 1.6);
+        // Off screen, or hidden under the controls at the bottom: show the chip at the edge instead.
+        const pr = core.position.clone().project(camera);
+        const W = renderer.domElement.clientWidth, H = renderer.domElement.clientHeight;
+        const behind = pr.z > 1;
+        let sx = (pr.x + 1) / 2 * W, sy = (1 - pr.y) / 2 * H;
+        const safeBottom = H - 150;
+        const inView = !behind && sx > 24 && sx < W - 24 && sy > 70 && sy < safeBottom;
+        if (inView) {
+          if (noteMark.chip.style.display !== 'none') noteMark.chip.style.display = 'none';
+        } else {
+          let dx = sx - W / 2, dy = sy - H / 2;
+          if (behind) { dx = -dx; dy = -dy; }
+          const ang = Math.atan2(dy, dx);
+          const kx = (W / 2 - 70) / Math.max(1e-6, Math.abs(Math.cos(ang)));
+          const ky = ((dy > 0 ? safeBottom - H / 2 : H / 2 - 90)) / Math.max(1e-6, Math.abs(Math.sin(ang)));
+          const k = Math.min(kx, ky);
+          sx = W / 2 + Math.cos(ang) * k;
+          sy = H / 2 + Math.sin(ang) * k;
+          noteMark.chip.style.display = 'flex';
+          noteMark.chip.style.left = `${sx}px`;
+          noteMark.chip.style.top = `${sy}px`;
+          noteMark.arrow.style.transform = `rotate(${ang}rad)`;
+        }
+      } else if (noteMark && noteMark.chip.style.display !== 'none') {
+        noteMark.chip.style.display = 'none';
       }
 
       if (!isPausedRef.current && zoomLevelRef.current === 2) {
@@ -1974,6 +2035,8 @@ export default function SolarSystem() {
       renderer.domElement.removeEventListener('mousemove', onMouseMove);
       cancelAnimationFrame(animationFrameId);
       
+      noteChipRef.current?.remove();
+      noteChipRef.current = null;
       if (mountRef.current?.contains(renderer.domElement)) {
         mountRef.current.removeChild(renderer.domElement);
       }
