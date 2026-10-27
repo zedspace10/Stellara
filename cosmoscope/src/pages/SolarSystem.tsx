@@ -425,6 +425,9 @@ export default function SolarSystem() {
       cameraTargetRef.current = new THREE.Vector3(0, 50, 100);
       lookAtTargetRef.current = new THREE.Vector3(0, 0, 0);
       if (solarSystemGroupRef.current) solarSystemGroupRef.current.visible = true;
+      // The Milky Way model is thousands of times bigger than the solar system and centred on it,
+      // so left showing it would fill the view with glow and hide the planets.
+      if (galaxyGroupRef.current) galaxyGroupRef.current.visible = false;
       // The universe view is laid out at its own scale, so it is hidden closer in.
       if (universeGroupRef.current) universeGroupRef.current.visible = false;
     } else if (targetLevel === 2) {
@@ -446,9 +449,18 @@ export default function SolarSystem() {
     
     // Safety timeout — force-complete transition after 3s so transitioningRef never gets stuck
     clearTimeout(transitionTimeoutRef.current);
+    // If the flight is still going after 3 seconds (a long way, or a slow device), finish it by
+    // putting the camera where it was heading. Stopping it part way left the camera far out,
+    // and the view would then switch straight back out to the galaxy.
     transitionTimeoutRef.current = setTimeout(() => {
       if (transitioningRef.current) {
+        if (cameraTargetRef.current && cameraRef.current) cameraRef.current.position.copy(cameraTargetRef.current);
+        if (lookAtTargetRef.current && controlsRef.current) {
+          controlsRef.current.target.copy(lookAtTargetRef.current);
+          controlsRef.current.update();
+        }
         transitioningRef.current = false;
+        transitionCompleteCounterRef.current = 0;
         cameraTargetRef.current = null;
         lookAtTargetRef.current = null;
       }
@@ -1979,8 +1991,10 @@ export default function SolarSystem() {
 
       // Camera transitions
       if (transitioningRef.current && cameraTargetRef.current && lookAtTargetRef.current) {
-        camera.position.lerp(cameraTargetRef.current, 0.05);
-        controls.target.lerp(lookAtTargetRef.current, 0.05);
+        // The same speed of flight however fast or slow the device draws frames.
+        const ease = 1 - Math.pow(0.95, Math.min(dt, 100) / 16.67);
+        camera.position.lerp(cameraTargetRef.current, ease);
+        controls.target.lerp(lookAtTargetRef.current, ease);
 
         if (camera.position.distanceTo(cameraTargetRef.current) < 20) {
           transitionCompleteCounterRef.current++;
