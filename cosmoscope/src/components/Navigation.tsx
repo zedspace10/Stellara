@@ -8,13 +8,13 @@ const TEXT = "#E8ECF1";
 const MUTED = "#A3AFBC";
 const RULE = "#1C2533";
 
-// The five main places, the same on every screen size.
+// The five main places, the same on every screen size. Notes comes first: it is the reason to come back.
 const MAIN = [
+  { path: "/note", label: "Notes" },
   { path: "/", label: "Universe" },
   { path: "/tonight", label: "Tonight" },
   { path: "/scale", label: "Scale" },
   { path: "/simulations", label: "Simulations" },
-  { path: "/note", label: "Notes" },
 ];
 
 // Everything else, behind More.
