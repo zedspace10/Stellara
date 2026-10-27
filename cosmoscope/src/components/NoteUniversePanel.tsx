@@ -60,7 +60,7 @@ export default function NoteUniversePanel({
       <div className="px-5 pt-4 pb-5">
         <p className="m-0 font-serif italic text-[17px] leading-snug line-clamp-4" style={{ color: BODY }}>{note.text}</p>
         <p className="m-0 mt-4 text-[14px] leading-relaxed" style={{ color: MUTED }}>
-          The ring is the light that left Earth when you sent it, spreading out in every direction.
+          The point of light is your note, where it is right now, with a short tail behind it showing the way it is heading.
         </p>
         <dl className="m-0 mt-4" style={{ borderTop: `1px solid ${RULE}` }}>
           {rows.map(([k, v]) => (
