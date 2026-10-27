@@ -16,8 +16,10 @@ import { COMETS, cometPosition, cometOrbit, SPACECRAFT, spacecraftPosition, toSc
 import VoyagerLookBack from '@/components/VoyagerLookBack';
 import NoteUniversePanel from '@/components/NoteUniversePanel';
 import NearbyGalaxyPanel from '@/components/NearbyGalaxyPanel';
+import PinPanel from '@/components/PinPanel';
+import { PINS, LATEST_PIN, pinRaDec, isThisWeek } from '@/data/pins';
 import { BIG_GALAXIES, DWARF_GALAXIES, LOCAL_VOLUME_MLY } from '@/data/localVolume';
-import { galacticToScene, universeR, FAR_LANDMARKS } from '@/lib/universeMap';
+import { galacticToScene, universeR, FAR_LANDMARKS, pinScene } from '@/lib/universeMap';
 import { loadNotes, kmTravelled, Note, destinationOf, notePosition, directionOf, Destination, bigKm } from '@/lib/notes';
 import { AU_KM, sceneRadius } from '@/lib/smallbodies';
 import { Card } from '@/components/ui/card';
@@ -322,10 +324,16 @@ export default function SolarSystem() {
 
   // Choosing a real galaxy flies the camera over to it.
   useEffect(() => {
-    if (!selectedUniverseObject?.startsWith('lv:')) return;
-    const g = BIG_GALAXIES.find(x => `lv:${x.id}` === selectedUniverseObject);
-    if (!g) return;
-    const pos = galacticToScene(g.l, g.b, g.mly);
+    let pos: THREE.Vector3 | null = null;
+    if (selectedUniverseObject?.startsWith('lv:')) {
+      const g = BIG_GALAXIES.find(x => `lv:${x.id}` === selectedUniverseObject);
+      if (g) pos = galacticToScene(g.l, g.b, g.mly);
+    } else if (selectedUniverseObject?.startsWith('pin:')) {
+      // A weekly picture: fly over to where it sits.
+      const p = PINS.find(x => `pin:${x.id}` === selectedUniverseObject);
+      if (p) { const { ra, dec } = pinRaDec(p); pos = pinScene(ra, dec, p.mly); }
+    }
+    if (!pos) return;
     cameraTargetRef.current = pos.clone().add(new THREE.Vector3(3500, 2000, 6000));
     lookAtTargetRef.current = pos;
     transitioningRef.current = true;
@@ -472,6 +480,25 @@ export default function SolarSystem() {
     setSelectedSagittarius(false);
     setSelectedUniverseObject(null);
   }, []);
+
+  // Open one of the weekly pictures where it sits in the universe.
+  const openPin = useCallback((id: string) => {
+    const select = () => setSelectedUniverseObject(`pin:${id}`);
+    if (zoomLevelRef.current !== 3) {
+      triggerTransition(3);
+      window.setTimeout(select, 2600);
+    } else {
+      select();
+    }
+  }, [triggerTransition]);
+
+  // Arriving from the weekly page (/?pin=ngc-1827): go straight to that picture.
+  useEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('pin');
+    if (!id || !PINS.some(p => p.id === id)) return;
+    const t = window.setTimeout(() => openPin(id), 900);
+    return () => clearTimeout(t);
+  }, [openPin]);
 
   // Safe transition — resets stuck state, sets 500ms click guard, then fires
   const safeTransition = useCallback((targetLevel: number, e?: React.MouseEvent) => {
@@ -1584,6 +1611,52 @@ export default function SolarSystem() {
       lvLabels.push({ obj: rLabel, el: rDiv, w: 0 });
     }
 
+    // Step 7: the weekly pictures, each where it really is. They keep the same size on screen at
+    // any distance, and the newest one pulses gently so it can be found.
+    const pinMarks: { glow: THREE.Sprite; ring: THREE.Sprite | null; hit: THREE.Mesh }[] = [];
+    PINS.forEach(p => {
+      const { ra, dec } = pinRaDec(p);
+      const pos = pinScene(ra, dec, p.mly);
+      const isNew = p.id === LATEST_PIN.id;
+      const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: makeGlowTex('243,221,176', [[0, 1], [0.16, 0.8], [0.4, 0.2], [1, 0]]),
+        blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, transparent: true,
+      }));
+      glow.position.copy(pos);
+      universeGroup.add(glow);
+      let ring: THREE.Sprite | null = null;
+      if (isNew) {
+        ring = new THREE.Sprite(new THREE.SpriteMaterial({
+          map: makeGlowTex('243,221,176', [[0, 0], [0.62, 0], [0.74, 0.7], [0.86, 0], [1, 0]]),
+          blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, transparent: true,
+        }));
+        ring.position.copy(pos);
+        universeGroup.add(ring);
+      }
+      const hit = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 8), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
+      hit.position.copy(pos);
+      hit.userData = { id: `pin:${p.id}`, level: 3, type: 'pin' };
+      labelGroup.add(hit);
+      universeLandmarkMeshesRef.current.push(hit);
+      const pDiv = document.createElement('div');
+      pDiv.textContent = isNew && isThisWeek(p) ? `New: ${p.object}` : p.object;
+      pDiv.style.cssText = `color:#F3DDB0;font-size:12px;font-family:"Instrument Sans",sans-serif;pointer-events:auto;cursor:pointer;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.9);`;
+      pDiv.onclick = (e) => {
+        e.stopPropagation();
+        if (clickGuardRef.current || transitioningRef.current || zoomLevelRef.current !== 3) return;
+        handleObjectClick(`pin:${p.id}`, 3);
+      };
+      const pLabel = new CSS2DObject(pDiv);
+      const holder = new THREE.Object3D();
+      holder.position.copy(pos);
+      holder.add(pLabel);
+      labelGroup.add(holder);
+      pLabel.element.style.marginTop = '0px';
+      // The weekly pictures come first when names would overlap.
+      lvLabels.unshift({ obj: pLabel, el: pDiv, w: 0 });
+      pinMarks.push({ glow, ring, hit });
+    });
+
     // Raycaster
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -1722,6 +1795,16 @@ export default function SolarSystem() {
       }
       // Real galaxy names in the universe view: the nearest and brightest first, others hidden if they would overlap.
       if (zoomLevelRef.current === 3 && universeGroupRef.current?.visible) {
+        const pulse = (totalElapsed * 0.6) % 1;
+        for (const m of pinMarks) {
+          const d = camera.position.distanceTo(m.glow.position);
+          m.glow.scale.setScalar(d * 0.04);
+          m.hit.scale.setScalar(d * 0.03);
+          if (m.ring) {
+            m.ring.scale.setScalar(d * (0.045 + 0.09 * pulse));
+            (m.ring.material as THREE.SpriteMaterial).opacity = 0.9 * (1 - pulse);
+          }
+        }
         const hw3 = renderer.domElement.clientWidth / 2;
         const hh3 = renderer.domElement.clientHeight / 2;
         const placed3: [number, number, number, number][] = [];
@@ -2716,6 +2799,23 @@ export default function SolarSystem() {
             onShowNow={() => { rateRef.current = 0; setRateIndex(0); jumpToNow(); }}
           />
           <UniverseInfoPanel objectId={selectedUniverseObject} onClose={() => setSelectedUniverseObject(null)} />
+          <PinPanel
+            pin={selectedUniverseObject?.startsWith('pin:') ? PINS.find(p => `pin:${p.id}` === selectedUniverseObject) ?? null : null}
+            onClose={() => setSelectedUniverseObject(null)}
+          />
+          {/* The newest weekly picture, one tap away */}
+          {!selectedUniverseObject?.startsWith('pin:') && (
+            <button
+              type="button"
+              onClick={() => openPin(LATEST_PIN.id)}
+              className="absolute left-4 top-[68px] md:top-[80px] z-30 flex items-center gap-2 rounded-full pl-2.5 pr-3.5 py-1.5 text-[13px] transition-colors hover:bg-white/[0.06]"
+              style={{ background: 'rgba(10,15,23,0.82)', border: '1px solid rgba(243,221,176,0.35)', color: '#E8ECF1' }}
+            >
+              <span className="w-2 h-2 rounded-full" style={{ background: '#F3DDB0', boxShadow: '0 0 8px 2px rgba(243,221,176,0.6)' }} />
+              <span style={{ color: '#F3DDB0' }}>{isThisWeek(LATEST_PIN) ? 'New this week' : 'Latest'}</span>
+              <span>{LATEST_PIN.object}</span>
+            </button>
+          )}
           <NearbyGalaxyPanel
             galaxy={selectedUniverseObject?.startsWith('lv:') ? BIG_GALAXIES.find(g => `lv:${g.id}` === selectedUniverseObject) ?? null : null}
             onClose={() => setSelectedUniverseObject(null)}

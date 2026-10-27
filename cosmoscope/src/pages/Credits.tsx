@@ -84,6 +84,11 @@ const GROUPS: { title: string; intro?: string; items: Source[] }[] = [
         terms: "NASA, free to use with credit",
       },
       {
+        what: "This week in the universe",
+        from: "Images from NASA, ESA, Hubble and Webb. Each picture carries its own credit line, exactly as given.",
+        terms: "NASA images are not subject to copyright; ESA images are CC BY 4.0",
+      },
+      {
         what: "Picture of the day",
         from: "NASA Astronomy Picture of the Day. Each picture is credited to its own author.",
         href: "https://apod.nasa.gov/",

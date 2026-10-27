@@ -7,6 +7,7 @@ const LINKS = [
   { href: "/tonight", label: "Tonight" },
   { href: "/scale", label: "Scale" },
   { href: "/simulations", label: "Simulations" },
+  { href: "/discoveries", label: "This week" },
   { href: "/about", label: "About" },
   { href: "/credits", label: "Sources and credits" },
   { href: "/privacy", label: "Privacy" },

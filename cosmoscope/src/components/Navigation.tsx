@@ -19,6 +19,7 @@ const MAIN = [
 
 // Everything else, behind More.
 const MORE = [
+  { path: "/discoveries", label: "This week in the universe" },
   { path: "/exoplanets", label: "Other worlds" },
   { path: "/constellations", label: "Constellation guide" },
   { path: "/apod", label: "Picture of the day" },
