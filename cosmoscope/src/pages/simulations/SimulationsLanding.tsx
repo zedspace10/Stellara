@@ -11,6 +11,13 @@ const SIMS = [
     minutes: 3,
   },
   {
+    id: "earth",
+    when: "4.6 billion years ago",
+    title: "The story of Earth",
+    description: "From a disc of dust to a pale blue dot: the impact that made the Moon, the first oceans, the first life, the dinosaurs, and us.",
+    minutes: 3,
+  },
+  {
     id: "star-birth",
     when: "Happening now",
     title: "Birth of a star",

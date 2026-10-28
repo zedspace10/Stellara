@@ -19,6 +19,7 @@ import ScaleOfUniverse from "@/pages/ScaleOfUniverse";
 import ExoplanetExplorer from "@/pages/ExoplanetExplorer";
 import SimulationsLanding from "@/pages/simulations/SimulationsLanding";
 import BigBangSim from "@/pages/simulations/BigBangSim";
+import EarthSim from "@/pages/simulations/EarthSim";
 import StarBirthSim from "@/pages/simulations/StarBirthSim";
 import StarDeathSim from "@/pages/simulations/StarDeathSim";
 import BlackHoleSim from "@/pages/simulations/BlackHoleSim";
@@ -63,6 +64,7 @@ function Router() {
         <Route path="/exoplanets" component={ExoplanetExplorer} />
         <Route path="/simulations" component={SimulationsLanding} />
         <Route path="/simulations/big-bang" component={BigBangSim} />
+        <Route path="/simulations/earth" component={EarthSim} />
         <Route path="/simulations/star-birth" component={StarBirthSim} />
         <Route path="/simulations/star-death" component={StarDeathSim} />
         <Route path="/simulations/black-hole" component={BlackHoleSim} />
