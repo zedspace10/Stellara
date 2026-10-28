@@ -282,6 +282,17 @@ export default function SolarSystem() {
   const transitionTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const [screenshotMode, setScreenshotMode] = useState(false);
+  // The controls panel at the bottom. Its height is measured so everything else that sits near the
+  // bottom of the screen can stay just above it, and above the tab bar on phones.
+  const dockRef = useRef<HTMLDivElement>(null);
+  const [dockH, setDockH] = useState(72);
+  useEffect(() => {
+    const el = dockRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => setDockH(el.offsetHeight));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [screenshotMode]);
   const [paleBlueDot, setPaleBlueDot] = useState(false);
   const [showComets, setShowComets] = useState(true);
   const [lookBack, setLookBack] = useState(false);
@@ -2307,12 +2318,21 @@ export default function SolarSystem() {
   }
 
   return (
-    <div className="relative w-full h-screen bg-black overflow-hidden">
+    <div className="relative w-full h-screen bg-black overflow-hidden" style={{ ["--dock-h" as string]: `${dockH}px` }}>
+      <style>{`
+        .pale-dock { bottom: calc(3.75rem + env(safe-area-inset-bottom)); }
+        .pale-above-dock { bottom: calc(3.75rem + env(safe-area-inset-bottom) + var(--dock-h) + 0.75rem); }
+        @media (min-width: 768px) {
+          .pale-dock { bottom: 1.5rem; }
+          .pale-above-dock { bottom: calc(1.5rem + var(--dock-h) + 0.75rem); }
+        }
+        @media (min-width: 1024px) { .pale-lg-free { bottom: var(--lg-bottom); } }
+      `}</style>
       <div ref={mountRef} className="absolute inset-0 z-0" />
       <div ref={labelMountRef} className="absolute inset-0 z-10 pointer-events-none" />
 
       {!screenshotMode && (
-        <p className="absolute right-4 bottom-24 md:bottom-4 z-20 m-0 text-[11px] pointer-events-none" style={{ color: "rgba(245,250,255,0.45)" }}>
+        <p className={`absolute right-4 pale-above-dock pale-lg-free z-20 m-0 text-[11px] pointer-events-none ${zoomLevel === 3 ? "max-md:hidden" : ""}`} style={{ color: "rgba(245,250,255,0.45)", ["--lg-bottom" as string]: "1rem" }}>
           Sizes and distances are not to scale
         </p>
       )}
@@ -2347,7 +2367,7 @@ export default function SolarSystem() {
         <>
           {/* Bottom-centre rotating facts */}
           <div
-            className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 text-center px-4 pointer-events-none max-w-sm"
+            className="absolute pale-above-dock left-1/2 -translate-x-1/2 z-20 text-center px-4 pointer-events-none max-w-sm hidden md:block"
             key={universeFact}
             style={{ animation: "fadeIn 1s ease-out" }}
           >
@@ -2454,8 +2474,9 @@ export default function SolarSystem() {
           )}
           {/* Dark sky timer */}
           <div
-            className="absolute bottom-36 md:bottom-10 right-4 pointer-events-auto"
+            className="absolute pale-above-dock pale-lg-free right-4 pointer-events-auto"
             style={{
+              ["--lg-bottom" as string]: "2.5rem",
               background: "rgba(40,0,0,0.7)",
               border: "1px solid rgba(180,0,0,0.3)",
               borderRadius: "12px",
@@ -2622,7 +2643,7 @@ export default function SolarSystem() {
 
       {/* Where you are: the three views, the current one bright. Each one can be clicked. */}
       {!screenshotMode && (
-        <nav aria-label="Views" className="absolute bottom-52 md:bottom-6 left-6 z-20 flex flex-col gap-1 text-[13px]">
+        <nav aria-label="Views" className="absolute pale-above-dock pale-lg-free left-6 z-20 flex flex-col gap-1 text-[13px]" style={{ ["--lg-bottom" as string]: "1.5rem" }}>
           {[
             { level: 1, name: "Solar system" },
             { level: 2, name: "Milky Way" },
@@ -2643,7 +2664,7 @@ export default function SolarSystem() {
       
       {/* Controls Overlay */}
       {!screenshotMode && (
-        <Card className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-3xl rounded-xl p-3.5 z-20 shadow-none flex flex-col gap-4" style={{ background: "#0A0F17", border: "1px solid #1C2533" }}>
+        <Card ref={dockRef} className="absolute pale-dock left-1/2 -translate-x-1/2 w-[95%] max-w-3xl rounded-xl p-3.5 z-20 shadow-none flex flex-col gap-4" style={{ background: "#0A0F17", border: "1px solid #1C2533" }}>
         <div className="flex items-center justify-between gap-4 flex-wrap">
           
           {zoomLevel === 1 && (
@@ -2734,8 +2755,8 @@ export default function SolarSystem() {
       {/* Universe zoom controls */}
       {!screenshotMode && zoomLevel === 3 && (
         <div
-          className="absolute z-40 flex flex-col gap-1.5"
-          style={{ bottom: '6rem', right: '1rem' }}
+          className="absolute z-40 flex flex-col gap-1.5 pale-above-dock"
+          style={{ right: '1rem' }}
         >
           {[
             { label: '+', title: 'Zoom In', action: () => { const c = cameraRef.current?.position.length() ?? 800; zoomTargetRef.current = Math.max(15, c * 0.75); } },

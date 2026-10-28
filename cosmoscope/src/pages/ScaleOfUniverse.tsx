@@ -1201,13 +1201,15 @@ export default function ScaleOfUniverse() {
           <div className="relative h-9">
             <div className="absolute left-0 right-0 top-3 h-px" style={{ background: "#2A3546" }} />
             <div ref={markerRef} className="absolute top-1.5 w-[2px] h-4 -translate-x-1/2" style={{ left: `${((Z_START - Z_MIN) / (Z_MAX - Z_MIN)) * 100}%`, background: "#E8ECF1" }} />
-            {ticks.map((th) => {
+            {ticks.map((th, i) => {
               const tz = Math.log10(th.size) + 0.3;
+              // The labels at each end line up with the end of the ruler, so they are never cut off.
+              const anchor = i === 0 ? "translate-x-0" : i === ticks.length - 1 ? "-translate-x-full" : "-translate-x-1/2";
               return (
                 <button
                   key={th.id}
                   onClick={() => flyTo(tz)}
-                  className={`absolute -translate-x-1/2 top-4 text-[12px] whitespace-nowrap transition-colors hover:text-white ${th.wideOnly ? "hidden sm:block" : ""}`}
+                  className={`absolute ${anchor} top-4 text-[12px] whitespace-nowrap transition-colors hover:text-white ${th.wideOnly ? "hidden sm:block" : ""}`}
                   style={{ left: `${((tz - Z_MIN) / (Z_MAX - Z_MIN)) * 100}%`, color: "#8E9AA8" }}
                 >
                   {th.tick}

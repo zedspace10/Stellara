@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import Footer from "@/components/Footer";
 import { moon, planetsTonight, nextSeason, showers } from "@/lib/sky";
+import { LATEST_PIN, isThisWeek, pinDistance } from "@/data/pins";
+import { loadNotes, milestonesFor, kmTravelled, whenReached, bigKm, duration, inSentence } from "@/lib/notes";
 
 const C = {
   border: "#1C2533",
@@ -61,6 +63,41 @@ function MoonDisc({ fraction, size = 120 }: { fraction: number; size?: number })
   );
 }
 
+// Where the person's newest note has got to, in a sentence.
+function noteProgress(now: number) {
+  try {
+    const n = loadNotes().sort((a, b) => b.sentAt - a.sentAt)[0];
+    if (!n) return null;
+    const km = kmTravelled(n.sentAt, now);
+    const marks = milestonesFor(n.sentAt);
+    const passed = [...marks].reverse().find((m) => m.km <= km);
+    const next = marks.find((m) => m.km > km);
+    return {
+      km,
+      passed: passed ? inSentence(passed.name) : null,
+      next: next ? { name: inSentence(next.name), in: duration(whenReached(next, n.sentAt) - now) } : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function Thumb({ src, alt }: { src: string; alt: string }) {
+  const [failed, setFailed] = useState(false);
+  if (failed) return null;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      referrerPolicy="no-referrer"
+      onError={() => setFailed(true)}
+      className="block w-24 h-24 rounded-md object-cover shrink-0"
+      style={{ border: `1px solid ${C.border}`, background: "#070a10" }}
+    />
+  );
+}
+
 // One entry in tonight's log: what it is on the left, the details on the right.
 function Entry({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -84,6 +121,9 @@ export default function Tonight() {
   const planets = useMemo(() => planetsTonight(now), [now]);
   const season = useMemo(() => nextSeason(now), [now]);
   const meteorShowers = useMemo(() => showers(now), [now]);
+
+  const note = useMemo(() => noteProgress(now), [now]);
+  const pin = LATEST_PIN;
 
   const visible = planets.filter((p) => p.visible);
   const hidden = planets.filter((p) => !p.visible);
@@ -176,6 +216,48 @@ export default function Tonight() {
             </p>
           </Entry>
         )}
+
+        <Entry title="Further out">
+          <div className="flex items-start gap-5">
+            <Thumb src={pin.image.src} alt={pin.image.alt} />
+            <div className="min-w-0">
+              <p className="m-0 text-[13px]" style={{ color: isThisWeek(pin, now) ? C.warm : C.faint }}>
+                {isThisWeek(pin, now) ? "New this week" : "The latest picture"}
+              </p>
+              <p className="mt-1 mb-0 font-serif text-[22px] leading-tight">{pin.title}</p>
+              <p className="mt-1 mb-0 text-[14px]" style={{ color: C.muted }}>{pin.object}, {pinDistance(pin)}</p>
+              <p className="mt-2 mb-0 text-[14px]">
+                <Link href={`/discoveries#${pin.id}`} className="underline underline-offset-4" style={{ color: C.tint }}>Read about it</Link>
+                <span style={{ color: C.faint }}> or </span>
+                <Link href={`/?pin=${pin.id}`} className="underline underline-offset-4" style={{ color: C.tint }}>see where it is</Link>
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 pt-6" style={{ borderTop: `1px solid ${C.rule}` }}>
+            {note ? (
+              <>
+                <p className="m-0 text-[16px] leading-relaxed" style={{ color: C.text }}>
+                  Your note has travelled {bigKm(note.km)}
+                  {note.passed ? `, past ${note.passed}` : ""}.
+                </p>
+                {note.next && (
+                  <p className="mt-1 mb-0 text-[14px]" style={{ color: C.muted }}>
+                    It reaches {note.next.name} in {note.next.in}.
+                  </p>
+                )}
+                <p className="mt-2 mb-0 text-[14px]">
+                  <Link href="/note" className="underline underline-offset-4" style={{ color: C.tint }}>Follow it</Link>
+                </p>
+              </>
+            ) : (
+              <p className="m-0 text-[15px] leading-relaxed" style={{ color: C.muted }}>
+                Light leaving Earth tonight will pass the Moon in just over a second.{" "}
+                <Link href="/note" className="underline underline-offset-4" style={{ color: C.tint }}>Send a note with it</Link>, and follow it out among the stars.
+              </p>
+            )}
+          </div>
+        </Entry>
 
         <div className="py-8 text-[15px] leading-relaxed" style={{ borderTop: `1px solid ${C.border}`, color: C.muted }}>
           <p className="m-0">

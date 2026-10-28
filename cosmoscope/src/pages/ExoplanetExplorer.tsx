@@ -148,6 +148,9 @@ function ActiveFilters({ filters, onChange }: { filters: Filters; onChange: (f: 
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function ExoplanetExplorer() {
+  useEffect(() => {
+    document.title = "Other worlds | PALE";
+  }, []);
   const { planets, loading, error, progress, fromCache, fromFallback, cacheDate, statusMsg } = useExoplanets();
   const [showIntro, setShowIntro] = useState(true);
   const [view, setView] = useState<ViewMode>("gallery");
