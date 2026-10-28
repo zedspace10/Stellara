@@ -35,8 +35,11 @@ const TIME_RATES = [
   { label: "1 month per second", daysPerSecond: 30.44 },
   { label: "1 year per second", daysPerSecond: 365.25 },
 ];
-// Start at a week per second so the orbits are visible straight away, from where the planets really are today.
-const DEFAULT_RATE = 3;
+// Start on right now, at real speed: the first thing people see is where the planets really are at this
+// moment. The camera drifts slowly around the Sun instead, and the speed menu is one tap away.
+const DEFAULT_RATE = 0;
+// One slow turn around the Sun takes about three and a half minutes.
+const DRIFT_SPEED = 0.28;
 
 // Distance and light time for a comet or spacecraft on the date shown in the view.
 function liveFactsFor(id: string | null, timeMs: number) {
@@ -239,6 +242,11 @@ export default function SolarSystem() {
   const [webglSupported] = useState(() => checkWebGLSupport());
   
   const speedRef = useRef(1);
+  // The slow drift of the camera on arrival. It stops for good the moment the person touches the view,
+  // chooses something, or has asked their device for less motion.
+  const driftRef = useRef(
+    typeof window === "undefined" || !window.matchMedia?.("(prefers-reduced-motion: reduce)").matches,
+  );
   const isPausedRef = useRef(false);
   
   const [zoomLevel, setZoomLevel] = useState(1); // 1: Solar System, 2: Galaxy, 3: Universe
@@ -349,6 +357,10 @@ export default function SolarSystem() {
     lookAtTargetRef.current = pos;
     transitioningRef.current = true;
   }, [selectedUniverseObject]);
+
+  useEffect(() => {
+    if (selectedPlanet) driftRef.current = false;
+  }, [selectedPlanet]);
 
   const jumpToNow = () => {
     simTimeRef.current = Date.now();
@@ -571,6 +583,8 @@ export default function SolarSystem() {
     controls.maxDistance = 300000;
     controls.minDistance = 2;
     controlsRef.current = controls;
+    controls.autoRotateSpeed = DRIFT_SPEED;
+    controls.addEventListener('start', () => { driftRef.current = false; });
 
     // Lighting
     // Faint fill so the night side of each planet is just visible, then sunlight from the Sun itself.
@@ -2121,7 +2135,8 @@ export default function SolarSystem() {
         }
       }
 
-      controls.update();
+      controls.autoRotate = driftRef.current && zoomLevelRef.current === 1 && !transitioningRef.current;
+      controls.update(Math.min(dt, 100) / 1000);
       renderer.render(scene, camera);
       labelRenderer.render(scene, camera);
     };
