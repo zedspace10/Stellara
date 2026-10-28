@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { heliocentric } from "@/lib/ephemeris";
+import { loadNotes, destinationOf, notePosition, kmTravelled, bigKm } from "@/lib/notes";
 import {
   THINGS, Z_MIN, Z_MAX, Z_START, focusAt, niceLength, lengthLabel, pow10Label,
   AU, LY, EARTH_R, EARTH_C, SUN_C, MOON_C, GC, ANDROMEDA_C, GREAT_ATTRACTOR, MICRO_C,
@@ -15,6 +16,35 @@ function rng(seed: number) {
 }
 
 const clamp = (v: number, a = 0, b = 1) => Math.max(a, Math.min(b, v));
+
+// How long light takes to cross a distance in metres, in plain words.
+function lightAcross(m: number) {
+  const s = m / 299792458;
+  const n = (v: number) => (v < 10 ? v.toFixed(1).replace(/\.0$/, "") : Math.round(v).toLocaleString("en-GB"));
+  if (s < 1e-12) return "far less than a trillionth of a second";
+  if (s < 1e-9) return `${n(s * 1e12)} trillionths of a second`;
+  if (s < 1e-6) return `${n(s * 1e9)} billionths of a second`;
+  if (s < 1e-3) return `${n(s * 1e6)} millionths of a second`;
+  if (s < 1) return `${n(s * 1e3)} thousandths of a second`;
+  if (s < 60) return `${n(s)} second${n(s) === "1" ? "" : "s"}`;
+  if (s < 3600) return `${n(s / 60)} minutes`;
+  if (s < 86400 * 2) return `${n(s / 3600)} hours`;
+  const yr = s / (365.25 * 86400);
+  if (yr < 2) return `${n(s / 86400)} days`;
+  if (yr < 1e6) return `${n(yr)} years`;
+  if (yr < 1e9) return `${n(yr / 1e6)} million years`;
+  return `${n(yr / 1e9)} billion years`;
+}
+
+// The person's latest note, if they have aimed it at a star, to show where it is on the way out.
+function latestNote() {
+  try {
+    const n = loadNotes().sort((a, b) => b.sentAt - a.sentAt).find((x) => destinationOf(x));
+    return n ? { note: n, dest: destinationOf(n)! } : null;
+  } catch {
+    return null;
+  }
+}
 
 // ── Pictures drawn once and reused at any size ─────────────────────────────────
 // Each picture is built a little at a time (each yield is a safe place to pause), so making
@@ -294,6 +324,8 @@ export default function ScaleOfUniverse() {
   const barRef = useRef<HTMLDivElement>(null);
   const barLabelRef = useRef<HTMLDivElement>(null);
   const widthRef = useRef<HTMLSpanElement>(null);
+  const lightRef = useRef<HTMLDivElement>(null);
+  const [myNote] = useState(latestNote);
   const markerRef = useRef<HTMLDivElement>(null);
   const [touched, setTouched] = useState(false);
 
@@ -376,6 +408,8 @@ export default function ScaleOfUniverse() {
     const vAngle = (256.5 * Math.PI) / 180 - earthLon;
     const vDist = 141 * AU;
     const VOY: [number, number] = [SUN_C[0] + Math.cos(vAngle) * vDist, SUN_C[1] + Math.sin(vAngle) * vDist];
+    const noteMark = latestNote();
+    let noteOnScreen = false;
 
     let raf = 0;
     let last = performance.now();
@@ -573,6 +607,32 @@ export default function ScaleOfUniverse() {
         ctx.stroke();
         dot(VOY[0], VOY[1], 2.4, "#A9C3E0", 9);
         label("Voyager 1", sx(VOY[0]), sy(VOY[1]), a * clamp((15.6 - zz) * 2), "rgba(169,195,224,0.95)");
+        ctx.globalAlpha = 1;
+      }
+      // The person's note, where it really is now, seen from above the planets like everything here.
+      noteOnScreen = false;
+      if (noteMark) {
+        const P = notePosition(noteMark.note, noteMark.dest, Date.now());
+        const rAu = Math.hypot(P.x, P.y);
+        const ang = Math.atan2(P.y, P.x) - earthLon;
+        const nx = SUN_C[0] + Math.cos(ang) * rAu * AU, ny = SUN_C[1] + Math.sin(ang) * rAu * AU;
+        const na = vis(Math.max(rAu, 0.01) * AU * 2, 8, 60);
+        if (na > 0 && onScreen(nx, ny, 0)) {
+          noteOnScreen = true;
+          const X = sx(nx), Y = sy(ny);
+          const pulse = (t * 0.6) % 1;
+          ctx.globalAlpha = na * (1 - pulse) * 0.8;
+          ctx.beginPath();
+          ctx.arc(X, Y, 6 + 16 * pulse, 0, Math.PI * 2);
+          ctx.strokeStyle = "#F3DDB0";
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+          ctx.globalAlpha = na;
+          dot(nx, ny, 3, "#FFF4DA", 14);
+          label("Your note", X, Y, na, "rgba(243,221,176,0.95)", 9, -8);
+          label(`${bigKm(kmTravelled(noteMark.note.sentAt, Date.now()))} from Earth`, X, Y, na * 0.75, "rgba(243,221,176,0.75)", 9, 8);
+          ctx.globalAlpha = 1;
+        }
         ctx.globalAlpha = 1;
       }
 
@@ -963,7 +1023,7 @@ export default function ScaleOfUniverse() {
       }
       // A proton up close: three quarks
       const pA = clamp((-13.9 - zz) * 1.5) * vis(1.7e-15, 6, 3);
-      animating = pA > 0 || clamp((-33.2 - zz) * 1.2) > 0;
+      animating = pA > 0 || clamp((-33.2 - zz) * 1.2) > 0 || noteOnScreen;
       if (pA > 0) {
         const X = sx(MICRO_C[0]), Y = sy(MICRO_C[1]);
         const R = px(0.85e-15);
@@ -1013,6 +1073,7 @@ export default function ScaleOfUniverse() {
       if (barRef.current) barRef.current.style.width = `${(bar.metres / Math.pow(10, zz)) * 100}vw`;
       if (barLabelRef.current) barLabelRef.current.textContent = bar.label;
       if (widthRef.current) widthRef.current.textContent = `The view is ${lengthLabel(Math.pow(10, zz))} wide, about ${pow10Label(Math.round(zz))} metres`;
+      if (lightRef.current) lightRef.current.textContent = `Light crosses this view in ${lightAcross(Math.pow(10, zz))}`;
       if (markerRef.current) markerRef.current.style.left = `${((zz - Z_MIN) / (Z_MAX - Z_MIN)) * 100}%`;
       const key = describe(zz).key;
       setZ((prev) => (describe(prev).key !== key ? zz : prev));
@@ -1111,15 +1172,28 @@ export default function ScaleOfUniverse() {
       {/* Scale bar and the track of powers of ten */}
       <div className="absolute left-0 right-0 bottom-0 px-4 pb-4 pt-6" style={{ background: "linear-gradient(to top, rgba(5,7,12,0.95), rgba(5,7,12,0))" }}>
         <div className="max-w-[1100px] mx-auto">
-          <div className="flex items-end justify-between gap-4 mb-3">
-            <div className="min-w-0">
+          <div className="flex flex-wrap items-end justify-between gap-x-4 gap-y-2 mb-3">
+            <div className="min-w-0 basis-full sm:basis-auto">
               <div ref={barRef} style={{ width: `${(scaleBar.metres / Math.pow(10, Z_START)) * 100}vw`, maxWidth: "40vw", height: 6, borderLeft: "1px solid #E8ECF1", borderRight: "1px solid #E8ECF1", borderBottom: "1px solid #E8ECF1" }} />
               <div ref={barLabelRef} className="mt-1 text-[13px] tabular-nums whitespace-nowrap" style={{ color: "#E8ECF1" }}>{scaleBar.label}</div>
+              <div ref={lightRef} className="mt-0.5 text-[12px] whitespace-nowrap" style={{ color: "#F3DDB0" }} />
             </div>
             <div className="hidden sm:block text-right text-[13px] tabular-nums" style={{ color: "#8E9AA8" }}>
               <span ref={widthRef} />
             </div>
             <div className="flex gap-2 shrink-0">
+              {myNote && (
+                <button
+                  onClick={() => {
+                    const P = notePosition(myNote.note, myNote.dest, Date.now());
+                    flyTo(Math.log10(Math.max(Math.hypot(P.x, P.y), 0.02) * AU * 2.6));
+                  }}
+                  className="rounded-md px-3 py-1.5 text-[14px] transition-colors hover:bg-white/5"
+                  style={{ border: "1px solid rgba(243,221,176,0.45)", color: "#F3DDB0" }}
+                >
+                  Find your note
+                </button>
+              )}
               <button onClick={() => zoomBy(-1)} className="rounded-md px-3 py-1.5 text-[14px] transition-colors hover:bg-white/5" style={{ border: "1px solid #2A3546", color: "#E8ECF1" }}>Zoom in</button>
               <button onClick={() => zoomBy(1)} className="rounded-md px-3 py-1.5 text-[14px] transition-colors hover:bg-white/5" style={{ border: "1px solid #2A3546", color: "#E8ECF1" }}>Zoom out</button>
             </div>
