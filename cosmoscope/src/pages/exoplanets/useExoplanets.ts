@@ -18,6 +18,9 @@ const NASA_URL =
   `?QUERY=${encodeURIComponent(`select ${COLS} from pscomppars where pl_controv_flag=0`)}` +
   `&FORMAT=json`;
 
+// Our own server fetches the archive and keeps a copy for a day. The public relays below are
+// only a backup in case our server cannot reach NASA.
+const OWN = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/data/exoplanets`;
 const PROXY_A = `https://corsproxy.io/?url=${encodeURIComponent(NASA_URL)}`;
 const PROXY_B = `https://api.allorigins.win/raw?url=${encodeURIComponent(NASA_URL)}`;
 
@@ -37,7 +40,7 @@ function writeCache(data: ExoplanetData[]) {
     localStorage.setItem(CACHE_KEY, JSON.stringify(data));
     localStorage.setItem(CACHE_TS_KEY, Date.now().toString());
   } catch {
-    // localStorage quota exceeded — ignore
+    // localStorage quota exceeded, ignore
   }
 }
 
@@ -120,7 +123,21 @@ export function useExoplanets(): ExoplanetsState {
     (async () => {
       setState(s => ({ ...s, loading: true, progress: 15, statusMsg: LOADING_MSGS[0] }));
 
-      // 2. Try Proxy A
+      // 2. Try our own server
+      try {
+        setState(s => ({ ...s, progress: 25, statusMsg: LOADING_MSGS[1] }));
+        const planets = await fetchUrl(OWN, controller.signal);
+        if (cancelled) return;
+        clearInterval(msgTimer);
+        writeCache(planets);
+        setState({ planets, loading: false, error: null, fromCache: false, fromFallback: false, cacheDate: new Date(), progress: 100, statusMsg: "" });
+        return;
+      } catch (e) {
+        if (cancelled) return;
+        if ((e as Error).name === "AbortError") return;
+      }
+
+      // 3. Try Proxy A
       try {
         setState(s => ({ ...s, progress: 25, statusMsg: LOADING_MSGS[1] }));
         const planets = await fetchUrl(PROXY_A, controller.signal);
@@ -134,7 +151,7 @@ export function useExoplanets(): ExoplanetsState {
         if ((e as Error).name === "AbortError") return;
       }
 
-      // 3. Try Proxy B
+      // 4. Try Proxy B
       try {
         setState(s => ({ ...s, progress: 55, statusMsg: LOADING_MSGS[2] }));
         const planets = await fetchUrl(PROXY_B, controller.signal);
@@ -151,7 +168,7 @@ export function useExoplanets(): ExoplanetsState {
       clearInterval(msgTimer);
       if (cancelled) return;
 
-      // 4. Use stale cache
+      // 5. Use stale cache
       if (cached) {
         setState({
           planets: cached.data,
@@ -166,7 +183,7 @@ export function useExoplanets(): ExoplanetsState {
         return;
       }
 
-      // 5. Hardcoded fallback — always show something
+      // 6. Hardcoded fallback — always show something
       const fallback = FALLBACK_PLANETS.map(transformPlanet);
       setState({
         planets: fallback,

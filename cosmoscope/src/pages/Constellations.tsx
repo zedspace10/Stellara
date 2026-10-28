@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import Footer from "@/components/Footer";
 import { CONSTELLATION_STORIES } from "./constellationStories";
@@ -366,6 +366,9 @@ function ConstellationDetail({ data, onBack }: { data: ConstellationData; onBack
 }
 
 export default function Constellations() {
+  useEffect(() => {
+    document.title = "Constellation guide | PALE";
+  }, []);
   const [hemisphere, setHemisphere] = useState<Hemisphere | "All">("All");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<ConstellationData | null>(null);

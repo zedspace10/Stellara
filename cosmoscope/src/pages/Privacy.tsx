@@ -54,8 +54,8 @@ export default function Privacy() {
           browser for your own calendar.
         </P>
         <P>
-          Picture of the day and the Voyager view load images from NASA, and the exoplanet pages load NASA's exoplanet archive (partly through the
-          corsproxy.io relay). Our typefaces are served from our own site. Tonight is worked out entirely in your
+          Picture of the day and the Voyager view load images from NASA, and the exoplanet pages load NASA's exoplanet archive through our own site
+          (only if our site cannot reach NASA does your browser fall back to the corsproxy.io relay). Our typefaces are served from our own site. Tonight is worked out entirely in your
           browser. As with any website, those
           services can see your IP address when your browser contacts them.
         </P>

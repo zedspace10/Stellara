@@ -153,15 +153,22 @@ export default function SimulationLayout({
             onValueChange={([v]) => onScrub(v / 1000)}
             className="w-full"
           />
-          <div className="flex justify-between mt-1 overflow-hidden">
+          {/* With many steps on a phone, only the current step is named, in full; the others stay
+              tappable but unlabelled, rather than every name being cut short. */}
+          <div className={`flex justify-between mt-1 ${phases.length > 6 ? "sm:overflow-hidden" : "overflow-hidden"}`}>
             {phases.map((p, i) => (
               <button
                 key={p.id}
                 onClick={() => onPhaseJump(i)}
-                className={`text-[11px] truncate transition-colors px-0.5 ${
-                  i === currentPhaseIndex ? "text-[#A9C3E0]" : "text-gray-600 hover:text-gray-400"
+                aria-label={p.label}
+                className={`text-[11px] text-center transition-colors px-0.5 ${
+                  phases.length > 6
+                    ? `sm:truncate max-sm:whitespace-nowrap ${i === currentPhaseIndex ? "" : "max-sm:text-transparent"}`
+                    : "truncate"
+                } ${i === currentPhaseIndex ? "text-[#A9C3E0]" : "text-gray-600 hover:text-gray-400"} ${
+                  phases.length > 6 && i === 0 ? "max-sm:text-left" : phases.length > 6 && i === phases.length - 1 ? "max-sm:text-right" : ""
                 }`}
-                style={{ flex: 1, textAlign: "center" }}
+                style={{ flex: 1, minWidth: 0 }}
               >
                 {p.short ?? p.label.split(" ")[0]}
               </button>

@@ -32,6 +32,31 @@ export interface Pin {
 
 export const PINS: Pin[] = [
   {
+    id: "n159",
+    date: "2026-10-22",
+    title: "Stars brewing in a cauldron",
+    object: "N159",
+    ra: [5, 40, 9.3],
+    dec: [-69, 44, 29.5],
+    mly: 0.161,
+    constellation: "Dorado, the Swordfish",
+    image: {
+      src: "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2026/10/stars_brewing_in_a_nebulous_cauldron/27584043-1-eng-GB/Stars_brewing_in_a_nebulous_cauldron_pillars.jpg",
+      alt: "Glowing orange and pale blue clouds of gas, hollowed out by bright young stars and crossed by dark red threads.",
+      credit: "ESA/Webb, NASA & CSA, E. Sabbi, M. Zamani (ESA/Webb). Acknowledgement: M. H. Özsaraç",
+      licence: "CC BY 4.0",
+    },
+    source: { label: "ESA: Stars brewing in a nebulous cauldron", href: "https://www.esa.int/ESA_Multimedia/Images/2026/10/Stars_brewing_in_a_nebulous_cauldron" },
+    body: [
+      "A cloud of gas about 230 light years across, in the Large Magellanic Cloud, a small galaxy that circles our own. Thousands of young stars are being born inside it, and the hottest are already carving hollows in the gas they came from.",
+      "Webb's infrared camera sees through the dust. Orange shows complex carbon molecules, pale blue is hydrogen lit up by the hot stars, and the dark red threads are cold gas where new stars are still forming.",
+      "The whole region is less than three million years old. Its gas holds fewer heavy elements than the Milky Way's, much like galaxies in the early universe, so it shows how stars were made when the universe was young.",
+      "Its light left 161,000 years ago, when our own species was still young and living in Africa.",
+    ],
+    reflection: "Every star in that cloud, and every world that may one day circle them, begins like this. So did ours.",
+    simulation: { id: "earth", label: "See how our own world was made" },
+  },
+  {
     id: "ngc-1827",
     date: "2026-10-16",
     title: "Spiral's edge",
@@ -116,6 +141,7 @@ export function pinRaDec(p: Pin) {
 /** Plain words for how far away it is. */
 export function pinDistance(p: Pin) {
   if (p.mly >= 1000) return `light that left ${(p.mly / 1000).toFixed(1)} billion years ago`;
+  if (p.mly < 1) return `${(Math.round(p.mly * 1000) * 1000).toLocaleString("en-GB")} light years away`;
   return `${p.mly < 10 ? p.mly.toFixed(1) : Math.round(p.mly)} million light years away`;
 }
 
