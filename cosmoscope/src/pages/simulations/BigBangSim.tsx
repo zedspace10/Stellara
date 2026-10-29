@@ -199,7 +199,7 @@ export default function BigBangSim() {
       fragment={FRAG}
       bake={BAKE}
       bakeRange={3.3}
-      closing="Nearly every atom in you was made in the Big Bang or inside a star."
+      closing="Most of the hydrogen in your body was made in the first moments of the universe."
     />
   );
 }

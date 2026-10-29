@@ -25,17 +25,10 @@ const SIMS = [
     minutes: 2,
   },
   {
-    id: "star-death",
-    when: "Billions of years from now",
-    title: "Life and death of a star",
-    description: "The Sun grows into a red giant that reaches past Venus, then fades to a white dwarf the size of Earth.",
-    minutes: 2,
-  },
-  {
     id: "black-hole",
-    when: "When a giant star dies",
+    when: "Out among the stars",
     title: "Black holes",
-    description: "A collapsing core, light bent into rings, a glowing disc of gas, and two black holes merging.",
+    description: "The edge nothing escapes from, a glowing disc of gas, light bent into rings, and two black holes merging.",
     minutes: 2,
   },
 ];

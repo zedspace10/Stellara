@@ -81,15 +81,6 @@ export const galaxyObjects = [
     description: "A giant stellar nursery 1,344 light years away, visible to the naked eye, one of the most studied objects in the sky."
   },
   {
-    id: "crab-nebula",
-    name: "Crab Nebula",
-    type: "Supernova remnant",
-    distance: "6,523 light years",
-    size: "11 light years",
-    discovery: "1731 (John Bevis). The supernova was recorded in 1054",
-    description: "The remnant of a supernova explosion witnessed in 1054 AD, 6,523 light years away, containing a rapidly rotating pulsar."
-  },
-  {
     id: "lagoon-nebula",
     name: "Lagoon Nebula",
     type: "Emission nebula",

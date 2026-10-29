@@ -34,7 +34,7 @@ export default function About() {
         <Section title="What you can do here">
           <p className="m-0">
             Fly through the solar system in 3D with every planet where it really is today. Journey from the smallest
-            length that makes sense to the edge of the observable universe. Watch stars form and die. Find out what is in
+            length that makes sense to the edge of the observable universe. Watch a star being born. Find out what is in
             your sky tonight.{" "}
             {APP_STORE_URL ? (
               <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4" style={{ color: TINT }}>

@@ -1153,7 +1153,7 @@ export default function ScaleOfUniverse() {
           <div>
             <h1 className="m-0 text-[28px] md:text-[36px] leading-tight" style={{ color: "#E8ECF1" }}>The unknown</h1>
             <p className="m-0 mt-3 text-[15px] leading-relaxed" style={{ color: "#C9D2DC" }}>
-              Between the smallest things ever measured and the Planck length lie about fifteen powers of ten that no
+              Between the smallest things ever measured and the Planck length lie about sixteen powers of ten that no
               experiment has reached. Keep going.
             </p>
           </div>
