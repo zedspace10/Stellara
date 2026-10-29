@@ -37,16 +37,21 @@ export const DESTINATIONS: Destination[] = [
   { id: "vega", name: "Vega", ra: 18.6156, dec: 38.784, ly: 25, constellation: "Lyra", line: "A bright blue white star, once the North Star." },
   { id: "trappist", name: "TRAPPIST-1", ra: 23.1081, dec: -5.041, ly: 40.7, constellation: "Aquarius", line: "A small star with seven rocky planets." },
   { id: "pleiades", name: "The Pleiades", ra: 3.7908, dec: 24.117, ly: 444, constellation: "Taurus", line: "The Seven Sisters, a cluster of young stars." },
-  { id: "betelgeuse", name: "Betelgeuse", ra: 5.9195, dec: 7.407, ly: 550, constellation: "Orion", line: "A red supergiant near the end of its life." },
   { id: "orion", name: "The Orion Nebula", ra: 5.5881, dec: -5.391, ly: 1344, constellation: "Orion", line: "A cloud where new stars are being born." },
   { id: "centre", name: "The centre of the Milky Way", ra: 17.7611, dec: -29.008, ly: 26000, constellation: "Sagittarius", line: "The heart of our galaxy." },
   { id: "andromeda", name: "The Andromeda Galaxy", ra: 0.7123, dec: 41.269, ly: 2.5e6, constellation: "Andromeda", line: "The nearest big galaxy." },
 ];
 
+// No longer offered, but kept so that links to notes already sent this way still open.
+const RETIRED_DESTINATIONS: Destination[] = [
+  { id: "betelgeuse", name: "Betelgeuse", ra: 5.9195, dec: 7.407, ly: 550, constellation: "Orion", line: "The red supergiant at Orion's shoulder." },
+];
+const ALL_DESTINATIONS = [...DESTINATIONS, ...RETIRED_DESTINATIONS];
+
 export const DEFAULT_DESTINATION = "proxima";
 
 export function destinationOf(n: Note): Destination | undefined {
-  return DESTINATIONS.find((d) => d.id === n.to);
+  return ALL_DESTINATIONS.find((d) => d.id === n.to);
 }
 
 /** Unit vector towards a destination, heliocentric ecliptic. */
@@ -143,7 +148,7 @@ export function noteFromHash(hash: string): Note | null {
   try {
     const { t, s, d } = JSON.parse(fromBase64Url(m[1])) as { t: unknown; s: unknown; d?: unknown };
     if (typeof t !== "string" || typeof s !== "number" || s > Date.now() + 60000) return null;
-    const to = typeof d === "string" && DESTINATIONS.some((x) => x.id === d) ? d : undefined;
+    const to = typeof d === "string" && ALL_DESTINATIONS.some((x) => x.id === d) ? d : undefined;
     return { id: `link-${s}`, text: t.slice(0, MAX_NOTE), sentAt: s, ...(to ? { to } : {}) };
   } catch {
     return null;
@@ -178,7 +183,7 @@ const STARS: Milestone[] = [
   { id: "trappist", name: "TRAPPIST-1", km: ly(40.7), line: "A small star with seven rocky planets." },
   { id: "aldebaran", name: "Aldebaran", km: ly(65), line: "The red eye of Taurus, the bull." },
   { id: "pleiades", name: "The Pleiades", km: ly(444), line: "A cluster of young stars, named in almost every culture on Earth." },
-  { id: "betelgeuse", name: "Betelgeuse", km: ly(550), line: "A red supergiant that will one day explode." },
+  { id: "betelgeuse", name: "Betelgeuse", km: ly(550), line: "The red supergiant at Orion's shoulder, hundreds of times wider than the Sun." },
   { id: "orion", name: "The Orion Nebula", km: ly(1344), line: "A cloud where new stars are being born right now." },
   { id: "centre", name: "The centre of the Milky Way", km: ly(26000), line: "Home to a black hole four million times the mass of the Sun.", landmark: true },
   { id: "andromeda", name: "The Andromeda Galaxy", km: ly(2.5e6), line: "The nearest big galaxy. The light we see from it tonight set off before our species existed.", landmark: true },

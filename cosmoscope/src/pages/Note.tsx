@@ -124,7 +124,7 @@ function Compose({ onSend, hasOthers, onCancel }: { onSend: (text: string, to: s
 
       <div className="mt-10" style={{ opacity: leaving ? 0 : 1, transition: "opacity 600ms" }}>
         <p className="m-0 text-[14px] mb-3" style={{ color: MUTED }}>
-          Its light will spread out in every direction. Choose the star you want to follow it to.
+          Light leaving Earth spreads out in every direction. Choose the star you want to follow it to.
         </p>
         <DestinationPicker value={to} onChange={setTo} />
       </div>
@@ -259,7 +259,7 @@ function Journey({
         ) : (
           <>
             <p className="m-0 mt-2 mb-4 text-[15px] leading-relaxed" style={{ color: BODY }}>
-              Its light is spreading out in every direction. Choose a star to follow it to.
+              Light leaving Earth spreads out in every direction. Choose a star to follow it to.
             </p>
             <DestinationPicker value={picking} onChange={setPicking} />
             <div className="mt-4"><Button primary onClick={() => onChoose(picking)}>Follow it there</Button></div>

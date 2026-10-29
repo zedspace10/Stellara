@@ -187,7 +187,7 @@ export default function SagittariusPanel({ open, onClose }: SagittariusPanelProp
             className="mt-6 w-full rounded-md py-2 text-[14px] font-medium transition-colors hover:bg-white/5"
             style={{ border: "1px solid #2A3546", color: "#E8ECF1" }}
           >
-            Watch a black hole form
+            See how a black hole bends light
           </button>
         </div>
       </div>

@@ -105,7 +105,7 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
         priority: s.id === "voyager-1" ? 3 : 7,
         pos: (t: number) => spacecraftPosition(s, t),
       })),
-      ...DESTINATIONS.map((d) => {
+      ...[...DESTINATIONS, ...(DESTINATIONS.some((d) => d.id === dest.id) ? [] : [dest])].map((d) => {
         const dir = directionOf(d);
         const r = d.ly * LY_AU;
         return {

@@ -2,9 +2,8 @@ import ShaderSim from "./ShaderSim";
 import type { SimPhase } from "./SimulationLayout";
 
 const PHASES: SimPhase[] = [
-  { id: "collapse", label: "Core collapse", short: "Collapse", timecode: "The first second", description: "The iron core of a massive star collapses. If enough mass falls in, nothing can stop it, and a black hole is born.", scienceDetail: "When the core passes about 1.4 times the Sun's mass, it collapses to the density of an atomic nucleus. If what is left is heavier than about 2 to 3 times the Sun's mass, even neutron pressure cannot hold it up, and it becomes a black hole.", color: "#A995FF" },
-  { id: "singularity", label: "The event horizon", short: "Horizon", timecode: "Milliseconds later", description: "The event horizon forms: the boundary beyond which not even light can escape. At the centre, general relativity predicts a point of infinite density.", scienceDetail: "The horizon's radius is 2GM/c², about 30 km for a black hole ten times the Sun's mass. Most physicists expect a theory of quantum gravity to replace the infinite density at the centre with something finite.", color: "#4a0080" },
-  { id: "accretion", label: "Accretion disc", short: "Disc", timecode: "Later", description: "Gas pulled from a companion star spirals inward and forms a disc. Friction heats its inner edge to millions of degrees, glowing in X rays.", scienceDetail: "Gas can orbit stably only down to three times the horizon's radius. Inside that it plunges in. The inner disc of a black hole a few times the Sun's mass reaches around 10 million degrees.", color: "#ff6b35" },
+  { id: "singularity", label: "The event horizon", short: "Horizon", timecode: "The edge", description: "A black hole is so much mass in so little space that, inside a boundary called the event horizon, not even light can escape. At the centre, general relativity predicts a point of infinite density.", scienceDetail: "The horizon's radius is 2GM/c², about 30 km for a black hole ten times the Sun's mass. Most physicists expect a theory of quantum gravity to replace the infinite density at the centre with something finite.", color: "#4a0080" },
+  { id: "accretion", label: "Accretion disc", short: "Disc", timecode: "Around it", description: "Gas pulled from a nearby star spirals inward and forms a disc. Friction heats its inner edge to millions of degrees, glowing in X rays.", scienceDetail: "Gas can orbit stably only down to three times the horizon's radius. Inside that it plunges in. The inner disc of a black hole a few times the Sun's mass reaches around 10 million degrees.", color: "#ff6b35" },
   { id: "lensing", label: "Bent light", short: "Lensing", timecode: "Near the black hole", description: "Gravity bends light around the black hole. Stars behind it appear stretched and doubled, and can form rings.", scienceDetail: "At one and a half times the horizon's radius is the photon sphere, where light can travel in circles, though only unstably. When a background star, the black hole and the viewer line up exactly, the star appears as a ring, called an Einstein ring.", color: "#A9C3E0" },
   { id: "merger", label: "Black holes merge", short: "Merger", timecode: "When two meet", description: "Two black holes spiral together, sending out gravitational waves that stretch and squeeze space itself.", scienceDetail: "The first merger was detected by LIGO on 14 September 2015. Black holes of about 36 and 29 times the Sun's mass, 1.3 billion light years away, merged and turned three Suns' worth of mass into gravitational waves in a fraction of a second.", color: "#a78bfa" },
 ];
@@ -38,33 +37,8 @@ void main() {
   float r = length(q);
   vec3 col = vec3(0.0);
 
-  // 0. A giant star's core gives way
+  // 0. The event horizon: a black disc, with starlight bent around it
   float w = ph(0.0);
-  if (w > 0.001) {
-    float t = lp(0.0);
-    vec3 c = sky(q) * 0.8;
-    float R = mix(0.24, 0.0, smoothstep(0.2, 0.6, t));
-    if (R > 0.002) {
-      float n = fbm(q * 9.0 / R + uTime * 0.25);
-      float limb = sqrt(max(0.0, 1.0 - (r * r) / (R * R)));
-      vec3 sc = mix(vec3(0.55, 0.68, 1.0), vec3(1.0, 0.98, 0.95), 0.35 + 0.5 * n) * (0.4 + 0.9 * limb) * 1.5;
-      c = mix(c, sc, smoothstep(R, R * 0.97, r));
-      c += vec3(0.45, 0.6, 1.0) * 0.35 * exp(-max(r - R, 0.0) * 10.0 / max(R, 0.05));
-    }
-    float flash = smoothstep(0.56, 0.6, t) * (1.0 - smoothstep(0.6, 0.85, t));
-    c += vec3(1.0, 0.92, 0.85) * flash * 3.0 * exp(-r * 4.0);
-    float sh = (t - 0.58) * 1.5;
-    if (sh > 0.0) {
-      float fil = 0.5 + 0.8 * fbm(vec2(atan(q.y, q.x) * 5.0, r * 9.0));
-      c += vec3(1.0, 0.55, 0.28) * exp(-pow((r - sh) / 0.03, 2.0)) * fil * 1.6 * (1.0 - smoothstep(0.75, 1.0, t));
-      c += vec3(0.5, 0.65, 1.0) * 0.18 * exp(-pow((r - sh * 0.8) / 0.09, 2.0)) * (1.0 - t);
-    }
-    c *= 1.0 - smoothstep(0.62, 0.85, t) * smoothstep(0.04, 0.03, r);
-    col += c * w;
-  }
-
-  // 1. The event horizon: a black disc, with starlight bent around it
-  w = ph(1.0);
   if (w > 0.001) {
     float sh = 0.12;
     vec3 c = sky(bend(q, vec2(0.0), 0.2));
@@ -73,10 +47,10 @@ void main() {
     col += c * w;
   }
 
-  // 2. A disc of hot gas, fed by a companion star
-  w = ph(2.0);
+  // 1. A disc of hot gas, fed by a companion star
+  w = ph(1.0);
   if (w > 0.001) {
-    float t = lp(2.0);
+    float t = lp(1.0);
     float grow = smoothstep(0.0, 0.5, t);
     float sh = 0.12, k = 0.17, rin = 0.19, rout = mix(0.25, 0.62, grow);
     vec3 c = sky(bend(q, vec2(0.0), 0.22)) * 0.6;
@@ -108,10 +82,10 @@ void main() {
     col += c * w;
   }
 
-  // 3. Bent light: a galaxy far behind lines up, and becomes a ring
-  w = ph(3.0);
+  // 2. Bent light: a galaxy far behind lines up, and becomes a ring
+  w = ph(2.0);
   if (w > 0.001) {
-    float t = lp(3.0);
+    float t = lp(2.0);
     float sh = 0.12, e = 0.24;
     vec2 b = bend(q, vec2(0.0), e);
     vec3 c = sky(b);
@@ -123,10 +97,10 @@ void main() {
     col += c * w;
   }
 
-  // 4. Two black holes spiral together, and the waves they send out
-  w = ph(4.0);
+  // 3. Two black holes spiral together, and the waves they send out
+  w = ph(3.0);
   if (w > 0.001) {
-    float t = lp(4.0);
+    float t = lp(3.0);
     float tm = 0.7;
     float u = clamp(1.0 - t / tm, 0.0, 1.0);
     float sep = 0.34 * pow(u, 0.25);

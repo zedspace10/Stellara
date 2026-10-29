@@ -10,7 +10,7 @@ const RULE = "#1C2533";
 
 // A line in our own words for the best known galaxies.
 const NOTES: Record<string, string> = {
-  lmc: "A small galaxy in orbit around the Milky Way, easy to see without a telescope from the southern hemisphere.",
+  lmc: "A small galaxy close to our own, easy to see without a telescope from the southern hemisphere.",
   smc: "The Large Magellanic Cloud's smaller companion, also visible to the naked eye from the southern hemisphere.",
   m33: "The smallest of the three big spiral galaxies in our Local Group.",
   ic342: "A big, bright spiral that we see only dimly, because the dust of our own galaxy's disc lies in front of it.",
@@ -27,7 +27,7 @@ const NOTES: Record<string, string> = {
   m64: "A dark band of dust across its centre gives it its name.",
   whale: "A spiral seen edge on, long and slightly bent like a whale.",
   needle: "Seen exactly edge on, it is one of the thinnest looking galaxies in the sky.",
-  fireworks: "Ten supernovas have been seen in it in the last century, more than in any other galaxy known.",
+  fireworks: "It lies close to the plane of the Milky Way, so we see it through a veil of our own galaxy's dust.",
 };
 
 export default function NearbyGalaxyPanel({ galaxy, onClose }: { galaxy: NearbyGalaxy | null; onClose: () => void }) {

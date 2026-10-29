@@ -1192,7 +1192,6 @@ export default function SolarSystem() {
     const nebulaeData = [
       { id: 'eagle-nebula', name: 'Eagle Nebula', pos: [-3000, 50, 2000], col: 0x8844aa, s: 800 },
       { id: 'orion-nebula', name: 'Orion Nebula', pos: [4500, -20, 1000], col: 0x4466ff, s: 600 },
-      { id: 'crab-nebula', name: 'Crab Nebula', pos: [5000, 100, -1000], col: 0xff6644, s: 400 },
       { id: 'lagoon-nebula', name: 'Lagoon Nebula', pos: [-1500, -30, 3000], col: 0xaa44cc, s: 700 }
     ];
 
@@ -1422,7 +1421,7 @@ export default function SolarSystem() {
     const VOIDS = [
       {
         id: 'bootes-void', name: 'Boötes Void', pos: [80000, 5000, -60000] as [number,number,number], radius: 38000,
-        info: 'One of the largest known voids, about 330 million light years across. Only around 60 galaxies found where thousands were expected.',
+        info: 'One of the largest known voids, about 330 million light years across. Only about 60 galaxies have been found inside it, where around 2,000 would be expected.',
       },
       {
         id: 'local-void', name: 'Local Void', pos: [-20000, -3000, 30000] as [number,number,number], radius: 18000,

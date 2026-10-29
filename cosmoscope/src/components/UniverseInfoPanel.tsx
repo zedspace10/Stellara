@@ -23,7 +23,7 @@ const UNIVERSE_DATA: Record<string, {
       { label: 'Galaxies found', value: '~60 (expected: thousands)' },
       { label: 'Discovered', value: '1981 (Robert Kirshner et al.)' },
     ],
-    description: `One of the largest known cosmic voids, a vast region of space containing almost no galaxies. The Boötes Void spans roughly 330 million light years across. When it was discovered in 1981, astronomers found only 60 galaxies where thousands were expected, leading some to nickname it "The Great Nothing."`,
+    description: `One of the largest known cosmic voids, a vast region of space containing almost no galaxies. The Boötes Void spans roughly 330 million light years across. It was found in 1981. Astronomers have since counted only about 60 galaxies inside it, where around 2,000 would be expected, which is why it is nicknamed "the Great Nothing".`,
     fact: `If the Milky Way sat at the centre of the Boötes Void, astronomers would probably not have known other galaxies existed until the 1960s.`,
   },
   'local-void': {

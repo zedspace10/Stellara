@@ -97,7 +97,7 @@ export const PINS: Pin[] = [
     body: [
       "The golden galaxies belong to a cluster whose light set out when the universe was about 8 billion years old, before our Sun had formed.",
       "The cluster is so heavy it bends space, and with it the light of galaxies far behind. The stretched orange shapes are much more distant galaxies, magnified and warped as their light passes through.",
-      "One shines from just 800 million years after the Big Bang. Its light has been bent along several paths, so we see the same galaxy four or more times at once.",
+      "One shines from just 800 million years after the Big Bang. Its light has been bent along several paths, so we see the same galaxy several times at once.",
     ],
     reflection: "What we see always depends on what lies between us and the thing we are looking at.",
     simulation: { id: "black-hole", label: "See how gravity bends light" },
