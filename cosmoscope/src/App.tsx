@@ -40,7 +40,6 @@ const SimulationsLanding = page(() => import("@/pages/simulations/SimulationsLan
 const BigBangSim = page(() => import("@/pages/simulations/BigBangSim"));
 const EarthSim = page(() => import("@/pages/simulations/EarthSim"));
 const StarBirthSim = page(() => import("@/pages/simulations/StarBirthSim"));
-const StarDeathSim = page(() => import("@/pages/simulations/StarDeathSim"));
 const BlackHoleSim = page(() => import("@/pages/simulations/BlackHoleSim"));
 const About = page(() => import("@/pages/About"));
 const Discoveries = page(() => import("@/pages/Discoveries"));
@@ -62,6 +61,7 @@ const RETIRED: [string, string][] = [
   ["/launches", "/tonight"],
   ["/blackholes", "/simulations/black-hole"],
   ["/simulations/milky-way-birth", "/simulations"],
+  ["/simulations/star-death", "/simulations"],
   ["/simulations/solar-system-formation", "/simulations"],
   ["/simulations/inside-black-hole", "/simulations/black-hole"],
   ["/build-universe", "/simulations"],
@@ -91,7 +91,6 @@ function Router() {
           <Route path="/simulations/big-bang" component={BigBangSim} />
           <Route path="/simulations/earth" component={EarthSim} />
           <Route path="/simulations/star-birth" component={StarBirthSim} />
-          <Route path="/simulations/star-death" component={StarDeathSim} />
           <Route path="/simulations/black-hole" component={BlackHoleSim} />
           <Route path="/note" component={NotePage} />
           <Route path="/discoveries" component={Discoveries} />
