@@ -28,8 +28,8 @@ const PLACES: Place[] = [
   { path: "/note", label: "Notes", tab: "md" },
   { path: "/discoveries", label: "This week", long: "This week in the universe", blurb: "A new Hubble or Webb picture every week", tab: "xl" },
   { path: "/tonight", label: "Tonight", tab: "md" },
-  { path: "/scale", label: "Scale", tab: "md" },
-  { path: "/simulations", label: "Simulations", blurb: "The biggest events in the universe, step by step", tab: "md" },
+  { path: "/scale", label: "Scale", long: "Scale of the universe", blurb: "Zoom from the Planck length out to the whole universe" },
+  { path: "/simulations", label: "Simulations", blurb: "The biggest events in the universe, step by step" },
   { path: "/exoplanets", label: "Other worlds", blurb: "More than 6,000 planets around other stars", tab: "xl" },
   { path: "/constellations", label: "Constellation guide", blurb: "The shapes in the sky, and their stories" },
   { path: "/apod", label: "Picture of the day", blurb: "NASA's astronomy picture, new every day" },
@@ -45,7 +45,7 @@ const TABS = PLACES.filter((p) => p.tab);
 const MENU = PLACES.filter((p) => p.tab !== "md");
 
 // On phones the bar has room for four places and More.
-const PHONE_BAR_PATHS = ["/", "/note", "/tonight", "/scale"];
+const PHONE_BAR_PATHS = ["/", "/note", "/tonight", "/discoveries"];
 const PHONE_BAR = PLACES.filter((p) => PHONE_BAR_PATHS.includes(p.path));
 const PHONE_MORE = PLACES.filter((p) => !PHONE_BAR_PATHS.includes(p.path));
 
@@ -271,7 +271,10 @@ export default function Navigation() {
               style={{ fontSize: 13, fontWeight: 500, color: active ? TEXT : MUTED }}
             >
               {active && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-[2px] rounded-full" style={{ background: TINT }} />}
-              {item.label}
+              <span className="relative whitespace-nowrap">
+                {item.label}
+                {item.path === "/discoveries" && pinIsNew && <NewDot className="absolute -right-2.5 top-0" />}
+              </span>
             </Link>
           );
         })}
@@ -283,10 +286,7 @@ export default function Navigation() {
           style={{ fontSize: 13, fontWeight: 500, color: phoneMoreActive || sheetOpen ? TEXT : MUTED }}
         >
           {phoneMoreActive && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-[2px] rounded-full" style={{ background: TINT }} />}
-          <span className="relative">
-            More
-            {pinIsNew && <NewDot className="absolute -right-2.5 top-0" />}
-          </span>
+          More
         </button>
       </nav>
 
