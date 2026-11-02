@@ -33,6 +33,29 @@ export interface Pin {
 
 export const PINS: Pin[] = [
   {
+    id: "cats-head-nebula",
+    date: "2026-10-29",
+    title: "A cat in the dust",
+    object: "Cat's Head Nebula",
+    ra: [10, 45, 59.76],
+    dec: [-60, 6, 23.76],
+    mly: 0.0075,
+    constellation: "Carina, the Keel",
+    image: {
+      src: "https://www.esa.int/var/esa/storage/images/esa_multimedia/images/2026/10/cat_s_head_nebula_webb_nircam_image/27592740-1-eng-GB/Cat_s_Head_Nebula_Webb_NIRCam_image_pillars.jpg",
+      alt: "A tall dark filament of dust shaped like a sitting cat with a glowing yellow eye, against a blue field crowded with stars.",
+      credit: "NASA, ESA, CSA, STScI. Image Processing: J. Depasquale (STScI)",
+      licence: "CC BY 4.0",
+    },
+    source: { label: "ESA: Cat's Head Nebula (Webb NIRCam image)", href: "https://www.esa.int/ESA_Multimedia/Images/2026/10/Cat_s_Head_Nebula_Webb_NIRCam_image" },
+    body: [
+      "A dark pillar of dust and gas inside the Carina Nebula, a huge star forming region in our own galaxy. Its outline looks like a cat sitting with its back to us, head turned to the right. One bright spot makes a glowing eye, and it may be a young star still wrapped in dust.",
+      "This is Webb's near infrared view. Dust that looks solid to Hubble turns partly see through here, showing the surface of the pillar and a crowd of stars, some still half hidden. A few faint galaxies far beyond the Milky Way show through as well.",
+      "Ultraviolet light and winds from massive stars nearby probably carved the shape, wearing away the thinner gas and leaving the denser material standing for now. Hubble's visible light view and Webb's infrared views each show something different, and together they help astronomers study how stars form.",
+      "Its light left about 7,500 years ago, when farming was spreading into central Europe and writing had not yet been invented.",
+    ],
+  },
+  {
     id: "n159",
     date: "2026-10-22",
     title: "Stars brewing in a cauldron",
