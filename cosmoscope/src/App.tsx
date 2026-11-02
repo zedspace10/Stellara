@@ -1,13 +1,8 @@
 import { Switch, Route, Redirect, Router as WouterRouter } from "wouter";
 import { lazy, Suspense, useState, type ComponentType } from "react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { AnimatePresence, motion } from "framer-motion";
 
 import Navigation from "@/components/Navigation";
 import StarField from "@/components/StarField";
-import WelcomeScreen from "@/components/WelcomeScreen";
 
 // Each page is loaded only when someone opens it, so the first visit downloads far less.
 // If a page fails to load because the site was updated while it was open, reload once to fetch
@@ -29,6 +24,8 @@ function page(load: () => Promise<{ default: ComponentType<any> }>) {
   );
 }
 
+// The welcome only shows on a first visit to the front door, so its animation code loads only then.
+const WelcomeScreen = page(() => import("@/components/WelcomeScreen"));
 const NotFound = page(() => import("@/pages/not-found"));
 const SolarSystem = page(() => import("@/pages/SolarSystem"));
 const Tonight = page(() => import("@/pages/Tonight"));
@@ -46,8 +43,6 @@ const Discoveries = page(() => import("@/pages/Discoveries"));
 const Credits = page(() => import("@/pages/Credits"));
 const NotePage = page(() => import("@/pages/Note"));
 const Privacy = page(() => import("@/pages/Privacy"));
-
-const queryClient = new QueryClient();
 
 // Pages that have been retired, and where their old links now go.
 const RETIRED: [string, string][] = [
@@ -78,8 +73,7 @@ function Loading() {
 
 function Router() {
   return (
-    <AnimatePresence mode="wait">
-      <Suspense fallback={<Loading />}>
+    <Suspense fallback={<Loading />}>
         <Switch>
           <Route path="/" component={SolarSystem} />
           <Route path="/tonight" component={Tonight} />
@@ -104,8 +98,7 @@ function Router() {
           ))}
           <Route component={NotFound} />
         </Switch>
-      </Suspense>
-    </AnimatePresence>
+    </Suspense>
   );
 }
 
@@ -134,7 +127,7 @@ function App() {
 
   if (!welcomed) {
     return (
-      <AnimatePresence>
+      <Suspense fallback={<Loading />}>
         <WelcomeScreen
           onComplete={() => {
             try {
@@ -145,30 +138,27 @@ function App() {
             setWelcomed(true);
           }}
         />
-      </AnimatePresence>
+      </Suspense>
     );
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6 }}
-            className="relative min-h-screen font-sans selection:bg-primary/30"
-          >
-            <StarField />
-            <Navigation />
-            <main className="relative z-10 pb-20 md:pb-0">
-              <Router />
-            </main>
-          </motion.div>
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+      <style>{`
+        @keyframes paleFadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @media (prefers-reduced-motion: reduce) { .pale-fade { animation: none !important; } }
+      `}</style>
+      <div
+        className="pale-fade relative min-h-screen font-sans selection:bg-primary/30"
+        style={{ animation: "paleFadeIn 600ms ease-out" }}
+      >
+        <StarField />
+        <Navigation />
+        <main className="relative z-10 pb-20 md:pb-0">
+          <Router />
+        </main>
+      </div>
+    </WouterRouter>
   );
 }
 

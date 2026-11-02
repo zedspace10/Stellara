@@ -2,6 +2,35 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
+import type { Plugin } from "vite";
+import { PAGE_META, SITE_META } from "./src/data/pageMeta";
+import { LATEST_PIN } from "./src/data/pins";
+
+// Writes page-meta.json next to the site, so the server can give each shared link its own title,
+// line and picture. This week uses the newest pin's own picture.
+function pageMeta(): Plugin {
+  return {
+    name: "pale-page-meta",
+    apply: "build",
+    generateBundle() {
+      const firstSentence = (LATEST_PIN.body[0] ?? "").split(/(?<=\.)\s/)[0];
+      const pages = {
+        ...PAGE_META,
+        "/discoveries": {
+          title: `This week: ${LATEST_PIN.title} | PALE`,
+          description: firstSentence || PAGE_META["/discoveries"].description,
+          image: LATEST_PIN.image.src,
+          imageAlt: LATEST_PIN.image.alt,
+        },
+      };
+      this.emitFile({
+        type: "asset",
+        fileName: "page-meta.json",
+        source: JSON.stringify({ site: SITE_META, pages }, null, 2),
+      });
+    },
+  };
+}
 
 const port = Number(process.env.PORT) || 3000;
 const basePath = process.env.BASE_PATH || '/';
@@ -12,6 +41,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    pageMeta(),
   ],
   resolve: {
     alias: {

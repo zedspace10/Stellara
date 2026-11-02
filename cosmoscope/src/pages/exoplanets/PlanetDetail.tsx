@@ -262,7 +262,6 @@ export default function PlanetDetail({ planet, allPlanets, onClose, onNavigate }
                 </div>
               ))}
             </div>
-            <p className="text-xs text-white/25 mt-2 text-center">These numbers are humbling.</p>
           </section>
         )}
 

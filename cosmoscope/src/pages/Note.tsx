@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
 import Footer from "@/components/Footer";
 import {
@@ -7,7 +7,9 @@ import {
   milestonesFor, kmTravelled, whenReached, duration, bigKm, dateLabel, calendarFile, inSentence,
   DESTINATIONS, DEFAULT_DESTINATION, destinationOf, arrivalOf,
 } from "@/lib/notes";
-import NoteFollow from "@/components/NoteFollow";
+
+// The 3D view of a note's journey needs three.js, so it loads only when a note is being followed.
+const NoteFollow = lazy(() => import("@/components/NoteFollow"));
 
 const BG = "#05070C";
 const TEXT = "#E8ECF1";
@@ -254,7 +256,9 @@ function Journey({
                 ? new Date(arrivalOf(note, dest)).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
                 : `a day about ${Math.round((arrivalOf(note, dest) - now) / YEAR_MS).toLocaleString("en-GB")} years from now`}.
             </p>
-            <NoteFollow note={note} dest={dest} />
+            <Suspense fallback={<div className="rounded-lg" style={{ minHeight: 360, background: PANEL, border: `1px solid ${RULE}` }} aria-busy="true" />}>
+              <NoteFollow note={note} dest={dest} />
+            </Suspense>
           </>
         ) : (
           <>

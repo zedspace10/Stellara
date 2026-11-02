@@ -534,7 +534,7 @@ export default function SolarSystem() {
   }, [triggerTransition]);
 
   useEffect(() => {
-    document.title = "Interactive Universe | PALE";
+    document.title = "PALE: see where you are in the universe";
     if (!webglSupported || !mountRef.current || !labelMountRef.current) return;
 
     // Setup Scene

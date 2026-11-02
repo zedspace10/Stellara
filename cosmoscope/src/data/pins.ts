@@ -9,7 +9,8 @@
 //    been travelling (for example 5,800 for light that left 5.8 billion years ago).
 // 5. Image: the image file's web address from NASA or ESA, and its credit line exactly as they
 //    give it. Only use images credited to NASA, ESA, STScI, Hubble or Webb.
-// 6. Body: the science, in our own words. Reflection: the PALE line, kept separate.
+// 6. Body: the science, in our own words, plainly. Reflection is optional: one plain sentence,
+//    kept separate from the science, never a slogan. Leave it out if it would sound like one.
 
 export interface Pin {
   id: string;
@@ -53,7 +54,7 @@ export const PINS: Pin[] = [
       "The whole region is less than three million years old. Its gas holds fewer heavy elements than the Milky Way's, much like galaxies in the early universe, so it shows how stars were made when the universe was young.",
       "Its light left 161,000 years ago, when our own species was still young and living in Africa.",
     ],
-    reflection: "Every star in that cloud, and every world that may one day circle them, begins like this. So did ours.",
+    reflection: "Our own Sun formed in a cloud of gas like this one, about 4.6 billion years ago.",
     simulation: { id: "earth", label: "See how our own world was made" },
   },
   {
@@ -76,7 +77,6 @@ export const PINS: Pin[] = [
       "The light in this picture left it about 37 million years ago, when Antarctica was still largely free of ice and there were no humans for tens of millions of years to come.",
       "Hubble took it while studying 260 small galaxies around 22 galaxies like the Milky Way. Small galaxies are a test of our best ideas about how the universe built itself, and so far those ideas do not quite fit.",
     ],
-    reflection: "Somewhere in that thin line of light, someone may be looking back at a small spiral of their own.",
   },
   {
     id: "macs-j0454",
@@ -99,7 +99,6 @@ export const PINS: Pin[] = [
       "The cluster is so heavy it bends space, and with it the light of galaxies far behind. The stretched orange shapes are much more distant galaxies, magnified and warped as their light passes through.",
       "One shines from just 800 million years after the Big Bang. Its light has been bent along several paths, so we see the same galaxy several times at once.",
     ],
-    reflection: "What we see always depends on what lies between us and the thing we are looking at.",
     simulation: { id: "black-hole", label: "See how gravity bends light" },
   },
   {
@@ -123,7 +122,6 @@ export const PINS: Pin[] = [
       "The secret is at the core: the stars and gas nearest the centre spin at a right angle to the rest of the galaxy. Astronomers think something from outside caused it, perhaps gas falling in, or a smaller galaxy swallowed long ago.",
       "Its light left it about 55 million years ago, around the time Earth was so warm that palm trees grew near the Arctic.",
     ],
-    reflection: "Something can look perfectly still from far away and still be turning in its own direction at its heart.",
   },
 ];
 

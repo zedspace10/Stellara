@@ -83,7 +83,7 @@ Cygnus is the swan flying down the Milky Way. In myth it is either Zeus in disgu
 
 **Stars worth knowing.** Deneb (α Cyg) marks the tail: one of the most luminous stars known, blazing from roughly 2,600 light years away. Most bright stars are our near neighbours, but Deneb is seen across a huge stretch of the galaxy. At the swan's head, Albireo is the sky's most beloved double star: one gold, one sapphire-blue, exquisite in any telescope.
 
-**Deep sky.** The Milky Way runs straight through Cygnus, split by the dark Cygnus Rift. Binoculars reveal endless star fields; long-exposure photos show the North America Nebula near Deneb.
+**Deep sky.** The Milky Way runs straight through Cygnus, split by the dark Cygnus Rift. Binoculars show dense fields of stars; long-exposure photos show the North America Nebula near Deneb.
 
 **From the UK.** Superb, nearly circumpolar, and directly overhead on late summer evenings as part of the Summer Triangle with Vega and Altair.
 
@@ -95,7 +95,7 @@ Cygnus is the swan flying down the Milky Way. In myth it is either Zeus in disgu
 
 Castor and Pollux were twin brothers with different fathers: one mortal, one divine. When mortal Castor died, Pollux begged Zeus to share his immortality, and the brothers were placed in the sky together: the divine ideal of loyalty, and ancient patrons of sailors, who saw them in the glowing plasma of St Elmo's fire.
 
-**Stars worth knowing.** The twins' heads are a study in contrast. Pollux (β Gem) is an orange giant, and the nearest giant star to Earth known to host a planet. Castor (α Gem) looks like one star but is actually *six*: a spectacular sextuple system of three tight pairs bound in a slow gravitational dance.
+**Stars worth knowing.** The twins' heads are a study in contrast. Pollux (β Gem) is an orange giant, and the nearest giant star to Earth known to host a planet. Castor (α Gem) looks like one star but is actually *six*: a system of six stars: three tight pairs held together by gravity.
 
 **Deep sky.** M35, a rich open cluster at Castor's foot, is a binocular gem. In the same telescope view sits a fainter cluster, NGC 2158, about four times farther away.
 
@@ -199,7 +199,7 @@ The greatest of Greek heroes appears in the sky kneeling, club raised. The ancie
 
 **From the UK.** Very well placed, high overhead on June to August evenings.
 
-**One extraordinary fact.** In 1974, humanity aimed the giant Arecibo radio dish at M13 and transmitted a message describing DNA, our solar system and ourselves. It will arrive in about 25,000 years. Hercules is also roughly the direction our Sun is travelling through the galaxy: we are all heading toward the Hero at 20 kilometres per second.
+**One extraordinary fact.** In 1974, humanity aimed the giant Arecibo radio dish at M13 and transmitted a message describing DNA, our solar system and ourselves. It will arrive in about 25,000 years. Hercules is also roughly the direction the Sun is moving through our part of the galaxy, at about 20 kilometres a second.
 `,
 
   aquila: `

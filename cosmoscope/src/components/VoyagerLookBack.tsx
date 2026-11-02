@@ -31,9 +31,8 @@ export default function VoyagerLookBack({ onClose }: Props) {
   const lines = [
     "14 February 1990.",
     "Voyager 1 had finished its tour of the planets. Before its cameras were switched off for good, it turned around and looked back.",
-    "From 6 billion km away, Earth was smaller than a single pixel. A speck in a ray of sunlight.",
+    "From 6 billion km away, Earth was smaller than a single pixel, sitting in a band of scattered sunlight.",
     `Today Voyager 1 is ${billions} billion km away, more than ${timesWord} as far.`,
-    "Every story there has ever been happened on that point of light. Yours too.",
   ];
 
   useEffect(() => {
