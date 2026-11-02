@@ -162,7 +162,7 @@ export function pinRaDec(p: Pin) {
 /** Plain words for how far away it is. */
 export function pinDistance(p: Pin) {
   if (p.mly >= 1000) return `light that left ${(p.mly / 1000).toFixed(1)} billion years ago`;
-  if (p.mly < 1) return `${(Math.round(p.mly * 1000) * 1000).toLocaleString("en-GB")} light years away`;
+  if (p.mly < 1) return `${(Math.round(p.mly * 10000) * 100).toLocaleString("en-GB")} light years away`;
   return `${p.mly < 10 ? p.mly.toFixed(1) : Math.round(p.mly)} million light years away`;
 }
 
