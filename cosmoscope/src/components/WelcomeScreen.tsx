@@ -175,7 +175,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps) {
             PALE
           </h1>
           <p className="mt-5 mb-0 font-serif text-[20px] md:text-[22px]" style={{ color: "#A3AFBC" }}>
-            A calm space to think.
+            See where you are in the universe.
           </p>
           <button
             onClick={onComplete}

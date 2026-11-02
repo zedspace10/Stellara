@@ -47,8 +47,8 @@ export default function About() {
 
         <Section title="Why we built it">
           <p className="m-0">
-            Space tools have often been locked behind expensive software or paywalls, or cluttered with ads. We think the
-            universe belongs to everyone, and that a moment of wonder should never cost anything.
+            Space tools have often been locked behind expensive software or paywalls, or cluttered with ads. PALE is free
+            for everyone, with no ads.
           </p>
         </Section>
 

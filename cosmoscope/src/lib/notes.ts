@@ -212,7 +212,7 @@ export function milestonesFor(sentAt: number): Milestone[] {
   ];
   const earth = heliocentric("earth", sentAt);
   if (earth) {
-    list.push({ id: "sun", name: "The Sun", km: au(earth.r), line: "Sunlight makes this same journey, the other way, every time it reaches you.", landmark: true });
+    list.push({ id: "sun", name: "The Sun", km: au(earth.r), line: "Sunlight takes about eight minutes to cover this distance.", landmark: true });
     Object.keys(PLANET_LINES).forEach((id) => {
       const p = heliocentric(id, sentAt);
       if (!p) return;

@@ -3,6 +3,7 @@ import compression from 'compression';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import https from 'https';
+import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -94,15 +95,56 @@ app.get('/data/exoplanets', async (req, res) => {
   }
 });
 
+// Each page's own title, line and picture, written into the page for apps that make link
+// previews (they do not run the site's code). page-meta.json is made by the build.
+let shell = '';
+let meta = { site: null, pages: {} };
+try {
+  shell = fs.readFileSync(path.join(PUBLIC, 'index.html'), 'utf8');
+  meta = JSON.parse(fs.readFileSync(path.join(PUBLIC, 'page-meta.json'), 'utf8'));
+} catch (err) {
+  console.error('Page previews unavailable:', err.message);
+}
+
+// The address previews point at, whichever host name a request came in on.
+const ORIGIN = process.env.SITE_ORIGIN || 'https://stellaraspace.com';
+
+const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+function pageFor(req) {
+  const p = req.path.replace(/\/+$/, '') || '/';
+  const page = meta.pages[p] || meta.site;
+  if (!shell || !page) return shell;
+  const image = page.image || `${ORIGIN}/opengraph.jpg`;
+  const set = (html, attr, name, value) =>
+    html.replace(new RegExp(`(<meta ${attr}="${name}" content=")[^"]*(")`), `$1${esc(value)}$2`);
+  let html = shell.replace(/<title>[^<]*<\/title>/, `<title>${esc(page.title)}</title>`);
+  html = set(html, 'name', 'description', page.description);
+  html = set(html, 'property', 'og:title', page.title);
+  html = set(html, 'property', 'og:description', page.description);
+  html = set(html, 'property', 'og:image', image);
+  html = set(html, 'property', 'og:image:alt', page.imageAlt || 'PALE. A single pale blue dot among the stars.');
+  html = set(html, 'name', 'twitter:title', page.title);
+  html = set(html, 'name', 'twitter:description', page.description);
+  html = set(html, 'name', 'twitter:image', image);
+  if (page.image) {
+    // A weekly picture has its own size, so leave the size hints out rather than give wrong ones.
+    html = html.replace(/\s*<meta property="og:image:(width|height)" content="[^"]*" \/>/g, '');
+  }
+  return html.replace('</head>', `  <meta property="og:url" content="${esc(ORIGIN + (p === '/' ? '/' : p))}" />\n  </head>`);
+}
+
 // Files with a fingerprint in their name never change, so browsers can keep them for a year.
 // Everything else, including the page itself, is checked each time so updates arrive at once.
 app.use('/assets', express.static(path.join(PUBLIC, 'assets'), { maxAge: '365d', immutable: true }));
-app.use(express.static(PUBLIC, { maxAge: 0 }));
+app.use(express.static(PUBLIC, { maxAge: 0, index: false }));
 
-// SPA fallback
+// Every page is the same app, with that page's preview written in.
 app.get('*', (req, res) => {
   res.set('Cache-Control', 'no-cache');
-  res.sendFile(path.join(PUBLIC, 'index.html'));
+  const html = pageFor(req);
+  if (html) res.type('html').send(html);
+  else res.sendFile(path.join(PUBLIC, 'index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {

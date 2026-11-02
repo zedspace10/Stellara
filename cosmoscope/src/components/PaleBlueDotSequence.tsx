@@ -13,8 +13,7 @@ export default function PaleBlueDotSequence({ onComplete, onStart }: PaleBlueDot
     "Keep zooming out.",
     "Past the planets. Past the edge of the Sun's wind.",
     "Now look back. That faint point of light is Earth.",
-    "Every story there has ever been happened on that point.",
-    "Whatever you are carrying today, it is happening there too.",
+    "Voyager 1 photographed it like this in 1990, from about 6 billion km away.",
     "This is home."
   ];
 

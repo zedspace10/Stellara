@@ -63,7 +63,7 @@ export default function APOD() {
   };
 
   useEffect(() => {
-    document.title = "APOD | PALE";
+    document.title = "Picture of the day | PALE";
     fetchApod();
 
     // Fetch archive (past 7 days)
