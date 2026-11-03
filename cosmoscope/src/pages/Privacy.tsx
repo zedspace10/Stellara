@@ -23,7 +23,7 @@ export default function Privacy() {
     <div className="min-h-screen px-6 pt-28 pb-20" style={{ background: "#05070C", color: "#E8ECF1" }}>
       <div className="max-w-2xl mx-auto">
         <h1 className="m-0 text-[40px] md:text-[56px] leading-[1.05]">Privacy policy</h1>
-        <p className="mt-2 mb-12 text-sm" style={{ color: "#7C8794" }}>Last updated: 2 November 2026</p>
+        <p className="mt-2 mb-12 text-sm" style={{ color: "#7C8794" }}>Last updated: 3 November 2026</p>
 
         <P>
           Stellara runs the PALE mobile app and the PALE website at stellaraspace.com. This page explains what
@@ -54,8 +54,7 @@ export default function Privacy() {
           browser for your own calendar.
         </P>
         <P>
-          Picture of the day, This week and the Voyager view load images from NASA and ESA, and the exoplanet pages load NASA's exoplanet archive through our own site
-          (only if our site cannot reach NASA does your browser fall back to the corsproxy.io relay). Our typefaces are served from our own site. Tonight is worked out entirely in your
+          Picture of the day, This week and the Voyager view load images from NASA and ESA, and the exoplanet pages load NASA's exoplanet archive through our own site. Our typefaces are served from our own site. Tonight is worked out entirely in your
           browser. As with any website, those
           services can see your IP address when your browser contacts them.
         </P>
