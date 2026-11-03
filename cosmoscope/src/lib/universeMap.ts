@@ -50,6 +50,32 @@ export function equatorialToGalactic(raHours: number, decDeg: number) {
   return { l, b };
 }
 
+/** Pictures closer than this, in millions of light years, are inside our own galaxy. */
+export const IN_GALAXY_MLY = 0.1;
+
+export function isInGalaxy(mly: number) {
+  return mly < IN_GALAXY_MLY;
+}
+
+// In the Milky Way view the Sun sits here, about 26,000 light years from the centre, with the
+// galaxy's north pole straight up. Things inside the galaxy are placed from the Sun, in their real
+// direction and at their real distance on that scale.
+export const GALAXY_SUN = new THREE.Vector3(-4500, 0, 1500);
+const GALAXY_UNITS_PER_LY = GALAXY_SUN.length() / 26000;
+
+/** Where a picture inside our galaxy sits in the Milky Way view. */
+export function galaxyPinScene(raHours: number, decDeg: number, mly: number) {
+  const { l, b } = equatorialToGalactic(raHours, decDeg);
+  const toCentre = GALAXY_SUN.clone().negate().normalize();
+  const up = new THREE.Vector3(0, 1, 0);
+  const towardsL90 = new THREE.Vector3().crossVectors(up, toCentre);
+  const lr = (l * Math.PI) / 180, br = (b * Math.PI) / 180;
+  const dir = toCentre.multiplyScalar(Math.cos(br) * Math.cos(lr))
+    .add(towardsL90.multiplyScalar(Math.cos(br) * Math.sin(lr)))
+    .add(up.multiplyScalar(Math.sin(br)));
+  return GALAXY_SUN.clone().addScaledVector(dir, mly * 1e6 * GALAXY_UNITS_PER_LY);
+}
+
 /** Where a pin sits in the universe view. Very distant ones are brought in to the edge of the view. */
 export function pinScene(raHours: number, decDeg: number, mly: number) {
   const { l, b } = equatorialToGalactic(raHours, decDeg);
