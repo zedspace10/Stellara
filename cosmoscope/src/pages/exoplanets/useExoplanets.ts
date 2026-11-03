@@ -7,22 +7,9 @@ const CACHE_KEY = "stellara_exoplanets_v4";
 const CACHE_TS_KEY = "stellara_exoplanets_ts_v4";
 const CACHE_TTL = 24 * 60 * 60 * 1000;
 
-const COLS = [
-  "pl_name", "hostname", "discoverymethod", "disc_year",
-  "pl_orbper", "pl_rade", "pl_bmasse", "pl_eqt",
-  "sy_dist", "sy_pnum", "sy_snum", "st_spectype", "ra", "dec",
-].join(",");
-
-const NASA_URL =
-  `https://exoplanetarchive.ipac.caltech.edu/TAP/sync` +
-  `?QUERY=${encodeURIComponent(`select ${COLS} from pscomppars where pl_controv_flag=0`)}` +
-  `&FORMAT=json`;
-
-// Our own server fetches the archive and keeps a copy for a day. The public relays below are
-// only a backup in case our server cannot reach NASA.
+// Our own server fetches the archive and keeps a copy for a day, and keeps serving that copy if
+// NASA cannot be reached. Visitors' browsers never go to an outside relay.
 const OWN = `${import.meta.env.BASE_URL.replace(/\/$/, "")}/data/exoplanets`;
-const PROXY_A = `https://corsproxy.io/?url=${encodeURIComponent(NASA_URL)}`;
-const PROXY_B = `https://api.allorigins.win/raw?url=${encodeURIComponent(NASA_URL)}`;
 
 function readCache(): { data: ExoplanetData[]; ts: number } | null {
   try {
@@ -68,7 +55,7 @@ const LOADING_MSGS = [
   "Connecting to NASA Exoplanet Archive…",
   "Scanning confirmed worlds…",
   "Loading more than 6,000 planets…",
-  "Preparing your galaxy…",
+  "Nearly there…",
 ];
 
 export function useExoplanets(): ExoplanetsState {
@@ -137,38 +124,10 @@ export function useExoplanets(): ExoplanetsState {
         if ((e as Error).name === "AbortError") return;
       }
 
-      // 3. Try Proxy A
-      try {
-        setState(s => ({ ...s, progress: 25, statusMsg: LOADING_MSGS[1] }));
-        const planets = await fetchUrl(PROXY_A, controller.signal);
-        if (cancelled) return;
-        clearInterval(msgTimer);
-        writeCache(planets);
-        setState({ planets, loading: false, error: null, fromCache: false, fromFallback: false, cacheDate: new Date(), progress: 100, statusMsg: "" });
-        return;
-      } catch (e) {
-        if (cancelled) return;
-        if ((e as Error).name === "AbortError") return;
-      }
-
-      // 4. Try Proxy B
-      try {
-        setState(s => ({ ...s, progress: 55, statusMsg: LOADING_MSGS[2] }));
-        const planets = await fetchUrl(PROXY_B, controller.signal);
-        if (cancelled) return;
-        clearInterval(msgTimer);
-        writeCache(planets);
-        setState({ planets, loading: false, error: null, fromCache: false, fromFallback: false, cacheDate: new Date(), progress: 100, statusMsg: "" });
-        return;
-      } catch (e) {
-        if (cancelled) return;
-        if ((e as Error).name === "AbortError") return;
-      }
-
       clearInterval(msgTimer);
       if (cancelled) return;
 
-      // 5. Use stale cache
+      // 3. Use the copy saved in this browser
       if (cached) {
         setState({
           planets: cached.data,
@@ -183,7 +142,7 @@ export function useExoplanets(): ExoplanetsState {
         return;
       }
 
-      // 6. Hardcoded fallback — always show something
+      // 4. Otherwise show the featured worlds kept in the site itself
       const fallback = FALLBACK_PLANETS.map(transformPlanet);
       setState({
         planets: fallback,
