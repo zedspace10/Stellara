@@ -39,6 +39,10 @@ export default function Privacy() {
           The app asks for your location only to work out what is visible in your sky. Your location is processed on
           your device and never leaves it.
         </P>
+        <P>
+          To show this week's picture on its Explore page, the app downloads it from our site and from NASA or ESA,
+          about once a day. Nothing about you is sent with that request.
+        </P>
 
         <Heading>The website</Heading>
         <P>
