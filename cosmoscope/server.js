@@ -95,6 +95,14 @@ app.get('/data/exoplanets', async (req, res) => {
   }
 });
 
+// The newest weekly picture, read by the PALE app. Any app or page may read it, and it is
+// checked again within the hour so a new week arrives promptly.
+app.get('/this-week.json', (req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Cache-Control', 'public, max-age=3600');
+  res.sendFile(path.join(PUBLIC, 'this-week.json'));
+});
+
 // Each page's own title, line and picture, written into the page for apps that make link
 // previews (they do not run the site's code). page-meta.json is made by the build.
 let shell = '';

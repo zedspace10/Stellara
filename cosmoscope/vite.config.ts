@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 import type { Plugin } from "vite";
 import { PAGE_META, SITE_META } from "./src/data/pageMeta";
-import { LATEST_PIN } from "./src/data/pins";
+import { LATEST_PIN, pinDistance } from "./src/data/pins";
 
 // Writes page-meta.json next to the site, so the server can give each shared link its own title,
 // line and picture. This week uses the newest pin's own picture.
@@ -27,6 +27,31 @@ function pageMeta(): Plugin {
         type: "asset",
         fileName: "page-meta.json",
         source: JSON.stringify({ site: SITE_META, pages }, null, 2),
+      });
+      // The newest weekly picture, for the PALE app's Explore page. Only what the app shows.
+      const p = LATEST_PIN;
+      this.emitFile({
+        type: "asset",
+        fileName: "this-week.json",
+        source: JSON.stringify(
+          {
+            version: 1,
+            id: p.id,
+            date: p.date,
+            title: p.title,
+            object: p.object,
+            constellation: p.constellation,
+            distance: pinDistance(p),
+            image: { src: p.image.src, alt: p.image.alt, credit: p.image.credit, licence: p.image.licence ?? null },
+            body: p.body,
+            reflection: p.reflection ?? null,
+            source: p.source,
+            url: `https://stellaraspace.com/discoveries`,
+            universeUrl: `https://stellaraspace.com/?pin=${encodeURIComponent(p.id)}`,
+          },
+          null,
+          2,
+        ),
       });
     },
   };
