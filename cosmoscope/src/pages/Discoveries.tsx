@@ -27,7 +27,8 @@ export function PinImage({ pin, className = "" }: { pin: Pin; className?: string
           loading="lazy"
           referrerPolicy="no-referrer"
           onError={() => setFailed(true)}
-          className="w-full h-auto rounded-lg block"
+          // Tall pictures are fitted inside, so one never fills several screens.
+          className="w-full h-auto max-h-[75vh] object-contain rounded-lg block"
           style={{ border: `1px solid ${RULE}`, background: "#070a10" }}
         />
       )}

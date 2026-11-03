@@ -54,6 +54,7 @@ export const PINS: Pin[] = [
       "Ultraviolet light and winds from massive stars nearby probably carved the shape, wearing away the thinner gas and leaving the denser material standing for now. Hubble's visible light view and Webb's infrared views each show something different, and together they help astronomers study how stars form.",
       "Its light left about 7,500 years ago, when farming was spreading into central Europe and writing had not yet been invented.",
     ],
+    simulation: { id: "star-birth", label: "See how a star is born" },
   },
   {
     id: "n159",
