@@ -19,7 +19,7 @@ import NearbyGalaxyPanel from '@/components/NearbyGalaxyPanel';
 import PinPanel from '@/components/PinPanel';
 import { PINS, LATEST_PIN, pinRaDec, isThisWeek } from '@/data/pins';
 import { BIG_GALAXIES, DWARF_GALAXIES, LOCAL_VOLUME_MLY } from '@/data/localVolume';
-import { galacticToScene, universeR, FAR_LANDMARKS, pinScene } from '@/lib/universeMap';
+import { galacticToScene, universeR, FAR_LANDMARKS, pinScene, isInGalaxy, galaxyPinScene } from '@/lib/universeMap';
 import { loadNotes, kmTravelled, Note, destinationOf, notePosition, directionOf, Destination, bigKm } from '@/lib/notes';
 import { AU_KM, sceneRadius } from '@/lib/smallbodies';
 import { Card } from '@/components/ui/card';
@@ -344,16 +344,26 @@ export default function SolarSystem() {
   // Choosing a real galaxy flies the camera over to it.
   useEffect(() => {
     let pos: THREE.Vector3 | null = null;
+    let offset = new THREE.Vector3(3500, 2000, 6000);
     if (selectedUniverseObject?.startsWith('lv:')) {
       const g = BIG_GALAXIES.find(x => `lv:${x.id}` === selectedUniverseObject);
       if (g) pos = galacticToScene(g.l, g.b, g.mly);
     } else if (selectedUniverseObject?.startsWith('pin:')) {
       // A weekly picture: fly over to where it sits.
       const p = PINS.find(x => `pin:${x.id}` === selectedUniverseObject);
-      if (p) { const { ra, dec } = pinRaDec(p); pos = pinScene(ra, dec, p.mly); }
+      if (p) {
+        const { ra, dec } = pinRaDec(p);
+        if (isInGalaxy(p.mly)) {
+          // Inside our own galaxy: close enough to see the Sun nearby as well.
+          pos = galaxyPinScene(ra, dec, p.mly);
+          offset = new THREE.Vector3(900, 1100, 1600);
+        } else {
+          pos = pinScene(ra, dec, p.mly);
+        }
+      }
     }
     if (!pos) return;
-    cameraTargetRef.current = pos.clone().add(new THREE.Vector3(3500, 2000, 6000));
+    cameraTargetRef.current = pos.clone().add(offset);
     lookAtTargetRef.current = pos;
     transitioningRef.current = true;
   }, [selectedUniverseObject]);
@@ -507,8 +517,11 @@ export default function SolarSystem() {
   // Open one of the weekly pictures where it sits in the universe.
   const openPin = useCallback((id: string) => {
     const select = () => setSelectedUniverseObject(`pin:${id}`);
-    if (zoomLevelRef.current !== 3) {
-      triggerTransition(3);
+    // Pictures inside our own galaxy are in the Milky Way view; everything else is further out.
+    const pin = PINS.find(p => p.id === id);
+    const level = pin && isInGalaxy(pin.mly) ? 2 : 3;
+    if (zoomLevelRef.current !== level) {
+      triggerTransition(level);
       window.setTimeout(select, 2600);
     } else {
       select();
@@ -1275,6 +1288,33 @@ export default function SolarSystem() {
       galaxyLabels.push(cLabel);
     });
 
+    // Weekly pictures inside our own galaxy, placed from the Sun in their real direction.
+    PINS.filter(p => isInGalaxy(p.mly)).forEach(p => {
+      const { ra, dec } = pinRaDec(p);
+      const pos = galaxyPinScene(ra, dec, p.mly);
+      const isNew = p.id === LATEST_PIN.id;
+      const glow = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: makeGlowTex('243,221,176', [[0, 1], [0.16, 0.8], [0.4, 0.2], [1, 0]]),
+        blending: THREE.AdditiveBlending, depthWrite: false, depthTest: false, transparent: true,
+      }));
+      glow.scale.set(isNew ? 320 : 240, isNew ? 320 : 240, 1);
+      glow.position.copy(pos);
+      glow.userData = { id: `pin:${p.id}`, level: 3, type: 'pin' };
+      galaxyGroup.add(glow);
+      const gDiv = document.createElement('div');
+      gDiv.textContent = isNew && isThisWeek(p) ? `New: ${p.object}` : p.object;
+      gDiv.style.cssText = `color:#F3DDB0;font-size:12px;font-family:"Instrument Sans",sans-serif;pointer-events:auto;cursor:pointer;white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,0.9);`;
+      gDiv.onclick = (e) => {
+        e.stopPropagation();
+        if (clickGuardRef.current || transitioningRef.current || zoomLevelRef.current !== 2) return;
+        handleObjectClick(`pin:${p.id}`, 3);
+      };
+      const gLabel = new CSS2DObject(gDiv);
+      gLabel.position.set(pos.x, pos.y + 180, pos.z);
+      galaxyGroup.add(gLabel);
+      galaxyLabels.push(gLabel);
+    });
+
     // ========================================================================
     // LEVEL 3: OBSERVABLE UNIVERSE — COSMIC WEB
     // ========================================================================
@@ -1638,7 +1678,8 @@ export default function SolarSystem() {
     // Step 7: the weekly pictures, each where it really is. They keep the same size on screen at
     // any distance, and the newest one pulses gently so it can be found.
     const pinMarks: { glow: THREE.Sprite; ring: THREE.Sprite | null; hit: THREE.Mesh }[] = [];
-    PINS.forEach(p => {
+    // Pictures inside our own galaxy are shown in the Milky Way view instead.
+    PINS.filter(p => !isInGalaxy(p.mly)).forEach(p => {
       const { ra, dec } = pinRaDec(p);
       const pos = pinScene(ra, dec, p.mly);
       const isNew = p.id === LATEST_PIN.id;
