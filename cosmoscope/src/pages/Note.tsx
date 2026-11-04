@@ -5,7 +5,8 @@ import {
   Note, Milestone, MAX_NOTE, C_KM_S,
   loadNotes, saveNotes, lastSeen, markSeen, newNote, noteLink, noteFromHash,
   milestonesFor, kmTravelled, whenReached, duration, bigKm, dateLabel, calendarFile, inSentence,
-  DESTINATIONS, DEFAULT_DESTINATION, destinationOf, arrivalOf,
+  DESTINATIONS, DEFAULT_DESTINATION, destinationOf, arrivalOf, CATEGORIES, resolveDestination,
+  type DestinationKind,
 } from "@/lib/notes";
 
 // The 3D view of a note's journey needs three.js, so it loads only when a note is being followed.
@@ -63,25 +64,50 @@ function travelTime(ly: number) {
 
 // ── Choosing where it goes ─────────────────────────────────────────────────────
 function DestinationPicker({ value, onChange }: { value: string; onChange: (id: string) => void }) {
+  const chosen = DESTINATIONS.find((d) => d.id === value);
+  const [kind, setKind] = useState<DestinationKind>(chosen?.kind ?? "star");
+  // Planets move, so how long the light takes is worked out for now.
+  const now = Date.now();
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-      {DESTINATIONS.map((d) => {
-        const on = d.id === value;
-        return (
-          <button
-            key={d.id}
-            type="button"
-            onClick={() => onChange(d.id)}
-            aria-pressed={on}
-            className="text-left rounded-lg px-4 py-2.5 sm:py-3 transition-colors hover:bg-white/[0.03]"
-            style={{ background: on ? "rgba(243,221,176,0.06)" : PANEL, border: `1px solid ${on ? WARM : RULE}` }}
-          >
-            <span className="block text-[16px]" style={{ color: TEXT }}>{d.name}</span>
-            <span className="hidden sm:block mt-0.5 text-[13px] leading-snug" style={{ color: MUTED }}>{d.line}</span>
-            <span className="block mt-0.5 sm:mt-1.5 text-[13px]" style={{ color: on ? WARM : MUTED }}>Arrives in {travelTime(d.ly)}</span>
-          </button>
-        );
-      })}
+    <div>
+      <div className="flex flex-wrap gap-2 mb-3" role="tablist" aria-label="Kinds of place">
+        {CATEGORIES.map((c) => {
+          const on = c.kind === kind;
+          return (
+            <button
+              key={c.kind}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              onClick={() => setKind(c.kind)}
+              className="rounded-full px-3.5 py-1.5 text-[14px] transition-colors"
+              style={{ color: on ? TEXT : MUTED, background: on ? "rgba(243,221,176,0.08)" : "transparent", border: `1px solid ${on ? WARM : RULE}` }}
+            >
+              {c.label}
+            </button>
+          );
+        })}
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2" role="tabpanel">
+        {DESTINATIONS.filter((d) => d.kind === kind).map((d) => {
+          const on = d.id === value;
+          const ly = resolveDestination(d, now).ly;
+          return (
+            <button
+              key={d.id}
+              type="button"
+              onClick={() => onChange(d.id)}
+              aria-pressed={on}
+              className="text-left rounded-lg px-4 py-2.5 sm:py-3 transition-colors hover:bg-white/[0.03]"
+              style={{ background: on ? "rgba(243,221,176,0.06)" : PANEL, border: `1px solid ${on ? WARM : RULE}` }}
+            >
+              <span className="block text-[16px]" style={{ color: TEXT }}>{d.name}</span>
+              <span className="hidden sm:block mt-0.5 text-[13px] leading-snug" style={{ color: MUTED }}>{d.line}</span>
+              <span className="block mt-0.5 sm:mt-1.5 text-[13px]" style={{ color: on ? WARM : MUTED }}>Arrives in {travelTime(ly)}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -126,7 +152,7 @@ function Compose({ onSend, hasOthers, onCancel }: { onSend: (text: string, to: s
 
       <div className="mt-10" style={{ opacity: leaving ? 0 : 1, transition: "opacity 600ms" }}>
         <p className="m-0 text-[14px] mb-3" style={{ color: MUTED }}>
-          Light leaving Earth spreads out in every direction. Choose the star you want to follow it to.
+          Light leaving Earth spreads out in every direction. Choose where you want to follow it to.
         </p>
         <DestinationPicker value={to} onChange={setTo} />
       </div>
@@ -251,7 +277,7 @@ function Journey({
         {dest ? (
           <>
             <p className="m-0 mt-2 mb-4 text-[15px] leading-relaxed" style={{ color: BODY }}>
-              On its way to {inSentence(dest.name)}, in {dest.constellation}. It arrives on{" "}
+              On its way to {inSentence(dest.name)}{dest.constellation ? `, in ${dest.constellation}` : ""}. It arrives on{" "}
               {arrivalOf(note, dest) - now < 100 * YEAR_MS
                 ? new Date(arrivalOf(note, dest)).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
                 : `a day about ${Math.round((arrivalOf(note, dest) - now) / YEAR_MS).toLocaleString("en-GB")} years from now`}.

@@ -96,8 +96,10 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
     const list: Body[] = [
       { id: "sun", name: "The Sun", kind: "sun", radiusAu: 0.00465, color: "#FFF1D0", priority: 2, pos: () => ({ x: 0, y: 0, z: 0 }) },
       ...PLANETS.map(([id, name, r, color]) => ({
-        id, name, kind: "planet" as const, radiusAu: r, color,
-        priority: id === "earth" ? 1 : id === "jupiter" || id === "saturn" ? 4 : 6,
+        // A note sent to a planet makes that planet its destination.
+        id, name, kind: id === dest.planet ? ("dest" as const) : ("planet" as const), radiusAu: r,
+        color: id === dest.planet ? "#F3DDB0" : color,
+        priority: id === dest.planet ? 0 : id === "earth" ? 1 : id === "jupiter" || id === "saturn" ? 4 : 6,
         pos: (t: number) => heliocentric(id, t),
       })),
       ...SPACECRAFT.map((s) => ({
@@ -105,7 +107,8 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
         priority: s.id === "voyager-1" ? 3 : 7,
         pos: (t: number) => spacecraftPosition(s, t),
       })),
-      ...[...DESTINATIONS, ...(DESTINATIONS.some((d) => d.id === dest.id) ? [] : [dest])].map((d) => {
+      // Stars and galaxies sit still; planets are already drawn above, moving.
+      ...[...DESTINATIONS, ...(DESTINATIONS.some((d) => d.id === dest.id) ? [] : [dest])].filter((d) => !d.planet).map((d) => {
         const dir = directionOf(d);
         const r = d.ly * LY_AU;
         return {
@@ -117,7 +120,7 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
       }),
     ];
     return list;
-  }, [dest.id]);
+  }, [dest.id, dest.planet]);
 
   useEffect(() => {
     const el = mountRef.current;
@@ -483,7 +486,7 @@ export default function NoteFollow({ note, dest }: { note: Note; dest: Destinati
         <div ref={mountRef} className="relative w-full h-[360px] md:h-[440px] touch-none cursor-grab active:cursor-grabbing" />
         <div className="absolute left-3 top-3 pointer-events-none rounded-md px-3 py-2 text-[12px] leading-snug" style={{ background: "rgba(5,7,12,0.72)", color: MUTED }}>
           <span style={{ color: TEXT }}>Heading to {dest.name}</span>
-          <br />in {dest.constellation}
+          {dest.constellation ? <><br />in {dest.constellation}</> : null}
           {previewing && <><br /><span style={{ color: WARM }}>Showing {fmtDate(t)}</span></>}
         </div>
         <p className="absolute right-3 bottom-2 m-0 text-[11px] pointer-events-none" style={{ color: "#6B7686" }}>
