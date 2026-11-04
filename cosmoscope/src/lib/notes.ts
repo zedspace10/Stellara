@@ -19,39 +19,101 @@ export interface Note {
 }
 
 // ── Where a note can be sent ───────────────────────────────────────────────────
+export type DestinationKind = "planet" | "star" | "nebula" | "black-hole" | "galaxy";
+
 export interface Destination {
   id: string;
   name: string;
+  kind: DestinationKind;
   /** Right ascension in hours and declination in degrees, so the note heads the real way. */
   ra: number;
   dec: number;
   ly: number;
   constellation: string;
   line: string;
+  /** For a planet: which one. Its direction and distance depend on when the note is sent. */
+  planet?: string;
 }
 
+export const CATEGORIES: { kind: DestinationKind; label: string }[] = [
+  { kind: "planet", label: "Planets" },
+  { kind: "star", label: "Stars" },
+  { kind: "nebula", label: "Nebulae and clusters" },
+  { kind: "black-hole", label: "Black holes" },
+  { kind: "galaxy", label: "Galaxies" },
+];
+
+// The same places, ids and order as the PALE app (constants/notes.ts), so a link from either opens
+// the same journey. Planets move, so their direction and distance are worked out when sent.
+const planet = (id: string, name: string, line: string): Destination => ({
+  id, name, kind: "planet", planet: id, ra: 0, dec: 0, ly: 0, constellation: "", line,
+});
 export const DESTINATIONS: Destination[] = [
-  { id: "proxima", name: "Proxima Centauri", ra: 14.4953, dec: -62.679, ly: 4.24, constellation: "Centaurus", line: "The nearest star to the Sun." },
-  { id: "sirius", name: "Sirius", ra: 6.7525, dec: -16.716, ly: 8.6, constellation: "Canis Major", line: "The brightest star in the night sky." },
-  { id: "tau-ceti", name: "Tau Ceti", ra: 1.7345, dec: -15.937, ly: 11.9, constellation: "Cetus", line: "A quiet star much like the Sun." },
-  { id: "vega", name: "Vega", ra: 18.6156, dec: 38.784, ly: 25, constellation: "Lyra", line: "A bright blue white star, once the North Star." },
-  { id: "trappist", name: "TRAPPIST-1", ra: 23.1081, dec: -5.041, ly: 40.7, constellation: "Aquarius", line: "A small star with seven rocky planets." },
-  { id: "pleiades", name: "The Pleiades", ra: 3.7908, dec: 24.117, ly: 444, constellation: "Taurus", line: "The Seven Sisters, a cluster of young stars." },
-  { id: "orion", name: "The Orion Nebula", ra: 5.5881, dec: -5.391, ly: 1344, constellation: "Orion", line: "A cloud where new stars are being born." },
-  { id: "centre", name: "The centre of the Milky Way", ra: 17.7611, dec: -29.008, ly: 26000, constellation: "Sagittarius", line: "The heart of our galaxy." },
-  { id: "andromeda", name: "The Andromeda Galaxy", ra: 0.7123, dec: 41.269, ly: 2.5e6, constellation: "Andromeda", line: "The nearest big galaxy." },
+  planet("mercury", "Mercury", "The smallest planet, and the closest to the Sun."),
+  planet("venus", "Venus", "The brightest planet in our sky."),
+  planet("mars", "Mars", "The red planet, home to the tallest volcano we know of."),
+  planet("jupiter", "Jupiter", "The largest planet, with a storm wider than Earth."),
+  planet("saturn", "Saturn", "The ringed planet. Its rings are mostly ice."),
+  planet("uranus", "Uranus", "An ice giant that rolls around the Sun on its side."),
+  planet("neptune", "Neptune", "The farthest planet, with the fastest winds we know of."),
+  { id: "proxima", name: "Proxima Centauri", kind: "star", ra: 14.4953, dec: -62.679, ly: 4.24, constellation: "Centaurus", line: "The nearest star to the Sun." },
+  { id: "sirius", name: "Sirius", kind: "star", ra: 6.7525, dec: -16.716, ly: 8.6, constellation: "Canis Major", line: "The brightest star in the night sky." },
+  { id: "tau-ceti", name: "Tau Ceti", kind: "star", ra: 1.7345, dec: -15.937, ly: 11.9, constellation: "Cetus", line: "A quiet star much like the Sun." },
+  { id: "vega", name: "Vega", kind: "star", ra: 18.6156, dec: 38.784, ly: 25, constellation: "Lyra", line: "A bright blue white star, once the North Star." },
+  { id: "trappist", name: "TRAPPIST-1", kind: "star", ra: 23.1081, dec: -5.041, ly: 40.7, constellation: "Aquarius", line: "A small star with seven rocky planets." },
+  { id: "polaris", name: "Polaris", kind: "star", ra: 2.5303, dec: 89.264, ly: 433, constellation: "Ursa Minor", line: "The North Star, almost straight above Earth's north pole." },
+  { id: "pleiades", name: "The Pleiades", kind: "nebula", ra: 3.7908, dec: 24.117, ly: 444, constellation: "Taurus", line: "The Seven Sisters, a cluster of young stars." },
+  { id: "orion", name: "The Orion Nebula", kind: "nebula", ra: 5.5881, dec: -5.391, ly: 1344, constellation: "Orion", line: "A cloud where new stars are being born." },
+  { id: "eagle", name: "The Eagle Nebula", kind: "nebula", ra: 18.3133, dec: -13.817, ly: 5700, constellation: "Serpens", line: "Home of the Pillars of Creation, where stars are forming." },
+  { id: "gaia-bh1", name: "Gaia BH1", kind: "black-hole", ra: 17.4781, dec: -0.5811, ly: 1560, constellation: "Ophiuchus", line: "The nearest black hole we know of, circled by a star much like the Sun." },
+  { id: "cygnus-x1", name: "Cygnus X-1", kind: "black-hole", ra: 19.9727, dec: 35.2016, ly: 7200, constellation: "Cygnus", line: "A black hole 21 times the Sun's mass, pulling gas from a giant blue star." },
+  { id: "centre", name: "Sagittarius A*", kind: "black-hole", ra: 17.7611, dec: -29.008, ly: 26000, constellation: "Sagittarius", line: "The black hole at the centre of our galaxy, four million times the Sun's mass." },
+  { id: "m87", name: "M87*", kind: "black-hole", ra: 12.5137, dec: 12.3911, ly: 55e6, constellation: "Virgo", line: "The first black hole ever photographed, 6.5 billion times the Sun's mass." },
+  { id: "lmc", name: "The Large Magellanic Cloud", kind: "galaxy", ra: 5.3929, dec: -69.756, ly: 160000, constellation: "Dorado", line: "A small galaxy circling our own, seen from the southern hemisphere." },
+  { id: "andromeda", name: "The Andromeda Galaxy", kind: "galaxy", ra: 0.7123, dec: 41.269, ly: 2.5e6, constellation: "Andromeda", line: "The nearest big galaxy." },
+  { id: "triangulum", name: "The Triangulum Galaxy", kind: "galaxy", ra: 1.5641, dec: 30.6603, ly: 2.73e6, constellation: "Triangulum", line: "The third largest galaxy in our Local Group." },
+  { id: "sombrero", name: "The Sombrero Galaxy", kind: "galaxy", ra: 12.6665, dec: -11.6231, ly: 31e6, constellation: "Virgo", line: "Seen almost edge on, with a bright core and a dark band of dust." },
 ];
 
 // No longer offered, but kept so that links to notes already sent this way still open.
 const RETIRED_DESTINATIONS: Destination[] = [
-  { id: "betelgeuse", name: "Betelgeuse", ra: 5.9195, dec: 7.407, ly: 550, constellation: "Orion", line: "The red supergiant at Orion's shoulder." },
+  { id: "betelgeuse", name: "Betelgeuse", kind: "star", ra: 5.9195, dec: 7.407, ly: 550, constellation: "Orion", line: "The red supergiant at Orion's shoulder." },
 ];
 const ALL_DESTINATIONS = [...DESTINATIONS, ...RETIRED_DESTINATIONS];
 
 export const DEFAULT_DESTINATION = "proxima";
 
+const EPS = 23.4392911 * Math.PI / 180;
+/**
+ * A destination as it was at the moment `at`. Stars stay put; for a planet, the note is aimed where
+ * the planet will be when the light gets there, and the distance is from Earth at the moment of
+ * sending to that point.
+ */
+export function resolveDestination(d: Destination, at: number): Destination {
+  if (!d.planet) return d;
+  const earth = heliocentric("earth", at);
+  if (!earth) return d;
+  let arrive = at;
+  let v = { x: 0, y: 0, z: 0 };
+  // Twice is plenty: the planet moves only a few thousand km while the light is on its way.
+  for (let i = 0; i < 3; i++) {
+    const p = heliocentric(d.planet, arrive);
+    if (!p) return d;
+    v = { x: p.x - earth.x, y: p.y - earth.y, z: p.z - earth.z };
+    arrive = at + (Math.hypot(v.x, v.y, v.z) * AU_KM / C_KM_S) * 1000;
+  }
+  const km = Math.hypot(v.x, v.y, v.z) * AU_KM;
+  const xe = v.x, ye = v.y * Math.cos(EPS) - v.z * Math.sin(EPS), ze = v.y * Math.sin(EPS) + v.z * Math.cos(EPS);
+  let ra = Math.atan2(ye, xe) / (Math.PI / 12);
+  if (ra < 0) ra += 24;
+  const dec = Math.atan2(ze, Math.hypot(xe, ye)) * 180 / Math.PI;
+  return { ...d, ra, dec, ly: km / LY_KM };
+}
+
+/** Where a note is going, as it was when it was sent. */
 export function destinationOf(n: Note): Destination | undefined {
-  return ALL_DESTINATIONS.find((d) => d.id === n.to);
+  const d = ALL_DESTINATIONS.find((x) => x.id === n.to);
+  return d ? resolveDestination(d, n.sentAt) : undefined;
 }
 
 /** Unit vector towards a destination, heliocentric ecliptic. */
