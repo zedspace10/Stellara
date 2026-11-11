@@ -22,13 +22,13 @@ interface Place {
   tab?: "md" | "xl";
 }
 
-// Every place on the site, in the order they appear. The universe first, then Notes.
+// Every place on the site, in the order they appear. The universe first, then Notes, then the blog.
 const PLACES: Place[] = [
   { path: "/", label: "Universe", tab: "md" },
   { path: "/note", label: "Notes", tab: "md" },
+  { path: "/blog", label: "Blog", blurb: "What happened in space this week", tab: "md" },
   { path: "/discoveries", label: "This week", long: "This week in the universe", blurb: "A new Hubble or Webb picture every week", tab: "xl" },
   { path: "/tonight", label: "Tonight", tab: "md" },
-  { path: "/blog", label: "Blog", blurb: "What happened in space this week" },
   { path: "/scale", label: "Scale", long: "Scale of the universe", blurb: "Zoom from the Planck length out to the whole universe" },
   { path: "/simulations", label: "Simulations", blurb: "The biggest events in the universe, step by step" },
   { path: "/exoplanets", label: "Other worlds", blurb: "More than 6,000 planets around other stars", tab: "xl" },
