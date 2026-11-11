@@ -33,6 +33,30 @@ export interface Pin {
 
 export const PINS: Pin[] = [
   {
+    id: "m30",
+    date: "2026-11-05",
+    title: "An ancient ball of stars",
+    object: "Messier 30 (NGC 7099)",
+    ra: [21, 40, 22.0],
+    dec: [-23, 10, 43],
+    mly: 0.0275,
+    constellation: "Capricornus, the Sea Goat",
+    image: {
+      src: "https://assets.science.nasa.gov/content/dam/science/missions/hubble/stars/globular-clusters/Hubble_M30_potm2610a.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg",
+      alt: "A dense round swarm of thousands of stars, blue and white in the crowded bright centre and mostly yellow further out, with a few larger orange stars in front.",
+      credit: "ESA/Hubble & NASA, M. Libralato, G. Piotto, A. Sarajedini",
+      licence: "CC BY 4.0",
+    },
+    source: { label: "NASA: Hubble learns galactic history from stars", href: "https://science.nasa.gov/missions/hubble/hubble-learns-galactic-history-from-stars/" },
+    body: [
+      "Messier 30 is a globular cluster, a tight ball of stars held together by its own gravity and orbiting our galaxy. Clusters like this hold anywhere from tens of thousands to millions of stars, and they are among the oldest things in the Milky Way, thought to be between about 11.5 and 13.5 billion years old.",
+      "This picture combines ultraviolet, visible and near infrared light from three Hubble programmes. One mapped the fainter stars in dozens of clusters, one used bluer light to tell apart different groups of stars within each cluster, and one measured how those stars have moved over 15 years of Hubble observations. Blue stars crowd the bright core, while yellow stars make up most of the cluster further out. The few large orange stars are much closer to us, in front of the cluster.",
+      "M30 travels around the Milky Way in the opposite direction to the galaxy's spin, as many globular clusters do. That suggests it may have formed elsewhere and been captured long ago, which makes it useful for working out how our galaxy was put together.",
+      "Its light left about 27,500 years ago, during the last ice age, when people in Europe were hunting mammoths and carving small figures from ivory.",
+    ],
+    reflection: "Its stars were already billions of years old when our Sun formed.",
+  },
+  {
     id: "cats-head-nebula",
     date: "2026-10-29",
     title: "A cat in the dust",
