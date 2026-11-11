@@ -43,6 +43,8 @@ const Discoveries = page(() => import("@/pages/Discoveries"));
 const Credits = page(() => import("@/pages/Credits"));
 const NotePage = page(() => import("@/pages/Note"));
 const Privacy = page(() => import("@/pages/Privacy"));
+const Blog = page(() => import("@/pages/Blog"));
+const BlogPost = page(() => import("@/pages/BlogPost"));
 
 // Pages that have been retired, and where their old links now go.
 const RETIRED: [string, string][] = [
@@ -62,8 +64,6 @@ const RETIRED: [string, string][] = [
   ["/build-universe", "/simulations"],
   ["/education", "/"],
   ["/glossary", "/"],
-  ["/blog", "/"],
-  ["/blog/:slug", "/"],
 ];
 
 // Shown for the moment a page takes to arrive: the same dark sky, nothing else.
@@ -88,6 +88,8 @@ function Router() {
           <Route path="/simulations/black-hole" component={BlackHoleSim} />
           <Route path="/note" component={NotePage} />
           <Route path="/discoveries" component={Discoveries} />
+          <Route path="/blog" component={Blog} />
+          <Route path="/blog/:slug" component={BlogPost} />
           <Route path="/about" component={About} />
           <Route path="/credits" component={Credits} />
           <Route path="/privacy" component={Privacy} />
