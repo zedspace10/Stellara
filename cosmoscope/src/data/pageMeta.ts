@@ -24,6 +24,10 @@ export const PAGE_META: Record<string, PageMeta> = {
     title: "This week in the universe | PALE",
     description: "A new Hubble or Webb picture every week, placed where it really is.",
   },
+  "/blog": {
+    title: "Blog | PALE",
+    description: "Every week, what happened in space, and what to look up for.",
+  },
   "/tonight": {
     title: "Tonight | PALE",
     description: "The Moon, the planets and what else is in your sky tonight.",

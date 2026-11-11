@@ -5,6 +5,7 @@ import path from "path";
 import type { Plugin } from "vite";
 import { PAGE_META, SITE_META } from "./src/data/pageMeta";
 import { LATEST_PIN, pinDistance } from "./src/data/pins";
+import { POSTS } from "./src/data/blog";
 
 // Writes page-meta.json next to the site, so the server can give each shared link its own title,
 // line and picture. This week uses the newest pin's own picture.
@@ -22,6 +23,10 @@ function pageMeta(): Plugin {
           image: LATEST_PIN.image.src,
           imageAlt: LATEST_PIN.image.alt,
         },
+        // Each blog post's own title and line.
+        ...Object.fromEntries(
+          POSTS.map((post) => [`/blog/${post.slug}`, { title: `${post.title} | PALE`, description: post.standfirst }]),
+        ),
       };
       this.emitFile({
         type: "asset",
