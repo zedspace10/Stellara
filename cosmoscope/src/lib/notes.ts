@@ -64,7 +64,7 @@ export const DESTINATIONS: Destination[] = [
   { id: "polaris", name: "Polaris", kind: "star", ra: 2.5303, dec: 89.264, ly: 433, constellation: "Ursa Minor", line: "The North Star, almost straight above Earth's north pole." },
   { id: "pleiades", name: "The Pleiades", kind: "nebula", ra: 3.7908, dec: 24.117, ly: 444, constellation: "Taurus", line: "The Seven Sisters, a cluster of young stars." },
   { id: "orion", name: "The Orion Nebula", kind: "nebula", ra: 5.5881, dec: -5.391, ly: 1344, constellation: "Orion", line: "A cloud where new stars are being born." },
-  { id: "eagle", name: "The Eagle Nebula", kind: "nebula", ra: 18.3133, dec: -13.817, ly: 5700, constellation: "Serpens", line: "Home of the Pillars of Creation, where stars are forming." },
+  { id: "eagle", name: "The Eagle Nebula", kind: "nebula", ra: 18.3133, dec: -13.817, ly: 6500, constellation: "Serpens", line: "Home of the Pillars of Creation, where stars are forming." },
   { id: "gaia-bh1", name: "Gaia BH1", kind: "black-hole", ra: 17.4781, dec: -0.5811, ly: 1560, constellation: "Ophiuchus", line: "The nearest black hole we know of, circled by a star much like the Sun." },
   { id: "cygnus-x1", name: "Cygnus X-1", kind: "black-hole", ra: 19.9727, dec: 35.2016, ly: 7200, constellation: "Cygnus", line: "A black hole 21 times the Sun's mass, pulling gas from a giant blue star." },
   { id: "centre", name: "Sagittarius A*", kind: "black-hole", ra: 17.7611, dec: -29.008, ly: 26000, constellation: "Sagittarius", line: "The black hole at the centre of our galaxy, four million times the Sun's mass." },
