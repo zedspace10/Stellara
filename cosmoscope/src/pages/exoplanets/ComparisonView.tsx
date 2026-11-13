@@ -56,12 +56,12 @@ export default function ComparisonView({ planets, onSelect }: Props) {
     <div className="px-4 pb-20 pt-4">
       <div className="text-center mb-6">
         <div className="text-xs text-white/30  mb-1">Comparison View</div>
-        <p className="text-sm text-white/50">See exoplanets sized relative to our solar system. Click any bar to explore.</p>
+        <p className="text-sm text-white/50">See how big these worlds are next to the planets of our Solar System. Click any bar for more.</p>
       </div>
 
       {/* Solar system reference */}
       <div className="rounded-2xl p-5 mb-4" style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)" }}>
-        <div className="text-xs text-white/30  mb-4">Our solar system, for reference</div>
+        <div className="text-xs text-white/30  mb-4">Our Solar System, for comparison</div>
         <div className="flex items-end gap-3 overflow-x-auto pb-2">
           {SOLAR_SYSTEM.map(p => {
             const h = getBarH(p.radius);
@@ -193,7 +193,7 @@ export default function ComparisonView({ planets, onSelect }: Props) {
             { year: 2009, note: "Kepler launches and discoveries soar" },
             { year: 2014, note: "1,000 confirmed worlds" },
             { year: 2016, note: "TRAPPIST-1 announced" },
-            { year: 2018, note: "TESS all-sky survey begins" },
+            { year: 2018, note: "TESS begins surveying the whole sky" },
             { year: 2022, note: "5,000 milestone. Webb begins science" },
             { year: 2025, note: "6,000 milestone. Webb reads atmospheres" },
           ].map(({ year, note }) => (
@@ -206,8 +206,7 @@ export default function ComparisonView({ planets, onSelect }: Props) {
         </div>
         <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
           <div className="text-xs text-white/25 text-center">
-            In 30 years: zero known exoplanets → {planets.length.toLocaleString()}+ confirmed worlds. <br />
-            We are just getting started.
+            In just over 30 years, from none known to more than 6,000.
           </div>
         </div>
       </div>

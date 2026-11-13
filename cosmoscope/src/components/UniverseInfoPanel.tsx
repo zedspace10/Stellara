@@ -126,7 +126,7 @@ const UNIVERSE_DATA: Record<string, {
       { label: 'X-ray luminosity', value: 'Brightest X-ray cluster' },
       { label: 'Sound wave period', value: '10 million years' },
     ],
-    description: `One of the most massive objects in the known universe, containing thousands of galaxies immersed in a vast cloud of multimillion-degree gas. In 2003, NASA's Chandra X-ray Observatory detected pressure waves in the Perseus Cluster, sound waves with a frequency 57 octaves below middle C, caused by the central black hole.`,
+    description: `Thousands of galaxies held together in a cloud of gas heated to tens of millions of degrees, making it one of the heaviest things we know of. In 2003, NASA's Chandra X-ray Observatory found ripples spreading through that gas, sound waves with a frequency 57 octaves below middle C, caused by the central black hole.`,
     fact: `The Perseus Cluster holds sound waves with a period of about 10 million years, the deepest note ever detected. It sits 57 octaves below middle C.`,
   },
   'great-attractor': {

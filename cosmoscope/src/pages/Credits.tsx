@@ -35,7 +35,7 @@ const GROUPS: { title: string; intro?: string; items: Source[] }[] = [
     ],
   },
   {
-    title: "The solar system",
+    title: "The Solar System",
     items: [
       {
         what: "Planet positions",

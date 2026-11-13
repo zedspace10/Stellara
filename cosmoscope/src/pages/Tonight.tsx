@@ -212,7 +212,7 @@ export default function Tonight() {
               {formatDay(season.time, true)} ({daysUntil(season.time, now)})
             </p>
             <p className="mt-1 mb-0 text-[14px] leading-relaxed" style={{ color: C.muted }}>
-              {season.northern}. The moment Earth reaches this point in its orbit around the Sun.
+              {season.northern}.
             </p>
           </Entry>
         )}

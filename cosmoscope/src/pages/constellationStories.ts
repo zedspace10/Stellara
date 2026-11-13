@@ -11,9 +11,9 @@ export const CONSTELLATION_STORIES: Record<string, string> = {
 
 Orion is the sky's great anchor, the constellation almost everyone learns first. In Greek myth he was a giant huntsman, killed by a scorpion and placed in the heavens by Zeus, forever fleeing Scorpius: as the scorpion rises in the east, Orion sets in the west, and the two are almost never seen together.
 
-**Stars worth knowing.** Rigel (β Ori) is a blue supergiant roughly 120,000 times more luminous than the Sun. Betelgeuse (α Ori), the hunter's red shoulder, is a red supergiant so vast that placed at the centre of our solar system it would swallow the orbits of the inner planets. The three belt stars (Alnitak, Alnilam and Mintaka) are distant, brilliant stars that only appear neatly lined up from Earth.
+**Stars worth knowing.** Rigel (β Ori) is a blue supergiant roughly 120,000 times more luminous than the Sun. Betelgeuse (α Ori), the hunter's red shoulder, is a red supergiant so vast that placed at the centre of our Solar System it would swallow the orbits of the inner planets. The three belt stars (Alnitak, Alnilam and Mintaka) are distant, brilliant stars that only appear neatly lined up from Earth.
 
-**Deep sky.** Below the belt hangs the Orion Nebula (M42), the nearest massive star-forming region to Earth and visible to the naked eye as a fuzzy "star" in the sword. Binoculars reveal it clearly; a small telescope shows the four newborn Trapezium stars lighting it from within.
+**Deep sky.** Below the belt hangs the Orion Nebula (M42), the nearest massive star forming region to Earth and visible to the naked eye as a fuzzy "star" in the sword. Binoculars reveal it clearly; a small telescope shows the four newborn Trapezium stars lighting it from within.
 
 **From the UK.** Superbly placed on winter evenings, December to February, high in the southern sky.
 
@@ -25,7 +25,7 @@ Orion is the sky's great anchor, the constellation almost everyone learns first.
 
 In Greek myth, Callisto was transformed into a bear by a jealous goddess and flung into the sky. Cultures across the northern hemisphere, from Britain to Siberia to North America, independently saw a bear in these stars, a puzzle that has fascinated anthropologists.
 
-**Stars worth knowing.** The famous seven-star "Big Dipper" (or Plough) is only part of the constellation, an asterism within a much larger bear. Alioth (ε UMa) is the brightest member. Look at Mizar, the second star of the handle: keen eyes will spot its faint companion Alcor. This pair was an ancient eyesight test, and telescopes reveal Mizar itself is a multiple star system.
+**Stars worth knowing.** The famous seven star "Big Dipper" (or Plough) is only part of the constellation, an asterism within a much larger bear. Alioth (ε UMa) is the brightest member. Look at Mizar, the second star of the handle: keen eyes will spot its faint companion Alcor. This pair was an ancient eyesight test, and telescopes reveal Mizar itself is a multiple star system.
 
 **Deep sky.** Ursa Major is a gateway to galaxies: M81 and M82 (a beautiful spiral and the "Cigar Galaxy", bursting with new stars, in the same telescope view) and the giant Pinwheel Galaxy, M101.
 
@@ -51,7 +51,7 @@ Cassiopeia, queen of Aethiopia, boasted that she (or her daughter Andromeda) was
   leo: `
 ### The Nemean Lion
 
-Leo is the lion of Hercules' first labour, a beast whose hide no weapon could pierce, strangled bare-handed and immortalised in the stars. It's one of the few constellations that genuinely looks like its namesake: a crouching lion, with the "Sickle" asterism (a backwards question mark) forming its head and mane.
+Leo is the lion of Hercules' first labour, a beast whose hide no weapon could pierce, strangled bare handed and immortalised in the stars. It's one of the few constellations that genuinely looks like its namesake: a crouching lion, with the "Sickle" asterism (a backwards question mark) forming its head and mane.
 
 **Stars worth knowing.** Regulus (α Leo), "the little king," marks the lion's heart. It spins so fast, a full rotation in under 16 hours, that it bulges into an egg shape and is dramatically dimmer at its equator than its poles. Algieba (γ Leo) is a glorious golden double star in small telescopes. Denebola marks the tail.
 
@@ -69,9 +69,9 @@ The scorpion that killed Orion, placed on the opposite side of the sky so the tw
 
 **Stars worth knowing.** Antares (α Sco) means "rival of Mars," named for its striking red colour, which the ancients compared to the red planet. It's a red supergiant around 700 times the Sun's diameter. The sting stars, Shaula and Lesath, form a tight, dramatic pair.
 
-**Deep sky.** Scorpius lies toward the centre of our galaxy, so it's packed: the globular cluster M4 sits right beside Antares, and the Butterfly Cluster (M6) and Ptolemy's Cluster (M7), catalogued nearly 2,000 years ago, glitter near the sting.
+**Deep sky.** Scorpius lies towards the centre of our galaxy, so it is packed: the globular cluster M4 sits right beside Antares, and the Butterfly Cluster (M6) and Ptolemy's Cluster (M7), catalogued nearly 2,000 years ago, glitter near the sting.
 
-**From the UK.** The honest truth: Britain is a poor seat for Scorpius. Only its upper body, including Antares, climbs above the southern horizon on June and July evenings. Seen from the Mediterranean or further south, it's arguably the most magnificent constellation in the sky.
+**From the UK.** The honest truth: Britain is a poor seat for Scorpius. Only its upper body, including Antares, climbs above the southern horizon on June and July evenings. Seen from the Mediterranean or further south, it is arguably the most magnificent constellation in the sky.
 
 **One extraordinary fact.** Antares is so enormous that, on average, it is more than ten thousand times less dense than the air you breathe.
 `,
@@ -81,9 +81,9 @@ The scorpion that killed Orion, placed on the opposite side of the sky so the tw
 
 Cygnus is the swan flying down the Milky Way. In myth it is either Zeus in disguise, or the musician Orpheus placed among the stars beside his beloved lyre. Its brightest stars also form the "Northern Cross," a shape so clear that it doubles as the constellation's second identity.
 
-**Stars worth knowing.** Deneb (α Cyg) marks the tail: one of the most luminous stars known, blazing from roughly 2,600 light years away. Most bright stars are our near neighbours, but Deneb is seen across a huge stretch of the galaxy. At the swan's head, Albireo is the sky's most beloved double star: one gold, one sapphire-blue, exquisite in any telescope.
+**Stars worth knowing.** Deneb (α Cyg) marks the tail: one of the most luminous stars known, blazing from roughly 2,600 light years away. Most bright stars are our near neighbours, but Deneb is seen across a huge stretch of the galaxy. At the swan's head, Albireo is the sky's most beloved double star: one gold, one sapphire blue, exquisite in any telescope.
 
-**Deep sky.** The Milky Way runs straight through Cygnus, split by the dark Cygnus Rift. Binoculars show dense fields of stars; long-exposure photos show the North America Nebula near Deneb.
+**Deep sky.** The Milky Way runs straight through Cygnus, split by the dark Cygnus Rift. Binoculars show dense fields of stars; long exposure photos show the North America Nebula near Deneb.
 
 **From the UK.** Superb, nearly circumpolar, and directly overhead on late summer evenings as part of the Summer Triangle with Vega and Altair.
 
@@ -107,11 +107,11 @@ Castor and Pollux were twin brothers with different fathers: one mortal, one div
   taurus: `
 ### The Bull
 
-Taurus is among the oldest constellations humanity has recorded: a bull charging at Orion. In Greek myth it was the disguise Zeus wore to carry off the princess Europa. Some researchers argue the bull and its star clusters appear in the 17,000-year-old cave paintings at Lascaux.
+Taurus is among the oldest constellations humanity has recorded: a bull charging at Orion. In Greek myth it was the disguise Zeus wore to carry off the princess Europa. Some researchers argue the bull and its star clusters appear in the cave paintings at Lascaux, made about 17,000 years ago.
 
-**Stars worth knowing.** Aldebaran (α Tau), the bull's furious orange eye, is a red giant that only *appears* to lead the V-shaped Hyades cluster behind it. It is actually a foreground star at less than half the distance, a chance alignment.
+**Stars worth knowing.** Aldebaran (α Tau), the bull's furious orange eye, is a red giant that only *appears* to lead the V shaped Hyades cluster behind it. It is actually a foreground star at less than half the distance, a chance alignment.
 
-**Deep sky.** Taurus is spoiled. The Hyades is the nearest open cluster to Earth. The Pleiades (M45), the Seven Sisters, is the most famous cluster in the sky, a naked-eye jewel box known to virtually every culture on Earth.
+**Deep sky.** Taurus is spoiled. The Hyades is the nearest open cluster to Earth. The Pleiades (M45), the Seven Sisters, is the most famous cluster in the sky, a naked eye jewel box known to virtually every culture on Earth.
 
 **From the UK.** Wonderful from December to February, riding high with Orion.
 
@@ -123,7 +123,7 @@ Taurus is among the oldest constellations humanity has recorded: a bull charging
 
 Lyra is the harp of Orpheus, whose music could charm stones, rivers and even the lord of the underworld. When Orpheus died, the Muses set his lyre among the stars: small, but holding one of the brightest jewels in the northern sky.
 
-**Stars worth knowing.** Vega (α Lyr) is the fifth-brightest star in the night sky, a young, white, rapidly spinning star just 25 light years away, surrounded by a dusty debris disk that may be forming planets. Beside it, Epsilon Lyrae is the famous "Double Double": binoculars split it into two stars, and a telescope splits *each of those* into two again.
+**Stars worth knowing.** Vega (α Lyr) is the fifth brightest star in the night sky, a young, white, rapidly spinning star just 25 light years away, surrounded by a dusty debris disk that may be forming planets. Beside it, Epsilon Lyrae is the famous "Double Double": binoculars split it into two stars, and a telescope splits *each of those* into two again.
 
 **Deep sky.** Below the harp, towards Albireo in Cygnus, lies M56, a globular cluster of ancient stars that a small telescope shows as a soft, round glow.
 
@@ -135,15 +135,15 @@ Lyra is the harp of Orpheus, whose music could charm stones, rivers and even the
   andromeda: `
 ### The Chained Princess
 
-Andromeda was chained to a sea-cliff as a sacrifice for her mother Cassiopeia's vanity, and rescued at the last moment by the hero Perseus. The whole royal drama (queen, king, princess, hero and sea monster) plays out across neighbouring constellations in the autumn sky.
+Andromeda was chained to a sea cliff as a sacrifice for her mother Cassiopeia's vanity, and rescued at the last moment by the hero Perseus. The whole royal drama (queen, king, princess, hero and sea monster) plays out across neighbouring constellations in the autumn sky.
 
-**Stars worth knowing.** Alpheratz (α And) does double duty: it marks Andromeda's head *and* completes the Great Square of Pegasus, and for centuries was officially shared between both constellations. Mirach (β And) is the stepping-stone star observers use to hop to the constellation's great treasure.
+**Stars worth knowing.** Alpheratz (α And) does double duty: it marks Andromeda's head *and* completes the Great Square of Pegasus, and for centuries was officially shared between both constellations. Mirach (β And) is the stepping stone star observers use to hop to the constellation's great treasure.
 
 **Deep sky.** That treasure is M31, the Andromeda Galaxy, a spiral of roughly a trillion stars, 2.5 million light years away, and one of the most distant things you can see with the naked eye. From a dark site it appears as an elongated misty glow longer than the full Moon.
 
-**From the UK.** Very well placed on autumn evenings, October to December, high in the south-east.
+**From the UK.** Very well placed on autumn evenings, October to December, high in the southeast.
 
-**One extraordinary fact.** Andromeda and our Milky Way are falling toward each other at about 110 km every second. A 2025 study found roughly even odds that they merge within the next 10 billion years. If they do, astronomers already have a name for the result: "Milkomeda".
+**One extraordinary fact.** Andromeda and our Milky Way are falling towards each other at about 110 km every second. A 2025 study found roughly even odds that they merge within the next 10 billion years. If they do, astronomers already have a name for the result: "Milkomeda".
 `,
 
   "canis-major": `
@@ -151,13 +151,13 @@ Andromeda was chained to a sea-cliff as a sacrifice for her mother Cassiopeia's 
 
 Canis Major is Orion's faithful hunting dog, bounding at his heels across the winter sky. In some tellings it is Laelaps, the hound destined to catch anything it chased.
 
-**Stars worth knowing.** Sirius (α CMa), the Dog Star, is the brightest star in Earth's entire night sky, not because it's a monster, but because it's close: just 8.6 light years away. It famously flashes and flickers in every colour when low on the horizon, an effect of our own atmosphere. Circling it every 50 years is Sirius B, "the Pup", a tiny, extraordinarily dense companion about the size of Earth but with about the mass of the Sun.
+**Stars worth knowing.** Sirius (α CMa), the Dog Star, is the brightest star in Earth's entire night sky, not because it is a monster, but because it is close: just 8.6 light years away. It famously flashes and flickers in every colour when low on the horizon, an effect of our own atmosphere. Circling it every 50 years is Sirius B, "the Pup", a tiny, extraordinarily dense companion about the size of Earth but with about the mass of the Sun.
 
 **Deep sky.** M41, a lovely open cluster, sits just below Sirius, visible in binoculars and possibly mentioned by Aristotle over 2,300 years ago.
 
 **From the UK.** Sirius blazes low in the south on winter evenings, January to March; the dog's hindquarters hug the horizon.
 
-**One extraordinary fact.** Ancient Egypt set its calendar by Sirius: the star's first pre-dawn appearance each year announced the flooding of the Nile. Its midsummer rising with the Sun also gave us a phrase we still use: the "dog days" of summer.
+**One extraordinary fact.** Ancient Egypt set its calendar by Sirius: the star's first appearance before dawn each year announced the flooding of the Nile. Its midsummer rising with the Sun also gave us a phrase we still use: the "dog days" of summer.
 `,
 
   virgo: `
@@ -181,7 +181,7 @@ Sagittarius is a centaur archer (often identified with wise Chiron, tutor of her
 
 **Stars worth knowing.** Kaus Australis (ε Sgr), the bow's southern tip, leads a constellation short on famous individual stars but unmatched in what lies behind them.
 
-**Deep sky.** Because when you look at Sagittarius, you are looking directly toward the centre of the Milky Way. The star clouds here are the densest in the sky, and the deep-sky catalogue overflows: the Lagoon Nebula (M8), the Trifid Nebula (M20), the Omega Nebula (M17), and globular clusters by the dozen. Steam appears to rise from the Teapot's spout. That steam is the galactic core.
+**Deep sky.** Because when you look at Sagittarius, you are looking directly towards the centre of the Milky Way. The star clouds here are the densest in the sky, and the deep sky catalogue overflows: the Lagoon Nebula (M8), the Trifid Nebula (M20), the Omega Nebula (M17), and globular clusters by the dozen. Steam appears to rise from the Teapot's spout. That steam is the galactic core.
 
 **From the UK.** Low. The Teapot skims the southern horizon on July and August evenings; a flat, dark southern view helps enormously.
 
@@ -193,21 +193,21 @@ Sagittarius is a centaur archer (often identified with wise Chiron, tutor of her
 
 The greatest of Greek heroes appears in the sky kneeling, club raised. The ancients actually called this constellation "the Kneeler" long before it took Hercules' name. His twelve labours echo across the whole sky: the lion (Leo), the crab (Cancer), the hydra, the dragon (Draco) beneath his foot.
 
-**Stars worth knowing.** Hercules is large but subtle; its signature is the Keystone, a wonky square of four stars marking the hero's torso. Kornephoros (β Her), "the club-bearer," is its brightest star. Rasalgethi, the hero's head, is a red giant with a lovely greenish companion in telescopes.
+**Stars worth knowing.** Hercules is large but subtle; its signature is the Keystone, a wonky square of four stars marking the hero's torso. Kornephoros (β Her), "the club bearer," is its brightest star. Rasalgethi, the hero's head, is a red giant with a lovely greenish companion in telescopes.
 
 **Deep sky.** On the Keystone's western edge lies the showpiece: M13, the Great Globular Cluster, a swarm of several hundred thousand ancient stars packed into a ball, faintly visible to the naked eye from dark sites and breathtaking in any telescope.
 
 **From the UK.** Very well placed, high overhead on June to August evenings.
 
-**One extraordinary fact.** In 1974, humanity aimed the giant Arecibo radio dish at M13 and transmitted a message describing DNA, our solar system and ourselves. It will arrive in about 25,000 years. Hercules is also roughly the direction the Sun is moving through our part of the galaxy, at about 20 kilometres a second.
+**One extraordinary fact.** In 1974, humanity aimed the giant Arecibo radio dish at M13 and transmitted a message describing DNA, our Solar System and ourselves. It will arrive in about 25,000 years. Hercules is also roughly the direction the Sun is moving through our part of the galaxy, at about 20 kilometres a second.
 `,
 
   aquila: `
 ### The Eagle
 
-Aquila is the eagle of Zeus, the bird that carried his thunderbolts and, in one myth, carried the youth Ganymede to Olympus to serve as cup-bearer to the gods (the neighbouring constellation Aquarius).
+Aquila is the eagle of Zeus, the bird that carried his thunderbolts and, in one myth, carried the youth Ganymede to Olympus to serve as cupbearer to the gods (the neighbouring constellation Aquarius).
 
-**Stars worth knowing.** Altair (α Aql) is one of our closest bright stellar neighbours at just under 17 light years, and one of the fastest-spinning bright stars known: it completes a rotation in about 9 hours (the Sun takes nearly a month), flattening itself into an oval noticeably wider than it is tall. Astronomers have directly imaged its distorted shape, one of the first stars ever resolved as more than a point of light.
+**Stars worth knowing.** Altair (α Aql) is one of our closest bright stellar neighbours at just under 17 light years, and one of the fastest spinning bright stars known: it completes a rotation in about 9 hours (the Sun takes nearly a month), flattening itself into an oval noticeably wider than it is tall. Astronomers have directly imaged its distorted shape, one of the first stars ever resolved as more than a point of light.
 
 **Deep sky.** The Milky Way flows through Aquila, dark dust lanes and all; sweeping the region with binoculars on an August night is one of stargazing's simple pleasures.
 
@@ -233,13 +233,13 @@ Perseus beheaded the gorgon Medusa, whose gaze turned onlookers to stone, and th
   aquarius: `
 ### The Water Bearer
 
-Aquarius is Ganymede, the beautiful youth carried to Olympus by Zeus' eagle to pour wine and water for the gods, the sky's eternal cup-bearer, tipping his jar into a stream of faint stars that flows toward the Southern Fish.
+Aquarius is Ganymede, the beautiful youth carried to Olympus by Zeus' eagle to pour wine and water for the gods, the sky's eternal cupbearer, tipping his jar into a stream of faint stars that flows towards the Southern Fish.
 
-**Stars worth knowing.** Its two brightest stars carry lovely Arabic names of good fortune: Sadalsuud (β Aqr), "luck of lucks," and Sadalmelik (α Aqr), "luck of the king", both rare yellow supergiants. The "Water Jar" is a compact Y-shaped asterism at the constellation's heart.
+**Stars worth knowing.** Its two brightest stars carry lovely Arabic names of good fortune: Sadalsuud (β Aqr), "luck of lucks," and Sadalmelik (α Aqr), "luck of the king", both rare yellow supergiants. The "Water Jar" is a compact Y shaped asterism at the constellation's heart.
 
 **Deep sky.** Aquarius hosts M2, one of the richest globular clusters in the sky: around 150,000 stars packed into a ball, just visible in binoculars as a fuzzy star.
 
-**From the UK.** A modest, autumn-evening constellation in the south, September to November; dark skies help, as its stars are faint.
+**From the UK.** A modest, autumn evening constellation in the south, September to November; dark skies help, as its stars are faint.
 
 **One extraordinary fact.** Aquarius is the radiant of *two* annual meteor showers: the Eta Aquariids of May and the Delta Aquariids of July. The Eta Aquariids are burning fragments of the most famous object in the sky: Halley's Comet, whose dusty trail Earth ploughs through every spring.
 `,
@@ -251,11 +251,11 @@ Pisces preserves a moment of divine panic: when the monster Typhon stormed Olymp
 
 **Stars worth knowing.** Pisces is faint (its brightest star, Eta Piscium, is unremarkable), but its shape is elegant: two fishes on long stellar ribbons joined at Alrescha, with the western fish forming a neat ring called the Circlet, just below the Great Square of Pegasus.
 
-**Deep sky.** The face-on spiral galaxy M74 hides here, beautiful in photographs, notoriously elusive in small telescopes.
+**Deep sky.** The face on spiral galaxy M74 hides here, beautiful in photographs, notoriously elusive in small telescopes.
 
 **From the UK.** An autumn constellation, October to December; genuinely dark skies are needed to trace it well.
 
-**One extraordinary fact.** Pisces contains one of the most important invisible points in the sky: the vernal equinox, the spot where the Sun crosses the celestial equator each March, the starting point from which right ascension is measured. It's still called "the First Point of Aries," but Earth's slow 26,000-year wobble has carried it into Pisces, and it is drifting onward toward Aquarius.
+**One extraordinary fact.** Pisces contains one of the most important invisible points in the sky: the vernal equinox, the spot where the Sun crosses the celestial equator each March, the starting point from which right ascension is measured. It's still called "the First Point of Aries," but Earth's slow 26,000-year wobble has carried it into Pisces, and it is drifting onward towards Aquarius.
 `,
 
   cancer: `
@@ -267,21 +267,21 @@ Cancer has the humblest myth in the zodiac: a crab sent by the goddess Hera to n
 
 **Deep sky.** That secret is M44, the Beehive Cluster (also called Praesepe, "the Manger"), a swarm of stars visible to the naked eye from dark sites as a misty patch. Ancient Greeks and Romans used its visibility as a weather forecast: if the Beehive dimmed, rain was coming. When Galileo turned his first telescope on it in 1610, the "cloud" dissolved into dozens of stars, one of the moments the old sky ended.
 
-**From the UK.** Between Gemini and Leo on late-winter evenings, February to April; use binoculars for the Beehive.
+**From the UK.** Between Gemini and Leo on late winter evenings, February to April; use binoculars for the Beehive.
 
-**One extraordinary fact.** Orbiting the star 55 Cancri is one of the strangest known worlds: 55 Cancri e, a scorching super-Earth that circles its sun in under 18 hours, with a surface likely covered in oceans of molten rock.
+**One extraordinary fact.** Orbiting the star 55 Cancri is one of the strangest known worlds: 55 Cancri e, a scorching super Earth that circles its sun in under 18 hours, with a surface likely covered in oceans of molten rock.
 `,
 
   capricornus: `
-### The Sea-Goat
+### The Sea Goat
 
-Capricornus, half goat, half fish, is one of the oldest constellations humanity has kept, inherited from Babylonian astronomers who knew it as the "Goat-Fish" over 3,000 years ago. The Greeks attached it to Pan, who dove into a river mid-transformation while fleeing the monster Typhon: goat above the waterline, fish below.
+Capricornus, half goat, half fish, is one of the oldest constellations humanity has kept, inherited from Babylonian astronomers who knew it as the "Goat Fish" over 3,000 years ago. The Greeks attached it to Pan, who dived into a river halfway through changing shape, fleeing the monster Typhon: goat above the waterline, fish below.
 
-**Stars worth knowing.** Its brightest star, Deneb Algedi (δ Cap), means "the goat's tail." Algedi (α Cap) is a naked-eye double, two unrelated stars in a chance alignment that sharp eyes can split unaided. The constellation forms a broad, dim smile of stars.
+**Stars worth knowing.** Its brightest star, Deneb Algedi (δ Cap), means "the goat's tail." Algedi (α Cap) is a naked eye double, two unrelated stars in a chance alignment that sharp eyes can split unaided. The constellation forms a broad, dim smile of stars.
 
 **Deep sky.** The globular cluster M30, a tight ball of ancient stars, is the standout telescope target.
 
-**From the UK.** Low in the south on late-summer and autumn evenings, August to October.
+**From the UK.** Low in the south on late summer and autumn evenings, August to October.
 
 **One extraordinary fact.** The Tropic of Capricorn is named for this constellation: two millennia ago, the Sun stood among these stars at the December solstice. Earth's slow axial wobble has since shifted the solstice Sun into Sagittarius. The map on the ground preserves a sky that no longer exists. And in 1846 the planet Neptune was discovered close to Deneb Algedi.
 `,
