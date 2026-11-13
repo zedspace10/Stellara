@@ -67,7 +67,7 @@ function SunContent({ onClose }: { onClose: () => void }) {
           <p className="m-0 text-[15px] leading-relaxed" style={{ color: "#C9D2DC" }}>
             A nearly perfect ball of hot plasma, powered by nuclear fusion at its centre. Every second it turns about
             600 million tonnes of hydrogen into helium, and the energy released is what makes life on Earth possible.
-            It holds 99.8% of all the mass in the solar system.
+            It holds 99.8% of all the mass in the Solar System.
           </p>
 
           <dl className="m-0 mt-6">

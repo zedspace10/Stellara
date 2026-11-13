@@ -198,7 +198,7 @@ export const GALLERY_QUOTES = [
     text: "We have confirmed more than 6,000 worlds in our galaxy alone. The Milky Way contains 100 to 400 billion stars. The maths is left as an exercise for the reader.",
   },
   {
-    text: "The first exoplanet was confirmed in 1992. In 30 years we went from zero known worlds beyond our solar system to thousands. We are just getting started.",
+    text: "The first planets around another star were confirmed in 1992. Today we know of more than 6,000.",
   },
   {
     text: "Of all the confirmed exoplanets, none have yet shown definitive signs of life. The search continues.",

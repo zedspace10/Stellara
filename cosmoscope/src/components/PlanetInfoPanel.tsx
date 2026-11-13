@@ -27,14 +27,14 @@ const NOTABLE_FACTS: Record<string, string[]> = {
     "Earth's magnetic field deflects most of the solar wind, helping to protect our atmosphere.",
   ],
   mars: [
-    "Mars hosts Olympus Mons, the largest volcano in the solar system, about 22 km high.",
+    "Mars hosts Olympus Mons, the tallest volcano in the Solar System, about 22 km high.",
     "A Martian day, called a sol, lasts 24 hours 40 minutes, almost the same as Earth's.",
-    "Mars has the longest canyon in the solar system: Valles Marineris, 4,000 km long.",
+    "Mars has the longest canyon in the Solar System: Valles Marineris, 4,000 km long.",
   ],
   jupiter: [
     "Jupiter's Great Red Spot is a storm wider than Earth that has lasted at least 190 years.",
-    "Jupiter's gravity shapes the orbits of asteroids and comets across the solar system.",
-    "Jupiter has 101 known moons, including Ganymede, the largest moon in the solar system.",
+    "Jupiter's gravity shapes the orbits of asteroids and comets across the Solar System.",
+    "Jupiter has 101 known moons, including Ganymede, the largest moon in the Solar System.",
   ],
   saturn: [
     "Saturn's main rings stretch about 280,000 km across, yet in many places are only about 10 metres thick.",
@@ -47,7 +47,7 @@ const NOTABLE_FACTS: Record<string, string[]> = {
     "Uranus has 13 known rings, faint and dark compared to Saturn's.",
   ],
   neptune: [
-    "Neptune has the fastest winds in the solar system, reaching about 2,100 km/h.",
+    "Neptune has the fastest winds in the Solar System, reaching about 2,100 km/h.",
     "Neptune was the first planet predicted mathematically before being observed.",
     "Triton, Neptune's moon, orbits backwards and is likely a captured Kuiper Belt object.",
   ],

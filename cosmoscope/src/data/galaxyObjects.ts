@@ -60,7 +60,7 @@ export const galaxyObjects = [
     distance: "26,000 light years",
     size: "4 million solar masses",
     discovery: "1974 (Bruce Balick, Robert Brown)",
-    description: "Supermassive black hole at our galaxy's centre, 4 million solar masses, 26,000 light years from Earth, at the heart of the Milky Way."
+    description: "The black hole at the centre of our galaxy, about 4 million times the mass of the Sun and 26,000 light years away."
   },
   {
     id: "eagle-nebula",
@@ -69,7 +69,7 @@ export const galaxyObjects = [
     distance: "About 6,500 light years",
     size: "70x55 light years",
     discovery: "1745 (Jean-Philippe de Chéseaux)",
-    description: "A stellar nursery about 6,500 light years away, home to the iconic Pillars of Creation, where new stars are being born."
+    description: "A stellar nursery about 6,500 light years away, home to the Pillars of Creation, where new stars are forming."
   },
   {
     id: "orion-nebula",
@@ -96,7 +96,7 @@ export const galaxyObjects = [
     distance: "17,000 light years",
     size: "150 light years",
     discovery: "1677 (Edmond Halley)",
-    description: "The largest globular cluster orbiting the Milky Way, containing ~10 million stars, 17,000 light years away."
+    description: "The largest globular cluster orbiting the Milky Way, containing about 10 million stars, 17,000 light years away."
   },
   {
     id: "47-tucanae",
@@ -186,6 +186,6 @@ export const galaxyObjects = [
     distance: "240 million light years",
     size: "10 million light years",
     discovery: "18th century",
-    description: "One of the most massive objects in the known universe, containing thousands of galaxies immersed in a vast cloud of multimillion degree gas."
+    description: "Thousands of galaxies held together in a cloud of gas heated to tens of millions of degrees, one of the heaviest things we know of."
   }
 ];

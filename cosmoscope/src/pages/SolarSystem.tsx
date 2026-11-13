@@ -215,7 +215,7 @@ function WebGLFallback() {
           Interactive Universe
         </h2>
         <p className="text-[#e0e0e0]/70 max-w-md mx-auto leading-relaxed mb-2">
-          The 3D solar system requires WebGL, which isn't available in this preview environment.
+          The 3D Solar System needs WebGL, which this browser does not have switched on.
         </p>
         <p className="text-[#A9C3E0]/80 text-sm max-w-md mx-auto">
           Open this app in a standard browser to experience the full interactive universe.
@@ -2788,7 +2788,7 @@ export default function SolarSystem() {
                 <Button variant="secondary" size="sm" onClick={handleRandomExplore} className="gap-2">
                   Fly somewhere
                 </Button>
-                <Button variant="secondary" size="sm" onClick={(e) => safeTransition(1, e)}>In to the solar system</Button>
+                <Button variant="secondary" size="sm" onClick={(e) => safeTransition(1, e)}>In to the Solar System</Button>
                 <Button variant="secondary" size="sm" onClick={(e) => safeTransition(3, e)}>Out to the universe</Button>
               </div>
             </div>

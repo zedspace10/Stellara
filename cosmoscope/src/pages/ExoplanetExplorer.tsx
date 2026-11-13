@@ -82,7 +82,7 @@ function IntroScreen({ onDone }: { onDone: () => void }) {
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4 }}
           className="mt-12 text-xs text-white/25 "
         >
-          Tap to begin
+          Tap or click to begin
         </motion.div>
       </div>
     </motion.div>

@@ -13,7 +13,7 @@ export const planets = [
     distance: "57.9M km",
     moons: 0,
     day: "58.6 Earth days",
-    description: "The smallest planet in our solar system and nearest to the Sun, Mercury is only slightly larger than Earth's Moon."
+    description: "The smallest planet and the closest to the Sun, only a little bigger than our Moon. With almost no air to hold the heat, its days are scorching and its nights bitterly cold."
   },
   {
     id: "venus",
@@ -29,7 +29,7 @@ export const planets = [
     distance: "108.2M km",
     moons: 0,
     day: "243 Earth days",
-    description: "Venus spins slowly in the opposite direction from most planets. A thick atmosphere traps heat in a runaway greenhouse effect, making it the hottest planet in our solar system."
+    description: "Nearly the size of Earth, but wrapped in thick carbon dioxide that traps the heat, so its surface is about 465°C, hotter than Mercury's. It turns slowly, and the opposite way to most planets."
   },
   {
     id: "earth",
@@ -45,7 +45,7 @@ export const planets = [
     distance: "149.6M km",
     moons: 1,
     day: "24 hours",
-    description: "Our home planet is the only place we know of so far that's inhabited by living things. It's also the only planet in our solar system with liquid water on the surface."
+    description: "Home. The only planet we know of with life, and the only one with oceans of liquid water on its surface."
   },
   {
     id: "mars",
@@ -61,7 +61,7 @@ export const planets = [
     distance: "227.9M km",
     moons: 2,
     day: "24.6 hours",
-    description: "Mars is a dusty, cold, desert world with a very thin atmosphere. There is strong evidence that billions of years ago Mars was wetter and warmer, with a thicker atmosphere."
+    description: "A cold, dusty desert with very thin air. Old riverbeds and lake beds show that billions of years ago it was warmer and wetter."
   },
   {
     id: "jupiter",
@@ -77,7 +77,7 @@ export const planets = [
     distance: "778.5M km",
     moons: 101,
     day: "9.9 hours",
-    description: "Jupiter is more than twice as massive as all the other planets combined. Its Great Red Spot is a storm wider than Earth that has lasted for at least 190 years."
+    description: "The biggest planet, with more than twice the mass of all the others put together. Its Great Red Spot, a storm wider than Earth, has been watched since at least 1831."
   },
   {
     id: "saturn",
@@ -93,7 +93,7 @@ export const planets = [
     distance: "1.43B km",
     moons: 285,
     day: "10.7 hours",
-    description: "Adorned with a dazzling, complex system of icy rings, Saturn is unique in our solar system. The other giant planets have rings, but none are as spectacular as Saturn's."
+    description: "A gas giant with the brightest rings of any planet. They are made mostly of ice, from grains like dust to pieces the size of a house."
   },
   {
     id: "uranus",
@@ -109,7 +109,7 @@ export const planets = [
     distance: "2.87B km",
     moons: 29,
     day: "17.2 hours",
-    description: "Uranus is an ice giant. Most of its mass is a hot, dense fluid of 'icy' materials such as water, methane and ammonia, above a small rocky core."
+    description: "An ice giant, mostly water, methane and ammonia around a small rocky core. The methane in its air gives it its pale blue green colour."
   },
   {
     id: "neptune",
@@ -125,6 +125,6 @@ export const planets = [
     distance: "4.50B km",
     moons: 16,
     day: "16.1 hours",
-    description: "Dark, cold and whipped by supersonic winds, ice giant Neptune is the eighth and most distant planet in our solar system."
+    description: "The farthest planet, a deep blue ice giant with the strongest winds we know of. It takes about 165 years to go once around the Sun."
   }
 ];

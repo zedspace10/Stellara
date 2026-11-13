@@ -55,8 +55,8 @@ export default function PlanetGallery({ planets, onSelect }: Props) {
               <h3 className="m-0 mb-1 font-serif text-[28px] font-normal leading-tight" style={{ color: "#E8ECF1" }}>{potwPlanet.name}</h3>
               <p className="text-sm text-white/50 leading-relaxed">
                 {potwPlanet.potentiallyHabitable
-                  ? "This world sits within its star's habitable zone, one of the most compelling candidates in the known catalogue for conditions that could support liquid water."
-                  : `Discovered in ${potwPlanet.year ?? "unknown"} by the ${potwPlanet.method} method, this world is ${(potwPlanet.radius ?? 1).toFixed(1)} times the size of Earth and orbiting ${potwPlanet.starName}.`}
+                  ? "It orbits in its star's habitable zone, where the temperature could allow liquid water on the surface, if the planet has the right kind of atmosphere."
+                  : `Discovered in ${potwPlanet.year ?? "unknown"} by the ${potwPlanet.method} method, this world is ${(potwPlanet.radius ?? 1).toFixed(1)} times the width of Earth and orbits ${potwPlanet.starName}.`}
               </p>
             </div>
           </button>
@@ -91,9 +91,9 @@ export default function PlanetGallery({ planets, onSelect }: Props) {
       {visible >= planets.length && planets.length > 0 && (
         <div className="text-center py-8">
           <div className="text-sm text-white/30 font-sans ">
-            All {planets.length.toLocaleString()} worlds explored.
+            That is all {planets.length.toLocaleString()} here.
           </div>
-          <div className="text-xs text-white/20 mt-1">The search for more continues.</div>
+          <div className="text-xs text-white/20 mt-1">The NASA Exoplanet Archive lists more than 6,000.</div>
         </div>
       )}
       {planets.length === 0 && (

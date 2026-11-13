@@ -17,7 +17,6 @@ export const PlanetCard = memo(function PlanetCard({ planet, onClick, featured =
   const notes = [
     typeLabel,
     planet.potentiallyHabitable ? "in the habitable zone" : null,
-    planet.year && planet.year >= 2022 ? "found in the Webb era" : null,
   ].filter(Boolean).join(", ");
 
   return (

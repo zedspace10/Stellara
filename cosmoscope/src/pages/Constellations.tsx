@@ -43,7 +43,7 @@ const CONSTELLATIONS: ConstellationData[] = [
   },
   {
     id: "cassiopeia", name: "Cassiopeia", abbr: "Cas", hemisphere: "N", months: "Oct to Dec",
-    mythology: "Vain queen of Ethiopia, punished to circle the pole forever.",
+    mythology: "A vain queen of Aethiopia, punished by being made to circle the pole forever.",
     brightestStar: "Schedar (α Cas)", area: 598,
     stars: [
       { x: 10, y: 70, r: 2.5 }, { x: 25, y: 30, r: 3, name: "Schedar" },
@@ -76,7 +76,7 @@ const CONSTELLATIONS: ConstellationData[] = [
   },
   {
     id: "cygnus", name: "Cygnus", abbr: "Cyg", hemisphere: "N", months: "Aug to Oct",
-    mythology: "The swan form Zeus took when wooing Leda; or Orpheus transformed after death.",
+    mythology: "The swan Zeus became to visit Leda, or Orpheus, turned into a swan when he died.",
     brightestStar: "Deneb (α Cyg)", area: 804,
     stars: [
       { x: 50, y: 10, r: 4, name: "Deneb" }, { x: 50, y: 35, r: 3, name: "Sadr" },
@@ -87,7 +87,7 @@ const CONSTELLATIONS: ConstellationData[] = [
   },
   {
     id: "gemini", name: "Gemini", abbr: "Gem", hemisphere: "N", months: "Jan to Mar",
-    mythology: "Castor and Pollux, the divine twins of Zeus, patrons of sailors.",
+    mythology: "Castor and Pollux, the twin brothers of Greek myth, protectors of sailors.",
     brightestStar: "Pollux (β Gem)", area: 514,
     stars: [
       { x: 30, y: 10, r: 3, name: "Castor" }, { x: 55, y: 10, r: 4, name: "Pollux" },
@@ -119,7 +119,7 @@ const CONSTELLATIONS: ConstellationData[] = [
   },
   {
     id: "andromeda", name: "Andromeda", abbr: "And", hemisphere: "N", months: "Oct to Dec",
-    mythology: "Ethiopian princess chained to a rock as sacrifice; rescued by Perseus.",
+    mythology: "A princess of Aethiopia, chained to a rock for a sea monster and rescued by Perseus.",
     brightestStar: "Alpheratz (α And)", area: 722,
     stars: [
       { x: 15, y: 50, r: 3.5, name: "Alpheratz" }, { x: 35, y: 40, r: 2.5 },
@@ -152,7 +152,7 @@ const CONSTELLATIONS: ConstellationData[] = [
   },
   {
     id: "sagittarius", name: "Sagittarius", abbr: "Sgr", hemisphere: "S", months: "Jul to Sep",
-    mythology: "The centaur Chiron, wisest of his kind, aiming his bow at Scorpius.",
+    mythology: "A centaur archer, aiming his arrow at the heart of the scorpion.",
     brightestStar: "Kaus Australis (ε Sgr)", area: 867,
     stars: [
       { x: 40, y: 30, r: 3 }, { x: 55, y: 20, r: 2.5 }, { x: 65, y: 35, r: 3 },
@@ -174,7 +174,7 @@ const CONSTELLATIONS: ConstellationData[] = [
   },
   {
     id: "aquila", name: "Aquila", abbr: "Aql", hemisphere: "Both", months: "Aug to Oct",
-    mythology: "The eagle of Zeus, who carried the thunderbolts of the king of gods.",
+    mythology: "The eagle of Zeus, which carried the thunderbolts of the king of the gods.",
     brightestStar: "Altair (α Aql)", area: 652,
     stars: [
       { x: 50, y: 40, r: 4, name: "Altair" }, { x: 35, y: 35, r: 2.5 },
@@ -184,7 +184,7 @@ const CONSTELLATIONS: ConstellationData[] = [
   },
   {
     id: "perseus", name: "Perseus", abbr: "Per", hemisphere: "N", months: "Nov to Jan",
-    mythology: "Hero who slew Medusa and rescued Andromeda from the sea monster.",
+    mythology: "The hero who killed Medusa and saved Andromeda from the sea monster.",
     brightestStar: "Mirfak (α Per)", area: 615,
     stars: [
       { x: 50, y: 15, r: 3.5, name: "Mirfak" }, { x: 40, y: 30, r: 2.5 },
@@ -195,7 +195,7 @@ const CONSTELLATIONS: ConstellationData[] = [
   },
   {
     id: "aquarius", name: "Aquarius", abbr: "Aqr", hemisphere: "Both", months: "Sep to Nov",
-    mythology: "Ganymede, the cup-bearer of the gods, eternally pouring water from the heavens.",
+    mythology: "Ganymede, cupbearer to the gods, pouring water from the heavens.",
     brightestStar: "Sadalsuud (β Aqr)", area: 980,
     stars: [
       { x: 35, y: 20, r: 3 }, { x: 50, y: 35, r: 3.5, name: "Sadalsuud" },
@@ -228,7 +228,7 @@ const CONSTELLATIONS: ConstellationData[] = [
   },
   {
     id: "capricornus", name: "Capricornus", abbr: "Cap", hemisphere: "S", months: "Aug to Oct",
-    mythology: "Pan, god of the wild, who transformed himself into a fish-goat to escape Typhon.",
+    mythology: "Pan, god of the wild, who became half goat and half fish to escape the monster Typhon.",
     brightestStar: "Deneb Algedi (δ Cap)", area: 414,
     stars: [
       { x: 20, y: 40, r: 2.5 }, { x: 35, y: 30, r: 2.5 }, { x: 55, y: 25, r: 2 },

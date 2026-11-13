@@ -774,27 +774,71 @@ export default function ScaleOfUniverse() {
       }
       a = vis(1.7, 6, 6);
       if (a > 0) {
-        // A simple figure, standing, with one hand out by the point we zoom into.
+        // You: a standing figure drawn as one outline, one hand reaching to the point we zoom into.
+        type Pt = [number, number];
+        type Seg = { c?: Pt; p: Pt };
+        // The right side, from the neck down to between the legs, arm reaching out.
+        const reaching: Seg[] = [
+          { p: [0.05, 1.43] },
+          { c: [0.07, 1.415], p: [0.17, 1.4] },
+          { c: [0.215, 1.39], p: [0.228, 1.33] },
+          { c: [0.248, 1.2], p: [0.268, 1.13] },
+          { c: [0.3, 1.05], p: [MICRO_C[0] + 0.016, MICRO_C[1] + 0.006] },
+          { c: [MICRO_C[0] + 0.022, MICRO_C[1] - 0.026], p: [MICRO_C[0] - 0.002, MICRO_C[1] - 0.03] },
+          { c: [MICRO_C[0] - 0.024, MICRO_C[1] - 0.024], p: [MICRO_C[0] - 0.03, MICRO_C[1] + 0.012] },
+          { c: [0.258, 1.05], p: [0.226, 1.112] },
+          { c: [0.205, 1.18], p: [0.19, 1.26] },
+          { c: [0.172, 1.15], p: [0.152, 1.02] },
+          { c: [0.168, 0.95], p: [0.158, 0.87] },
+          { c: [0.152, 0.6], p: [0.126, 0.45] },
+          { c: [0.118, 0.25], p: [0.104, 0.07] },
+          { p: [0.15, 0.03] },
+          { c: [0.165, 0.0], p: [0.13, 0.0] },
+          { p: [0.06, 0.0] },
+          { p: [0.054, 0.07] },
+          { c: [0.05, 0.3], p: [0.044, 0.45] },
+          { c: [0.034, 0.66], p: [0.0, 0.8] },
+        ];
+        // The other side, arm resting, drawn as its mirror image.
+        const resting: Seg[] = [
+          ...reaching.slice(0, 3),
+          { c: [0.246, 1.2], p: [0.25, 1.1] },
+          { c: [0.258, 0.98], p: [0.262, 0.9] },
+          { c: [0.27, 0.83], p: [0.245, 0.82] },
+          { c: [0.222, 0.83], p: [0.224, 0.9] },
+          { c: [0.214, 0.99], p: [0.205, 1.1] },
+          { c: [0.2, 1.18], p: [0.19, 1.26] },
+          ...reaching.slice(9),
+        ];
+        const neck: Pt = [0.045, 1.47];
         ctx.globalAlpha = a;
-        ctx.fillStyle = "#D9C4B6";
-        ctx.strokeStyle = "#D9C4B6";
-        ctx.lineCap = "round";
         ctx.beginPath();
-        ctx.arc(sx(0), sy(1.58), px(0.11), 0, Math.PI * 2);
+        ctx.moveTo(sx(neck[0]), sy(neck[1]));
+        for (const g of reaching) {
+          if (g.c) ctx.quadraticCurveTo(sx(g.c[0]), sy(g.c[1]), sx(g.p[0]), sy(g.p[1]));
+          else ctx.lineTo(sx(g.p[0]), sy(g.p[1]));
+        }
+        // Back up the other side: each curve reversed, mirrored across the middle.
+        const pts: Pt[] = [neck, ...resting.map((g) => g.p)];
+        for (let i = resting.length - 1; i >= 0; i--) {
+          const g = resting[i];
+          const to = pts[i];
+          if (g.c) ctx.quadraticCurveTo(sx(-g.c[0]), sy(g.c[1]), sx(-to[0]), sy(to[1]));
+          else ctx.lineTo(sx(-to[0]), sy(to[1]));
+        }
+        ctx.closePath();
+        ctx.moveTo(sx(0.085), sy(1.585));
+        ctx.ellipse(sx(0), sy(1.585), px(0.085), px(0.112), 0, 0, Math.PI * 2);
+        const body = ctx.createLinearGradient(0, sy(1.7), 0, sy(0));
+        body.addColorStop(0, "rgba(206,218,232,0.92)");
+        body.addColorStop(1, "rgba(150,166,186,0.92)");
+        ctx.fillStyle = body;
         ctx.fill();
-        const limb = (pts: [number, number][], w: number) => {
-          ctx.beginPath();
-          pts.forEach(([x, y], i) => (i ? ctx.lineTo(sx(x), sy(y)) : ctx.moveTo(sx(x), sy(y))));
-          ctx.lineWidth = Math.max(1, px(w));
-          ctx.stroke();
-        };
-        limb([[0, 1.4], [0, 0.92]], 0.3);
-        limb([[-0.08, 0.92], [-0.11, 0.48], [-0.12, 0.04]], 0.13);
-        limb([[0.08, 0.92], [0.11, 0.48], [0.12, 0.04]], 0.13);
-        limb([[-0.14, 1.36], [-0.24, 1.08], [-0.27, 0.84]], 0.09);
-        limb([[0.14, 1.36], [0.24, 1.12], [MICRO_C[0], MICRO_C[1]]], 0.09);
+        ctx.strokeStyle = "rgba(238,244,250,0.55)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
         ctx.globalAlpha = 1;
-        label("You, about 1.7 m", sx(0), sy(1.75), a * clamp((2.2 - zz) * 2) * clamp((zz + 0.3) * 2), undefined, -40, -6);
+        label("You, about 1.7 m", sx(0.1), sy(1.62), a * clamp((2.2 - zz) * 2) * clamp((zz + 0.3) * 2), undefined, 12, 0);
       }
 
       // ── Into your hand ─────────────────────────────────────────────────────

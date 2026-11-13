@@ -33,9 +33,9 @@ export default function About() {
 
         <Section title="What you can do here">
           <p className="m-0">
-            Fly through the solar system in 3D with every planet where it really is today. Journey from the smallest
-            length that makes sense to the edge of the observable universe. Watch a star being born. Find out what is in
-            your sky tonight.{" "}
+            Fly through the Solar System in 3D, with every planet where it really is today. Zoom from the smallest length
+            physics can describe out to the edge of the observable universe. Watch a star being born. Find out what is in
+            your sky tonight, or send a note out with the light leaving Earth and follow it to a star.{" "}
             {APP_STORE_URL ? (
               <a href={APP_STORE_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4" style={{ color: TINT }}>
                 The PALE app
@@ -45,22 +45,19 @@ export default function About() {
           </p>
         </Section>
 
-        <Section title="Why we built it">
+        <Section title="How we make it">
           <p className="m-0">
-            Space tools have often been locked behind expensive software or paywalls, or cluttered with ads. PALE is free
-            for everyone, with no ads.
+            PALE is free, with no ads, no premium tiers and no account to sign up for. Nothing you do here is tracked.
           </p>
-        </Section>
-
-        <Section title="What we care about">
-          <ul className="m-0 pl-5 space-y-2 list-disc marker:text-[#5D6B79]">
-            <li>Space science anyone can use, wherever they are</li>
-            <li>Helping people find perspective and calm by looking up</li>
-            <li>Inspiring the next generation of astronomers and scientists</li>
-            <li>Donating telescopes to UK schools and community groups</li>
-            <li>Keeping PALE free, with no ads and no premium tiers</li>
-            <li>Checking every fact against its source, and keeping reflection clearly separate from science</li>
-          </ul>
+          <p className="mt-4 mb-0">
+            Every fact is checked against where it came from, and every source is listed on the{" "}
+            <Link href="/credits" className="underline underline-offset-4" style={{ color: TINT }}>credits page</Link>. When we
+            add a thought of our own, we keep it apart from the science, so you can always tell which is which.
+          </p>
+          <p className="mt-4 mb-0">
+            As Stellara grows, we want to put telescopes into UK schools and community groups, so more people can see
+            these things for themselves.
+          </p>
         </Section>
 
         <Section title="Who makes it">
