@@ -20,7 +20,7 @@ export default function Blog() {
       <div className="max-w-[40rem] mx-auto px-5 md:px-0 pt-14">
         <h1 className="m-0 text-[40px] md:text-[56px] leading-[1.05]" style={{ color: TEXT }}>Blog</h1>
         <p className="mt-4 mb-10 text-[17px] leading-relaxed" style={{ color: BODY }}>
-          Every week, what happened in space, and what to look up for.
+          What happened in space, and what to look up for.
         </p>
 
         {posts.map((post, i) => (

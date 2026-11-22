@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import Footer from "@/components/Footer";
-import { PINS, Pin, pinDistance, pinDate, isThisWeek } from "@/data/pins";
+import { PINS, Pin, pinDistance, pinDate, isThisWeek, pinImage } from "@/data/pins";
 
 const TEXT = "#E8ECF1";
 const BODY = "#C9D2DC";
@@ -22,7 +22,7 @@ export function PinImage({ pin, className = "" }: { pin: Pin; className?: string
         </div>
       ) : (
         <img
-          src={pin.image.src}
+          src={pinImage(pin)}
           alt={pin.image.alt}
           loading="lazy"
           referrerPolicy="no-referrer"
@@ -88,7 +88,7 @@ export default function Discoveries() {
       <div className="max-w-[44rem] mx-auto px-5 md:px-0 pt-14">
         <h1 className="m-0 text-[40px] md:text-[56px] leading-[1.05]" style={{ color: TEXT }}>This week in the universe</h1>
         <p className="mt-4 mb-10 text-[17px] leading-relaxed" style={{ color: BODY }}>
-          Every week, a new picture from Hubble or Webb, and what it shows. Each one is placed in the 3D universe
+          New pictures from Hubble, Webb and other telescopes, and what they show. Each one is placed in the 3D universe
           where it really is, so over time they build into a map of what we have seen.
         </p>
         {pins.map((p, i) => <PinArticle key={p.id} pin={p} latest={i === 0} />)}

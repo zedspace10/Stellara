@@ -27,6 +27,58 @@ export interface BlogPost {
 
 export const POSTS: BlogPost[] = [
   {
+    slug: "a-day-away",
+    date: "2026-11-22",
+    week: "16 to 22 November 2026",
+    title: "A day away",
+    standfirst:
+      "Voyager 1 is now a light day from home, BepiColombo reaches Mercury, the space station turns 28, and a star gives away its hidden partner.",
+    body: `On Wednesday, a radio message sent to Voyager 1 began taking a whole day to arrive.
+
+This was a week about distance, and the patience it takes to cross it. A spacecraft that set off eight years ago arrived at Mercury. A space station that people have lived on for 26 years turned 28. And a bright full Moon is on its way.
+
+**One light day from home**
+
+At 10:16 UTC on 18 November, Voyager 1 became the first spacecraft to be one light day from Earth, about 25.9 billion km away. Light is the fastest thing there is, and it now needs 24 hours to cross the gap. A command sent on Monday morning reaches Voyager on Tuesday morning, and the answer gets back to us on Wednesday.
+
+Voyager 1 launched in September 1977. It flew past Jupiter and Saturn, and in 1990 it turned its camera back to take the Pale Blue Dot, the photograph of Earth as a single speck of light. Most people alive today were born after it left. It is still sending data home.
+
+**Arriving at Mercury**
+
+On Saturday evening, BepiColombo, a joint mission from Europe and Japan, fired its engines for 37 minutes so that Mercury's gravity could catch it. It launched in October 2018 and has spent eight years getting here, flying past Earth once, Venus twice and Mercury six times to lose speed. Falling towards the Sun is easy. Slowing down enough to stay at Mercury is the hard part.
+
+BepiColombo is really two spacecraft travelling as one. On 9 and 10 December they are due to part: Europe's MPO will study the surface and the inside of the planet, and Japan's Mio will study its magnetic field. Science begins in April 2027. ESA is expected to share the first details of the new orbit over the coming days.
+
+**The space station turns 28**
+
+On 20 November 1998, a Russian rocket launched Zarya, the first piece of the International Space Station. Two weeks later, the Space Shuttle Endeavour brought up the second piece, Unity, and its crew joined the two together in orbit.
+
+The first crew moved in on 2 November 2000, and there have been people on board ever since. The station goes round the Earth about every 90 minutes, so the crew see around 16 sunrises a day.
+
+**A star with a hidden partner**
+
+In a galaxy called NGC 4559, about 30 million light years away, a huge star called AT 2016blu has been flaring up roughly every 113 days. Astronomers have counted at least 27 flares since 2012, and the star survives every one.
+
+NASA's Chandra X-ray Observatory has found out why. The star has a hidden partner, either a black hole or a neutron star, and each time the two pass close in their orbit, the partner pulls gas off the star. That gas gets so hot it shines in X-rays. You can see the galaxy, and where the star sits in it, on our [This week](/discoveries) page.
+
+**Look up this week**
+
+- **Tuesday 24 November:** full Moon at 14:53 GMT, the first of four supermoons in a row. Look for it rising in the east around sunset.
+- **Evenings:** Saturn is in the south after dark, a steady yellowish point.
+- **Before dawn:** Jupiter and Mars are still close together in the south, slowly drifting apart.
+- **Coming up:** the Geminids peak on the night of 13 December, with up to about 150 meteors an hour in a dark sky, and very little moonlight to spoil them this year.
+
+Voyager 1 will never come back. But every day it keeps talking, from a little further away than the day before.`,
+    sources: [
+      { label: "EarthSky: Voyager 1 one light day from Earth", href: "https://earthsky.org/space/voyager-1-1-light-day-from-earth-november-17-18-2026/" },
+      { label: "Space.com: BepiColombo arrives in orbit around Mercury", href: "https://www.space.com/space-exploration/missions/esa-jaxa-bepicolomobo-mission-mercury-orbit-arrival" },
+      { label: "ESA: Latest updates, BepiColombo's arrival at Mercury", href: "https://www.esa.int/articles/about-us/directorates/science/bepicolombo/latest-updates-bepicolombo-s-arrival-at-mercury" },
+      { label: "NASA: 20 years ago, space station construction begins", href: "https://www.nasa.gov/history/20-years-ago-space-station-construction-begins" },
+      { label: "NASA: Chandra finds source of star's mysterious outbursts", href: "https://science.nasa.gov/missions/chandra/nasas-chandra-finds-source-of-stars-mysterious-outbursts/" },
+      { label: "Space.com: November full moon 2026", href: "https://www.space.com/stargazing/november-full-moon-2026-when-where-and-how-to-see-the-beaver-moon" },
+    ],
+  },
+  {
     slug: "things-passing-through",
     date: "2026-11-11",
     week: "2 to 8 November 2026",

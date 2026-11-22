@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "wouter";
 import Footer from "@/components/Footer";
 import { moon, planetsTonight, nextSeason, showers } from "@/lib/sky";
-import { LATEST_PIN, isThisWeek, pinDistance } from "@/data/pins";
+import { LATEST_PIN, isThisWeek, pinDistance, pinImage } from "@/data/pins";
 import { loadNotes, milestonesFor, kmTravelled, whenReached, bigKm, duration, inSentence } from "@/lib/notes";
 
 const C = {
@@ -219,7 +219,7 @@ export default function Tonight() {
 
         <Entry title="Further out">
           <div className="flex items-start gap-5">
-            <Thumb src={pin.image.src} alt={pin.image.alt} />
+            <Thumb src={pinImage(pin)} alt={pin.image.alt} />
             <div className="min-w-0">
               <p className="m-0 text-[13px]" style={{ color: isThisWeek(pin, now) ? C.warm : C.faint }}>
                 {isThisWeek(pin, now) ? "New this week" : "The latest picture"}

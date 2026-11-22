@@ -38,6 +38,8 @@ const TIME_RATES = [
 // Start on right now, at real speed: the first thing people see is where the planets really are at this
 // moment. The camera drifts slowly around the Sun instead, and the speed menu is one tap away.
 const DEFAULT_RATE = 0;
+// The part of a weekly picture's name a phone badge leaves off: "(NGC 7099)" or " in NGC 4559".
+const SHORT_NAME_TAIL = /\s*(\(.*\)| in .*)$/;
 // One slow turn around the Sun takes about three and a half minutes.
 const DRIFT_SPEED = 0.28;
 
@@ -1814,6 +1816,10 @@ export default function SolarSystem() {
     const earthWorldQ = new THREE.Quaternion();
     let earthSpinAngle = 0;
     const labelPos = new THREE.Vector3();
+    const bodyPos = new THREE.Vector3();
+    const edgePos = new THREE.Vector3();
+    const bodyScale = new THREE.Vector3();
+    const camRight = new THREE.Vector3();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
@@ -1832,30 +1838,75 @@ export default function SolarSystem() {
       galaxyLabels.forEach(l => { l.visible = zoomLevelRef.current === 2; });
       starMat.opacity = zoomLevelRef.current === 3 ? 0.3 : 0.85;
 
-      // Keep labels from sitting on top of each other: if a label would overlap one already
-      // placed, nudge it up or down until it is clear.
+      // Keep labels clear of each other and of the planets themselves. Each label tries to sit just
+      // above its own body, then below it, then beside it, and takes the first spot that is free.
       if (inSolarSystem) {
         const hw = renderer.domElement.clientWidth / 2;
         const hh = renderer.domElement.clientHeight / 2;
-        const placed: [number, number, number, number][] = [];
+        camRight.setFromMatrixColumn(camera.matrixWorld, 0);
+        type Spot = { slot: typeof labelSlots[number]; x: number; y: number; r: number; body: boolean };
+        const spots: Spot[] = [];
         for (const slot of labelSlots) {
           let shown = slot.obj.visible;
           for (let o = slot.obj.parent; o && shown; o = o.parent) shown = o.visible;
           if (!shown) continue;
-          slot.obj.getWorldPosition(labelPos).project(camera);
-          if (labelPos.z > 1) continue;
-          const x = labelPos.x * hw + hw;
-          const y = -labelPos.y * hh + hh;
-          if (!slot.w) slot.w = slot.el.offsetWidth;
-          const half = (slot.w || 60) / 2 + 2;
-          let chosen = 0;
-          for (const off of [0, -14, 14, -28, 28, -42, 42]) {
-            const clear = !placed.some(b => x - half < b[2] && x + half > b[0] && y + off - 7 < b[3] && y + off + 7 > b[1]);
-            if (clear) { chosen = off; break; }
+          const parent = slot.obj.parent as THREE.Mesh | null;
+          const isBody = !!parent && (parent as THREE.Mesh).isMesh && !!parent.geometry;
+          if (isBody) {
+            parent!.getWorldPosition(bodyPos);
+            if (!parent!.geometry.boundingSphere) parent!.geometry.computeBoundingSphere();
+            parent!.getWorldScale(bodyScale);
+            const R = (parent!.geometry.boundingSphere?.radius ?? 0) * Math.max(bodyScale.x, bodyScale.y, bodyScale.z);
+            edgePos.copy(bodyPos).addScaledVector(camRight, R).project(camera);
+            bodyPos.project(camera);
+            if (bodyPos.z > 1) continue;
+            const x = bodyPos.x * hw + hw, y = -bodyPos.y * hh + hh;
+            const r = Math.min(Math.hypot(edgePos.x * hw + hw - x, -edgePos.y * hh + hh - y), 200);
+            spots.push({ slot, x, y, r, body: true });
+          } else {
+            slot.obj.getWorldPosition(labelPos).project(camera);
+            if (labelPos.z > 1) continue;
+            spots.push({ slot, x: labelPos.x * hw + hw, y: -labelPos.y * hh + hh, r: 0, body: false });
           }
-          const mt = `${chosen}px`;
-          if (slot.el.style.marginTop !== mt) slot.el.style.marginTop = mt;
-          placed.push([x - half, y + chosen - 7, x + half, y + chosen + 7]);
+        }
+        // The planets' own discs count as taken space, so no name is printed across a planet.
+        const placed: [number, number, number, number][] = spots
+          .filter(s => s.body && s.r > 3)
+          .map(s => [s.x - s.r, s.y - s.r, s.x + s.r, s.y + s.r]);
+        const free = (b: [number, number, number, number]) =>
+          !placed.some(p => b[0] < p[2] && b[2] > p[0] && b[1] < p[3] && b[3] > p[1]);
+        for (const s of spots) {
+          const { slot } = s;
+          if (!slot.w) slot.w = slot.el.offsetWidth;
+          const halfW = (slot.w || 60) / 2 + 3;
+          const halfH = 9;
+          let tx = s.x, ty = s.y;
+          if (s.body) {
+            const g = s.r + 4 + halfH;
+            const sideG = s.r + 6 + halfW;
+            const tries: [number, number][] = [
+              [s.x, s.y - g], [s.x, s.y + g], [s.x + sideG, s.y], [s.x - sideG, s.y],
+              [s.x, s.y - g - 18], [s.x, s.y + g + 18], [s.x + sideG, s.y - 18], [s.x - sideG, s.y - 18],
+            ];
+            [tx, ty] = tries[0];
+            for (const [cx, cy] of tries) {
+              if (free([cx - halfW, cy - halfH, cx + halfW, cy + halfH])) { tx = cx; ty = cy; break; }
+            }
+            slot.obj.getWorldPosition(labelPos).project(camera);
+            const lx = labelPos.x * hw + hw, ly = -labelPos.y * hh + hh;
+            const ml = `${Math.round(tx - lx)}px`, mt = `${Math.round(ty - ly)}px`;
+            if (slot.el.style.marginLeft !== ml) slot.el.style.marginLeft = ml;
+            if (slot.el.style.marginTop !== mt) slot.el.style.marginTop = mt;
+          } else {
+            let chosen = 0;
+            for (const off of [0, -18, 18, -36, 36]) {
+              if (free([s.x - halfW, s.y + off - halfH, s.x + halfW, s.y + off + halfH])) { chosen = off; break; }
+            }
+            ty = s.y + chosen;
+            const mt = `${chosen}px`;
+            if (slot.el.style.marginTop !== mt) slot.el.style.marginTop = mt;
+          }
+          placed.push([tx - halfW, ty - halfH, tx + halfW, ty + halfH]);
         }
       }
       // Real galaxy names in the universe view: the nearest and brightest first, others hidden if they would overlap.
@@ -2884,12 +2935,16 @@ export default function SolarSystem() {
             <button
               type="button"
               onClick={() => openPin(LATEST_PIN.id)}
-              className="absolute left-4 top-[68px] md:top-[80px] z-30 flex items-center gap-2 rounded-full pl-2.5 pr-3.5 py-1.5 text-[13px] transition-colors hover:bg-white/[0.06]"
+              className="absolute left-4 top-[68px] md:top-[80px] z-30 flex items-center gap-2 rounded-full pl-2.5 pr-3.5 py-1.5 text-[13px] transition-colors hover:bg-white/[0.06] max-w-[calc(100%-200px)] md:max-w-none"
               style={{ background: 'rgba(10,15,23,0.82)', border: '1px solid rgba(243,221,176,0.35)', color: '#E8ECF1' }}
             >
-              <span className="w-2 h-2 rounded-full" style={{ background: '#F3DDB0', boxShadow: '0 0 8px 2px rgba(243,221,176,0.6)' }} />
-              <span style={{ color: '#F3DDB0' }}>{isThisWeek(LATEST_PIN) ? 'New this week' : 'Latest'}</span>
-              <span>{LATEST_PIN.object}</span>
+              <span className="w-2 h-2 rounded-full shrink-0" style={{ background: '#F3DDB0', boxShadow: '0 0 8px 2px rgba(243,221,176,0.6)' }} />
+              <span className="shrink-0" style={{ color: '#F3DDB0' }}>{isThisWeek(LATEST_PIN) ? 'New this week' : 'Latest'}</span>
+              {/* On a phone the corner menu sits to the right, so the badge keeps to the short name. */}
+              <span className="truncate min-w-0">
+                {LATEST_PIN.object.replace(SHORT_NAME_TAIL, '')}
+                <span className="hidden md:inline">{LATEST_PIN.object.match(SHORT_NAME_TAIL)?.[0] ?? ''}</span>
+              </span>
             </button>
           )}
           <NearbyGalaxyPanel
