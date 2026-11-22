@@ -26,7 +26,6 @@ interface Place {
 const PLACES: Place[] = [
   { path: "/", label: "Universe", tab: "md" },
   { path: "/note", label: "Notes", tab: "md" },
-  { path: "/blog", label: "Blog", blurb: "What happened in space this week", tab: "md" },
   { path: "/discoveries", label: "This week", long: "This week in the universe", blurb: "New pictures from Hubble, Webb and more", tab: "xl" },
   { path: "/tonight", label: "Tonight", tab: "md" },
   { path: "/scale", label: "Scale", long: "Scale of the universe", blurb: "Zoom from the Planck length out to the whole universe" },

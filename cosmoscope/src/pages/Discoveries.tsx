@@ -10,6 +10,15 @@ const TINT = "#A9C3E0";
 const WARM = "#F3DDB0";
 const RULE = "#1C2533";
 
+// A short dated note shown above the pictures, for a moment worth marking that has no picture of
+// its own. Each one hides itself after its "until" date, so the page never shows old news.
+const NOTES: { until: string; text: string }[] = [
+  {
+    until: "2026-12-06",
+    text: "On 18 November, Voyager 1 became the first spacecraft to be one light day from Earth. A radio message sent to it now takes a whole day to arrive. It launched in 1977, and it is still sending data home.",
+  },
+];
+
 // The picture, with its credit right beneath it as the image's owners ask. If it cannot be
 // loaded, a quiet panel takes its place rather than a broken image.
 export function PinImage({ pin, className = "" }: { pin: Pin; className?: string }) {
@@ -91,6 +100,11 @@ export default function Discoveries() {
           New pictures from Hubble, Webb and other telescopes, and what they show. Each one is placed in the 3D universe
           where it really is, so over time they build into a map of what we have seen.
         </p>
+        {NOTES.filter((n) => Date.now() < Date.parse(n.until + "T23:59:59Z")).map((n) => (
+          <p key={n.text} className="m-0 mb-10 pl-4 text-[15px] leading-relaxed" style={{ color: BODY, borderLeft: `2px solid ${WARM}` }}>
+            {n.text}
+          </p>
+        ))}
         {pins.map((p, i) => <PinArticle key={p.id} pin={p} latest={i === 0} />)}
       </div>
       <Footer />
