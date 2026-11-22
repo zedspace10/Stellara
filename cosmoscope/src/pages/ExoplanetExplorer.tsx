@@ -1,149 +1,326 @@
-import { useEffect, useState } from "react";
-import { Link } from "wouter";
-import Footer from "@/components/Footer";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { SlidersHorizontal, Search, Shuffle, Map, Grid3X3, ArrowLeftRight, X } from "lucide-react";
 
-// Other worlds: one calm page. How many planets we have found around other stars, a few of them
-// worth knowing, and the plain fact that none is yet known to be like home.
+import type { ExoplanetData, ViewMode, Filters } from "./exoplanets/types";
+import { DEFAULT_FILTERS } from "./exoplanets/types";
+import { getPlanetTypeLabel } from "./exoplanets/utils";
+import { useExoplanets, useFilteredPlanets } from "./exoplanets/useExoplanets";
+import SkyMap from "./exoplanets/SkyMap";
+import PlanetGallery from "./exoplanets/PlanetGallery";
+import ComparisonView from "./exoplanets/ComparisonView";
+import PlanetDetail from "./exoplanets/PlanetDetail";
+import FilterPanel from "./exoplanets/FilterPanel";
 
-const C = {
-  border: "#1C2533",
-  text: "#E8ECF1",
-  muted: "#A3AFBC",
-  faint: "#7C8794",
-  tint: "#A9C3E0",
-  warm: "#F3DDB0",
-};
+// ── Intro animation ──────────────────────────────────────────────────────────
 
-interface World {
-  name: string;
-  /** A plain guess at its colour, for a simple shaded disc. No continents, no oceans: we do not know. */
-  tint: string;
-  where: string;
-  text: string;
-}
+function IntroScreen({ onDone, count }: { onDone: () => void; count: number }) {
+  // The real count once the archive has loaded; a safe round number before then.
+  const INTRO_LINES = [
+    count > 1000 ? `${count.toLocaleString("en-GB")} confirmed worlds.` : "More than 6,000 confirmed worlds.",
+    "And counting.",
+    "Not one of them is yet known to be like home.",
+  ];
+  const [phase, setPhase] = useState(0);
 
-const WORLDS: World[] = [
-  {
-    tint: "#C4895C",
-    name: "51 Pegasi b",
-    where: "50 light years away. A year there lasts about 4 days.",
-    text: "In 1995, the first planet found around a star like the Sun. It is a giant, about half the mass of Jupiter, so close to its star that it races round in just over four days. Its discoverers, Michel Mayor and Didier Queloz, shared the Nobel Prize in Physics in 2019.",
-  },
-  {
-    tint: "#9C8478",
-    name: "Proxima Centauri b",
-    where: "4.2 light years away. A year there lasts about 11 days.",
-    text: "It circles the nearest star to the Sun. It is probably rocky, and it sits where water could be liquid, but its small red star often flares, and that may have stripped its air away.",
-  },
-  {
-    tint: "#8E96A8",
-    name: "TRAPPIST-1e",
-    where: "40 light years away. A year there lasts about 6 days.",
-    text: "One of seven Earth sized planets around a small, cool star. All seven would fit inside the orbit of Mercury. The Webb telescope is looking to see whether any of them have kept an atmosphere.",
-  },
-  {
-    tint: "#A8806A",
-    name: "Kepler-186f",
-    where: "About 580 light years away. A year there lasts about 130 days.",
-    text: "Found in 2014, the first planet about the size of Earth at the right distance from its star for liquid water. Its star is smaller and redder than the Sun, so noon there might look like the hour before sunset here.",
-  },
-  {
-    tint: "#E2602E",
-    name: "55 Cancri e",
-    where: "41 light years away. A year there lasts about 18 hours.",
-    text: "Almost twice the width of Earth, and so close to its star that its surface is probably molten rock. A whole year there is shorter than one day here.",
-  },
-  {
-    tint: "#C9C1B4",
-    name: "Kepler-16b",
-    where: "245 light years away. A year there lasts about 229 days.",
-    text: "A cold world about the size of Saturn that circles two stars at once. From its sky you would see two suns rise and two suns set.",
-  },
-];
+  useEffect(() => {
+    const timers = [1200, 2400, 3800, 5400].map((ms, i) =>
+      setTimeout(() => { if (i === 3) onDone(); else setPhase(i + 1); }, ms)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [onDone]);
 
-/** A softly lit disc, lit from the upper left, in the planet's rough colour. */
-function Disc({ tint }: { tint: string }) {
+  // Random star positions (stable)
+  const stars = useMemo(() => Array.from({ length: 300 }, (_, i) => ({
+    x: (Math.sin(i * 2.3) * 0.5 + 0.5) * 100,
+    y: (Math.cos(i * 1.7) * 0.5 + 0.5) * 100,
+    r: 0.5 + (i % 3) * 0.6,
+    delay: i * 0.012,
+  })), []);
+
   return (
-    <div
-      aria-hidden="true"
-      className="w-[64px] h-[64px] md:w-[96px] md:h-[96px] rounded-full"
-      style={{
-        background: `radial-gradient(circle at 34% 30%, color-mix(in srgb, ${tint} 55%, white) 0%, ${tint} 38%, color-mix(in srgb, ${tint} 30%, #05070C) 78%, #05070C 100%)`,
-        boxShadow: `0 0 28px color-mix(in srgb, ${tint} 22%, transparent)`,
-      }}
-    />
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="absolute inset-0 z-50 flex flex-col items-center justify-center cursor-pointer"
+      style={{ background: "#020209" }}
+      onClick={onDone}
+    >
+      {/* Stars appearing */}
+      <div className="absolute inset-0 overflow-hidden">
+        {stars.map((s, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 0.4 + (i % 5) * 0.1, scale: 1 }}
+            transition={{ delay: s.delay, duration: 0.4 }}
+            className="absolute rounded-full bg-white"
+            style={{ left: `${s.x}%`, top: `${s.y}%`, width: s.r * 2, height: s.r * 2 }}
+          />
+        ))}
+      </div>
+
+      {/* Text lines */}
+      <div className="relative z-10 text-center">
+        <div className="space-y-4 min-h-[120px] flex flex-col items-center justify-center">
+          {INTRO_LINES.map((line, i) => (
+            <AnimatePresence key={line}>
+              {phase > i && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="font-serif text-[30px] md:text-[44px] leading-tight"
+                  style={{ color: i === 2 ? "rgba(255,255,255,0.6)" : "white" }}
+                >
+                  {line}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          ))}
+        </div>
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 4 }}
+          className="mt-12 text-xs text-white/25 "
+        >
+          Tap or click to begin
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }
 
-export default function ExoplanetExplorer() {
-  const [count, setCount] = useState<number | null>(null);
+// ── Loading state ─────────────────────────────────────────────────────────────
 
+function LoadingState({ progress, statusMsg }: { progress: number; statusMsg: string }) {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center z-40" style={{ background: "#020209" }}>
+      <div className="relative z-10 flex flex-col items-center">
+        <div className="text-xs text-[#A9C3E0]/50  mb-6">NASA Exoplanet Archive</div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={statusMsg}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            className="text-sm font-sans text-white/70 mb-8 h-5"
+          >
+            {statusMsg}
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="w-64 h-px rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+          <motion.div
+            className="h-full rounded-full"
+            style={{ background: "#A9C3E0" }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          />
+        </div>
+        <div className="text-xs text-white/20 mt-2 tabular-nums">{progress}%</div>
+      </div>
+    </div>
+  );
+}
+
+// ── Active filter pills ───────────────────────────────────────────────────────
+
+function ActiveFilters({ filters, onChange }: { filters: Filters; onChange: (f: Filters) => void }) {
+  const pills: { label: string; clear: () => void }[] = [];
+  if (filters.type !== "all") pills.push({ label: getPlanetTypeLabel(filters.type), clear: () => onChange({ ...filters, type: "all" }) });
+  if (filters.habitability !== "all") pills.push({ label: filters.habitability === "hz" ? "Habitable Zone" : filters.habitability === "potentially" ? "Potentially Habitable" : "Earth-like", clear: () => onChange({ ...filters, habitability: "all" }) });
+  if (filters.method !== "all") pills.push({ label: filters.method, clear: () => onChange({ ...filters, method: "all" }) });
+  if (filters.maxDistanceLY < 10000) pills.push({ label: `≤${filters.maxDistanceLY.toLocaleString()} ly`, clear: () => onChange({ ...filters, maxDistanceLY: 10000 }) });
+
+  if (pills.length === 0) return null;
+  return (
+    <div className="flex flex-wrap gap-2 px-4 py-2">
+      {pills.map(p => (
+        <span key={p.label} className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border" style={{ color: "#F3DDB0", borderColor: "rgba(243,221,176,0.3)", background: "rgba(243,221,176,0.06)" }}>
+          {p.label}
+          <button onClick={p.clear} className="hover:text-white"><X className="w-2.5 h-2.5" /></button>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
+
+export default function ExoplanetExplorer() {
   useEffect(() => {
     document.title = "Other worlds | PALE";
-    const ctrl = new AbortController();
-    fetch(`${import.meta.env.BASE_URL}data/exoplanets/count`, { signal: ctrl.signal })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((j) => { if (j && j.count > 1000) setCount(j.count); })
-      .catch(() => {});
-    return () => ctrl.abort();
   }, []);
+  const { planets, loading, error, progress, fromCache, fromFallback, cacheDate, statusMsg } = useExoplanets();
+  const [showIntro, setShowIntro] = useState(true);
+  const [view, setView] = useState<ViewMode>("gallery");
+  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS);
+  const [selected, setSelected] = useState<ExoplanetData | null>(null);
+  const [showFilters, setShowFilters] = useState(false);
 
-  const howMany = count ? count.toLocaleString("en-GB") : "more than 6,000";
+  const filtered = useFilteredPlanets(planets, filters);
+  const highlightIds = useMemo(() =>
+    filters.search ? new Set(filtered.map(p => p.id)) : undefined,
+  [filters.search, filtered]);
+
+  const handleSelectPlanet = useCallback((p: ExoplanetData) => setSelected(p), []);
+  const handleRandom = useCallback(() => {
+    if (filtered.length === 0) return;
+    setSelected(filtered[Math.floor(Math.random() * filtered.length)]);
+  }, [filtered]);
+
+  const methods = useMemo(() =>
+    Array.from(new Set(planets.map(p => p.method).filter(Boolean))).sort(),
+  [planets]);
+  void methods; // used by FilterPanel internally
+
+  // Show intro only once
+  const introShownRef = useState(() => false)[0];
+  void introShownRef;
+
+  const isLoading = loading && planets.length === 0;
 
   return (
-    <div className="min-h-screen pt-16" style={{ color: C.text }}>
-      <div className="max-w-[920px] mx-auto px-5 md:px-8">
-        <header className="pt-14 pb-12">
-          <h1 className="m-0 text-[40px] md:text-[56px] leading-[1.05]">Other worlds</h1>
-          <p className="mt-4 mb-0 text-[17px] leading-relaxed max-w-[34rem]" style={{ color: C.muted }}>
-            Many of the stars you can see have planets of their own. Since the first were found in the 1990s,
-            astronomers have confirmed {howMany} of them.
-          </p>
-          <p className="mt-10 mb-0 font-serif text-[26px] md:text-[32px] leading-snug max-w-[34rem]">
-            Not one of them is yet known to be like home.
-          </p>
-        </header>
+    <div className="relative w-full h-[100dvh] pt-14 md:pt-16 pb-14 md:pb-0 bg-[#020209] overflow-hidden flex flex-col" style={{ fontFamily: "'Instrument Sans', sans-serif" }}>
 
-        <section aria-label="A few of them" style={{ borderTop: `1px solid ${C.border}` }}>
-          {WORLDS.map((w) => (
-            <article
-              key={w.name}
-              className="grid grid-cols-[64px_1fr] md:grid-cols-[96px_1fr] gap-x-5 md:gap-x-8 py-8"
-              style={{ borderBottom: `1px solid ${C.border}` }}
-            >
-              <div className="pt-1">
-                <Disc tint={w.tint} />
-              </div>
-              <div className="min-w-0">
-                <h2 className="m-0 font-serif text-[24px] leading-tight" style={{ fontWeight: 400 }}>{w.name}</h2>
-                <p className="mt-1 mb-0 text-[14px]" style={{ color: C.faint }}>{w.where}</p>
-                <p className="mt-3 mb-0 text-[15px] leading-relaxed max-w-[36rem]" style={{ color: C.muted }}>{w.text}</p>
-              </div>
-            </article>
-          ))}
-        </section>
+      {/* Intro */}
+      <AnimatePresence>
+        {showIntro && !isLoading && (
+          <IntroScreen onDone={() => setShowIntro(false)} count={fromFallback ? 0 : planets.length} />
+        )}
+      </AnimatePresence>
 
-        <section className="py-12 max-w-[36rem]">
-          <h2 className="m-0 text-[22px] leading-tight" style={{ fontWeight: 400 }}>How we find them</h2>
-          <p className="mt-3 mb-0 text-[15px] leading-relaxed" style={{ color: C.muted }}>
-            Almost none of these planets has been seen directly. Most were found by watching a star dim very slightly, again
-            and again, as a planet passed in front of it. Others gave themselves away by the tiny wobble their pull gives
-            their star.
-          </p>
-          <p className="mt-8 mb-0 font-serif text-[22px] leading-snug">
-            Of every world we know, Earth is still the only one where we know anything lives.
-          </p>
-          <p className="mt-6 mb-0 text-[15px]" style={{ color: C.muted }}>
-            <Link href="/" className="underline underline-offset-4" style={{ color: C.tint }}>See our own Solar System in 3D</Link>, or{" "}
-            <Link href="/note" className="underline underline-offset-4" style={{ color: C.tint }}>send a note towards TRAPPIST-1</Link>.
-          </p>
-          <p className="mt-10 mb-0 text-[13px]" style={{ color: C.faint }}>
-            The count comes from the NASA Exoplanet Archive, checked once a day. Each circle is only a hint of a planet's
-            colour: nobody has a close up picture of any of them.
-          </p>
-        </section>
+      {/* Loading — only blocks UI when we have no data at all */}
+      {isLoading && <LoadingState progress={progress} statusMsg={statusMsg} />}
+
+      {/* Top bar */}
+      <div className="flex-shrink-0 flex items-center justify-between px-4 py-3 z-30" style={{ background: "rgba(2,2,9,0.85)", backdropFilter: "blur(16px)", borderBottom: "1px solid rgba(169,195,224,0.1)" }}>
+        <div className="min-w-0">
+          <h1 className="m-0 font-serif text-[22px] md:text-[26px] leading-tight font-normal text-white/90">Other worlds</h1>
+          {fromFallback ? (
+            <button onClick={() => window.location.reload()} className="text-[11px] text-[#F3DDB0]/60 hover:text-[#F3DDB0] transition-colors">
+              Featured worlds. Tap to load the full list.
+            </button>
+          ) : fromCache && cacheDate ? (
+            <div className="text-[11px] text-white/25">Saved {cacheDate.toLocaleDateString('en-GB')}</div>
+          ) : null}
+        </div>
+
+        <div className="flex items-center gap-1">
+          <button onClick={handleRandom} title="Random world" aria-label="Show a random world"
+            className="p-2 rounded-lg text-white/40 hover:text-[#F3DDB0] transition-colors">
+            <Shuffle className="w-4 h-4" />
+          </button>
+          <button onClick={() => setShowFilters(s => !s)} title="Filters" aria-label="Filters"
+            className={`p-2 rounded-lg transition-colors ${showFilters ? "text-[#A9C3E0]" : "text-white/40 hover:text-white"}`}>
+            <SlidersHorizontal className="w-4 h-4" />
+          </button>
+        </div>
       </div>
-      <Footer />
+
+      {/* Search bar */}
+      <div className="flex-shrink-0 px-4 py-2 flex gap-2 z-20" style={{ background: "rgba(2,2,9,0.6)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30" />
+          <input
+            value={filters.search}
+            onChange={e => setFilters(f => ({ ...f, search: e.target.value }))}
+            placeholder="Search planet or star name…"
+            className="w-full pl-8 pr-4 py-1.5 text-sm text-white/80 placeholder-white/25 rounded-lg outline-none"
+            style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)" }}
+          />
+          {filters.search && (
+            <button onClick={() => setFilters(f => ({ ...f, search: "" }))} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white">
+              <X className="w-3 h-3" />
+            </button>
+          )}
+        </div>
+
+        {/* View toggle */}
+        <div className="flex rounded-lg overflow-hidden border" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+          {[
+            { v: "gallery" as ViewMode, icon: <Grid3X3 className="w-3.5 h-3.5" />, title: "Gallery" },
+            { v: "skymap" as ViewMode, icon: <Map className="w-3.5 h-3.5" />, title: "Sky Map" },
+            { v: "comparison" as ViewMode, icon: <ArrowLeftRight className="w-3.5 h-3.5" />, title: "Compare" },
+          ].map(({ v, icon, title }) => (
+            <button
+              key={v}
+              title={title}
+              onClick={() => setView(v)}
+              className={`px-3 py-1.5 transition-colors ${view === v ? "text-[#A9C3E0]" : "text-white/35 hover:text-white/60"}`}
+              style={view === v ? { background: "rgba(169,195,224,0.12)" } : {}}
+            >
+              {icon}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Active filter pills */}
+      <ActiveFilters filters={filters} onChange={setFilters} />
+
+      {/* Main content */}
+      <div className="flex-1 overflow-hidden relative">
+        <AnimatePresence mode="wait">
+          {view === "gallery" && (
+            <motion.div key="gallery" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full overflow-y-auto">
+              <PlanetGallery
+                planets={filtered}
+                onSelect={handleSelectPlanet}
+                allPlanets={filters.search || JSON.stringify(filters) !== JSON.stringify(DEFAULT_FILTERS) ? undefined : planets}
+              />
+            </motion.div>
+          )}
+          {view === "skymap" && (
+            <motion.div key="skymap" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full">
+              <SkyMap
+                planets={filtered}
+                highlightIds={highlightIds}
+                onSelectStar={sys => { if (sys.planets[0]) setSelected(sys.planets[0]); }}
+              />
+            </motion.div>
+          )}
+          {view === "comparison" && (
+            <motion.div key="comparison" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full overflow-y-auto">
+              <ComparisonView planets={filtered} onSelect={handleSelectPlanet} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Bottom stat bar */}
+      {!loading && planets.length > 0 && (
+        <div className="flex-shrink-0 px-4 py-2 flex items-center justify-between z-20 text-xs text-white/25"
+          style={{ background: "rgba(2,2,9,0.7)", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+          <span>{filtered.length.toLocaleString()} worlds {filters.search || filters.type !== "all" ? "filtered" : "catalogued"}</span>
+          <span>{planets.length.toLocaleString()} confirmed, from the NASA Exoplanet Archive</span>
+        </div>
+      )}
+
+      {/* Filter panel */}
+      <AnimatePresence>
+        {showFilters && (
+          <FilterPanel
+            filters={filters}
+            onChange={setFilters}
+            onClose={() => setShowFilters(false)}
+            totalCount={planets.length}
+            filteredCount={filtered.length}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Planet detail panel */}
+      <AnimatePresence>
+        {selected && (
+          <PlanetDetail
+            key={selected.id}
+            planet={selected}
+            allPlanets={planets}
+            onClose={() => setSelected(null)}
+            onNavigate={p => setSelected(p)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
