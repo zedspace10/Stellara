@@ -8,7 +8,6 @@ const LINKS = [
   { href: "/scale", label: "Scale" },
   { href: "/simulations", label: "Simulations" },
   { href: "/discoveries", label: "This week" },
-  { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
   { href: "/credits", label: "Sources and credits" },
   { href: "/privacy", label: "Privacy" },
