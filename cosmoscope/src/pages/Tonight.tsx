@@ -3,7 +3,10 @@ import { Link } from "wouter";
 import Footer from "@/components/Footer";
 import { moon, planetsTonight, nextSeason, showers } from "@/lib/sky";
 import { LATEST_PIN, isThisWeek, pinDistance, pinImage } from "@/data/pins";
-import { shapeFor } from "@/data/monthShapes";
+import { shapeFor, type MonthShape } from "@/data/monthShapes";
+import { darknessTonight, ninePmTonight, ukTime, lightTimeWords, planetSlot, type Darkness, type PlanetSlot } from "@/lib/skyChart";
+import SkyChart from "@/components/SkyChart";
+import type { MoonInfo, PlanetTonight, ShowerTonight } from "@/lib/sky";
 import { loadNotes, milestonesFor, kmTravelled, whenReached, bigKm, duration, inSentence } from "@/lib/notes";
 
 const C = {
@@ -99,6 +102,71 @@ function Thumb({ src, alt }: { src: string; alt: string }) {
   );
 }
 
+// The night in one sentence: the Moon, the planets worth seeing, and this month's shape.
+type Planet = PlanetTonight & { slot?: PlanetSlot };
+
+function summary(m: MoonInfo, planets: Planet[], shape: MonthShape) {
+  const moonPart =
+    m.illumination > 75 ? "a bright Moon"
+    : m.illumination < 25 ? "a dark, nearly moonless sky"
+    : `a ${m.waxing ? "growing" : "shrinking"} half Moon`;
+  const seen = planets.filter((p) => p.visible && p.id !== "mercury");
+  const evening = seen.filter((p) => p.slot === "evening" || p.slot === "all-night").map((p) => p.name);
+  const late = seen.filter((p) => p.slot === "late").map((p) => p.name);
+  const morning = seen.filter((p) => p.slot === "dawn").map((p) => p.name);
+  const list = (xs: string[]) => (xs.length < 2 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`);
+  const parts = [moonPart];
+  if (evening.length) parts.push(`${list(evening)} in the evening`);
+  parts.push(shape.short);
+  let text = `Tonight: ${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}.`;
+  if (late.length) text += ` Later in the night, ${list(late)}.`;
+  if (morning.length) text += ` Before dawn, ${list(morning)}.`;
+  return text;
+}
+
+/** A calendar reminder for a meteor shower's best night: the evening before its peak, into the early hours. */
+function showerReminder(s: ShowerTonight) {
+  const peak = new Date(s.peakTime);
+  const start = Date.UTC(peak.getUTCFullYear(), peak.getUTCMonth(), peak.getUTCDate() - 1, 21);
+  const end = start + 7 * 3600000;
+  const stamp = (x: number) => new Date(x).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+  const text = [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//PALE//Tonight//EN", "BEGIN:VEVENT",
+    `UID:${s.name.toLowerCase()}-${peak.getUTCFullYear()}@pale`,
+    `DTSTAMP:${stamp(Date.now())}`, `DTSTART:${stamp(start)}`, `DTEND:${stamp(end)}`,
+    `SUMMARY:The ${s.name} meteor shower`,
+    `DESCRIPTION:Best after midnight, away from streetlights. Up to about ${s.rate} an hour in a dark sky.`,
+    "END:VEVENT", "END:VCALENDAR",
+  ].join("\r\n");
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([text], { type: "text/calendar" }));
+  a.download = `pale-${s.name.toLowerCase()}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  window.setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+function darkWords(d: Darkness, now: number) {
+  // Already dark: say so, and say how long it lasts.
+  if (d.dark && d.darkEnds && now >= d.dark && now < d.darkEnds) {
+    return {
+      main: "It is dark now",
+      detail: `The sky stays dark until ${ukTime(d.darkEnds)}, and the Sun rises at ${d.sunrise ? ukTime(d.sunrise) : "dawn"}.`,
+    };
+  }
+  if (d.dark) {
+    return {
+      main: `Properly dark from ${ukTime(d.dark)}`,
+      detail: `Sunset is at ${d.sunset ? ukTime(d.sunset) : "the usual time"}. The sky stays dark until ${d.darkEnds ? ukTime(d.darkEnds) : "dawn"}, and the Sun rises at ${d.sunrise ? ukTime(d.sunrise) : "dawn"}.`,
+    };
+  }
+  return {
+    main: "It never gets fully dark tonight",
+    detail: `Near midsummer the Sun never sinks far enough below the horizon for a fully dark UK sky. Sunset is at ${d.sunset ? ukTime(d.sunset) : "late evening"}, and the darkest point is around ${ukTime(d.darkest)}.`,
+  };
+}
+
 // One entry in tonight's log: what it is on the left, the details on the right.
 function Entry({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -119,12 +187,23 @@ export default function Tonight() {
   }, []);
 
   const m = useMemo(() => moon(now), [now]);
-  const planets = useMemo(() => planetsTonight(now), [now]);
+  const planetsAnywhere = useMemo(() => planetsTonight(now), [now]);
   const season = useMemo(() => nextSeason(now), [now]);
   const meteorShowers = useMemo(() => showers(now), [now]);
 
   const note = useMemo(() => noteProgress(now), [now]);
   const shape = useMemo(() => shapeFor(new Date(now)), [now]);
+  const darkness = useMemo(() => darknessTonight(now), [now]);
+  // The sky at 9pm, or the sky right now if it is later than that and still night.
+  const ninePm = useMemo(() => ninePmTonight(now), [now]);
+  const showNow = now > ninePm && now < (darkness.sunrise ?? ninePm);
+  const chartTime = showNow ? now : ninePm;
+  const dark = darkWords(darkness, now);
+  // Each planet's best time from the UK tonight, from its real height in the sky.
+  const planets: Planet[] = useMemo(
+    () => planetsAnywhere.map((p) => (p.visible ? { ...p, ...planetSlot(p.id, darkness, ninePm) } : p)),
+    [planetsAnywhere, darkness, ninePm],
+  );
   const pin = LATEST_PIN;
 
   const visible = planets.filter((p) => p.visible);
@@ -143,9 +222,28 @@ export default function Tonight() {
         <header className="pt-14 pb-10">
           <h1 className="m-0 text-[40px] md:text-[56px] leading-[1.05]" style={{ color: C.text }}>Tonight</h1>
           <p className="mt-4 mb-0 text-[17px] leading-relaxed max-w-[34rem]" style={{ color: C.muted }}>
-            {formatDay(now)}. Step outside and look up. This is what is above you.
+            {formatDay(now)}. Step outside and look up. This is what is above you, from anywhere in the UK.
+          </p>
+          <p className="mt-6 mb-0 font-serif text-[24px] md:text-[28px] leading-snug max-w-[36rem]" style={{ color: C.text }}>
+            {summary(m, planets, shape)}
           </p>
         </header>
+
+        <Entry title="When to look">
+          <p className="m-0 font-serif text-[22px] leading-tight">{dark.main}</p>
+          <p className="mt-2 mb-0 text-[15px] leading-relaxed" style={{ color: C.muted }}>{dark.detail}</p>
+          <p className="mt-2 mb-0 text-[13px]" style={{ color: C.faint }}>
+            Times are for London. Elsewhere in the UK they shift by a few minutes.
+          </p>
+        </Entry>
+
+        <Entry title={showNow ? "The sky now" : "The sky at 9pm"}>
+          <SkyChart time={chartTime} shape={shape} moonLit={m.illumination / 100} />
+          <p className="mt-3 mb-0 text-[14px] leading-relaxed max-w-[34rem]" style={{ color: C.muted }}>
+            The edge of the circle is the horizon, and the middle is straight overhead. Face south and S is in front of
+            you, with E on your left. This month's shape is drawn in gold.
+          </p>
+        </Entry>
 
         <Entry title="The Moon">
           <div className="flex items-center gap-6 flex-wrap">
@@ -178,6 +276,9 @@ export default function Tonight() {
                   <dd className="m-0">
                     <span className="block text-[16px]" style={{ color: C.text }}>{p.when}</span>
                     <span className="block mt-0.5 text-[14px]" style={{ color: C.muted }}>{p.brightness}</span>
+                    <span className="block mt-1 text-[14px]" style={{ color: C.tint }}>
+                      The light you see left it {lightTimeWords(p.au)} ago.
+                    </span>
                   </dd>
                 </div>
               ))}
@@ -207,6 +308,14 @@ export default function Tonight() {
                   {s.activeNow && s.peakTime < now ? "Peaked around " : "Peaks around "}
                   {new Date(s.peakTime).toLocaleDateString("en-GB", { day: "numeric", month: "long" })}
                   {s.peakTime > now ? ` (${daysUntil(s.peakTime, now)})` : ""}. Up to about {s.rate} an hour in a dark sky, coming from {s.radiant}.{s.note ? ` ${s.note}` : ""}
+                  {s.peakTime > now && (
+                    <>
+                      {" "}
+                      <button type="button" onClick={() => showerReminder(s)} className="underline underline-offset-4" style={{ color: C.tint }}>
+                        Add to my calendar
+                      </button>
+                    </>
+                  )}
                 </dd>
               </div>
             ))}
