@@ -22,11 +22,11 @@ export const PAGE_META: Record<string, PageMeta> = {
   },
   "/discoveries": {
     title: "This week in the universe | PALE",
-    description: "A new Hubble or Webb picture every week, placed where it really is.",
+    description: "New pictures from Hubble, Webb and other telescopes, each placed where it really is.",
   },
   "/blog": {
     title: "Blog | PALE",
-    description: "Every week, what happened in space, and what to look up for.",
+    description: "What happened in space, and what to look up for.",
   },
   "/tonight": {
     title: "Tonight | PALE",

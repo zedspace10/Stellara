@@ -70,7 +70,7 @@ export const THINGS: ScaleThing[] = [
   { id: "solar", name: "The Solar System", size: 9e12, sizeLabel: "About 9 billion km across, out to Neptune",
     fact: "Light takes about 8 hours to cross from one side of Neptune's orbit to the other." },
   { id: "voyager", name: "Voyager 1", size: 5.2e13, sizeLabel: "About 172 au from the Sun",
-    fact: "The furthest thing people have ever made. In November 2026 it becomes one light day from Earth." },
+    fact: "The furthest thing people have ever made. In November 2026 it became the first spacecraft to be one light day from Earth." },
   { id: "oort", name: "The Oort cloud", size: 3e16, sizeLabel: "Out to perhaps 100,000 au from the Sun",
     fact: "A vast shell of icy bodies around the Sun. It has never been seen directly. We know it is there from the comets that fall in from it." },
   { id: "neighbours", name: "Our nearest stars", size: 2.4e17, sizeLabel: "About 25 light years across",

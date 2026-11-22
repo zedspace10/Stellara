@@ -33,7 +33,7 @@ export const galaxyObjects = [
     distance: "Further every second",
     size: "3.7 m dish antenna",
     discovery: "5 September 1977",
-    description: "The most distant object people have ever made. It flew past Jupiter and Saturn, crossed into interstellar space in 2012, and on 14 February 1990 turned its camera back towards home to take the Pale Blue Dot photograph. On 18 November 2026 it becomes the first spacecraft to be one light day from Earth."
+    description: "The most distant object people have ever made. It flew past Jupiter and Saturn, crossed into interstellar space in 2012, and on 14 February 1990 turned its camera back towards home to take the Pale Blue Dot photograph. On 18 November 2026 it became the first spacecraft to be one light day from Earth. A radio message sent to it now takes a whole day to arrive."
   },
   {
     id: "voyager-2",

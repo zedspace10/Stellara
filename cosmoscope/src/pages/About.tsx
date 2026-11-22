@@ -63,7 +63,7 @@ export default function About() {
         <Section title="Who makes it">
           <p className="m-0">
             PALE is made by Stellara, a space education project based in the UK. The 3D universe is built with Three.js,
-            and imagery comes from NASA, ESA and the James Webb Space Telescope.
+            and imagery comes from NASA, ESA and the Canadian Space Agency.
           </p>
           <p className="m-0 text-[14px] leading-relaxed" style={{ color: MUTED }}>
             Planet positions use NASA JPL orbital elements. Planet and Sun surfaces are from{" "}

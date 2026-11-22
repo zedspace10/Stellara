@@ -95,6 +95,62 @@ app.get('/data/exoplanets', async (req, res) => {
   }
 });
 
+// NASA's picture of the day, fetched by our own server and shared by every visitor. Without this,
+// each visitor asked NASA directly with the shared demo key, which only allows a few requests an
+// hour, so the page often failed. Set NASA_API_KEY on Railway to a free key from api.nasa.gov.
+const NASA_KEY = process.env.NASA_API_KEY || process.env.VITE_NASA_API_KEY || 'DEMO_KEY';
+const HOUR = 60 * 60 * 1000;
+const apodCache = new Map(); // query -> { body, at, pending }
+const ISO = /^\d{4}-\d{2}-\d{2}$/;
+
+app.get('/data/apod', async (req, res) => {
+  const q = new URLSearchParams();
+  for (const k of ['date', 'start_date', 'end_date']) {
+    const v = req.query[k];
+    if (v === undefined) continue;
+    if (typeof v !== 'string' || !ISO.test(v)) return res.status(400).json({ error: 'Dates look like 2026-11-22' });
+    q.set(k, v);
+  }
+  const key = q.toString();
+  // Today's picture is checked every few hours; older days never change.
+  const today = new Date().toISOString().slice(0, 10);
+  const touchesToday = !key || key.includes(today) || (q.get('end_date') || '') >= today;
+  const maxAge = touchesToday ? 3 * HOUR : 30 * DAY;
+  let entry = apodCache.get(key);
+  try {
+    if (!entry || Date.now() - entry.at > maxAge) {
+      const pending = entry?.pending || (async () => {
+        const r = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_KEY}${key ? '&' + key : ''}`,
+          { signal: AbortSignal.timeout(20000) });
+        if (!r.ok) throw new Error(`NASA answered ${r.status}`);
+        const body = await r.text();
+        JSON.parse(body);
+        if (apodCache.size > 300) apodCache.delete(apodCache.keys().next().value);
+        apodCache.set(key, { body, at: Date.now(), pending: null });
+        return body;
+      })();
+      if (entry) entry.pending = pending; else apodCache.set(key, { body: null, at: 0, pending });
+      try {
+        await pending;
+      } catch (err) {
+        // A saved copy, even an old one, is better than an error.
+        const saved = apodCache.get(key);
+        if (saved) saved.pending = null;
+        if (!saved?.body) throw err;
+        console.error('Picture of the day refresh failed, serving the saved copy:', err.message);
+      }
+      entry = apodCache.get(key);
+    }
+    res.set('Cache-Control', 'public, max-age=1800');
+    res.type('application/json').send(entry.body);
+  } catch (err) {
+    const saved = apodCache.get(key);
+    if (saved && !saved.body) apodCache.delete(key);
+    console.error('Picture of the day error:', err.message);
+    res.status(502).json({ error: 'NASA could not be reached' });
+  }
+});
+
 // The newest weekly picture, read by the PALE app. Any app or page may read it, and it is
 // checked again within the hour so a new week arrives promptly.
 app.get('/this-week.json', (req, res) => {

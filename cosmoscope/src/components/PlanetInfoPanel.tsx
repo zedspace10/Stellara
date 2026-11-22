@@ -53,6 +53,15 @@ const NOTABLE_FACTS: Record<string, string[]> = {
   ],
 };
 
+// Spacecraft working at a planet right now. Keep these to missions we are sure of, and update
+// them when a mission changes. BepiColombo: once ESA confirms the capture, this can say it is in orbit.
+const VISITING_NOW: Record<string, { name: string; text: string }> = {
+  mercury: {
+    name: "BepiColombo",
+    text: "Europe and Japan's mission reached Mercury on 21 November 2026, after eight years in space, and fired its engines to let the planet's gravity catch it. Its two orbiters, Europe's MPO and Japan's Mio, are due to part in December and start their science in spring 2027. Only one spacecraft has orbited Mercury before: NASA's MESSENGER, from 2011 to 2015.",
+  },
+};
+
 const SCALE_COMPARISONS: Record<string, string> = {
   mercury: "If the Sun were as tall as a front door, Mercury would be a lentil 83 metres away.",
   venus: "If the Sun were as tall as a front door, Venus would be a grape 155 metres away.",
@@ -131,6 +140,17 @@ function PanelContent({ planet, facts, scale, onClose, onViewInFocus }: PanelCon
       <ScrollArea className="flex-1 min-h-0">
         <div className="px-5 pb-10 pt-4">
           <p className="m-0 text-[15px] leading-relaxed" style={{ color: "#C9D2DC" }}>{String(p.description)}</p>
+
+          {VISITING_NOW[String(p.id)] && (
+            <div className="mt-5 rounded-lg px-4 py-3" style={{ border: "1px solid #2A3546" }}>
+              <p className="m-0 text-[11px] tracking-[0.12em] uppercase" style={{ color: "#F3DDB0" }}>
+                There now: {VISITING_NOW[String(p.id)].name}
+              </p>
+              <p className="m-0 mt-1.5 text-[14px] leading-relaxed" style={{ color: "#C9D2DC" }}>
+                {VISITING_NOW[String(p.id)].text}
+              </p>
+            </div>
+          )}
 
           {onViewInFocus && (
             <button

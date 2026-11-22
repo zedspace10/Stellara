@@ -5,8 +5,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-// Set VITE_NASA_API_KEY on Railway to a free key from api.nasa.gov. DEMO_KEY only allows a few requests an hour.
-const NASA_KEY = import.meta.env.VITE_NASA_API_KEY || "DEMO_KEY";
+// The picture comes through our own server (see server.js), which asks NASA once and shares the
+// answer with every visitor, so the page no longer runs out of NASA's demo allowance.
+const APOD_URL = `${import.meta.env.BASE_URL}data/apod`;
 
 interface ApodData {
   title: string;
@@ -43,7 +44,7 @@ export default function APOD() {
         }
       }
 
-      const url = `https://api.nasa.gov/planetary/apod?api_key=${NASA_KEY}${date ? `&date=${date}` : ''}`;
+      const url = `${APOD_URL}${date ? `?date=${date}` : ''}`;
       const res = await fetch(url);
       if (!res.ok) {
         if (res.status === 429) {
@@ -90,7 +91,7 @@ export default function APOD() {
           }
         }
 
-        const res = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_KEY}&start_date=${startStr}&end_date=${endStr}`);
+        const res = await fetch(`${APOD_URL}?start_date=${startStr}&end_date=${endStr}`);
         if (res.ok) {
           const json = await res.json();
           // reverse to show newest first

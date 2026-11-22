@@ -8,7 +8,10 @@
 // 4. Distance in millions of light years. For something very far, use how long its light has
 //    been travelling (for example 5,800 for light that left 5.8 billion years ago).
 // 5. Image: the image file's web address from NASA or ESA, and its credit line exactly as they
-//    give it. Only use images credited to NASA, ESA, STScI, Hubble or Webb.
+//    give it. Only use images released by NASA or ESA (Hubble, Webb, Chandra and so on).
+//    If you can, also save a copy in public/pins/ and name it in "local": the site then shows its
+//    own copy, so the picture stays even if NASA or ESA move theirs. The app and link previews
+//    still use the NASA or ESA address.
 // 6. Body: the science, in our own words, plainly. Reflection is optional: one plain sentence,
 //    kept separate from the science, never a slogan. Leave it out if it would sound like one.
 
@@ -23,7 +26,7 @@ export interface Pin {
   /** Distance, or light travel time for very distant things, in millions of light years. */
   mly: number;
   constellation: string;
-  image: { src: string; alt: string; credit: string; licence?: string };
+  image: { src: string; alt: string; credit: string; licence?: string; /** A copy in public/pins/. */ local?: string };
   source: { label: string; href: string };
   body: string[];
   reflection?: string;
@@ -32,6 +35,31 @@ export interface Pin {
 }
 
 export const PINS: Pin[] = [
+  {
+    id: "at2016blu",
+    date: "2026-11-09",
+    title: "A star with a hidden partner",
+    object: "AT 2016blu in NGC 4559",
+    ra: [12, 35, 57.8],
+    dec: [27, 57, 35],
+    mly: 30,
+    constellation: "Coma Berenices, Berenice's Hair",
+    image: {
+      src: "https://assets.science.nasa.gov/content/dam/science/missions/chandra/2026/at2016blu.jpg/jcr:content/renditions/cq5dam.web.1280.1280.jpeg",
+      local: "pins/at2016blu.jpg",
+      alt: "A spiral galaxy seen at a steep angle, its pink centre and pale blue arms tilted towards the upper left, with small bright pink points of X-ray light scattered across and around it.",
+      credit: "X-ray: NASA/CXC/Univ. of Virginia/M. Aghakhanloo et al.; Optical: SDSS; Image Processing: NASA/CXC/SAO/P. Edmonds",
+    },
+    source: { label: "NASA: Chandra finds source of star's mysterious outbursts", href: "https://science.nasa.gov/missions/chandra/nasas-chandra-finds-source-of-stars-mysterious-outbursts/" },
+    body: [
+      "NGC 4559 is a spiral galaxy about 30 million light years away. Near the edge of its disc is a huge, unsteady star called AT 2016blu, at least 33 times the mass of our Sun. Since 2012 astronomers have seen it flare up at least 27 times, and each time it has survived.",
+      "The flares come roughly every 113 days. In March 2026, during one of them, NASA's Chandra X-ray Observatory found the star at least 100 times brighter in X-rays than when Chandra last looked, in 2001 and 2002.",
+      "The best explanation is a hidden partner, either a black hole or a neutron star, too small to see. The two orbit each other, and each time they pass close, the partner pulls gas off the star. The gas gets so hot that it shines in X-rays. It is the first time X-rays have been seen from this kind of erupting star.",
+      "In this picture, X-rays from Chandra are pink, and visible light from the Sloan Digital Sky Survey is blue and white. AT 2016blu is one of a small group of faint dots near the outer edge of the galaxy, close to the middle of the picture.",
+      "Its light left about 30 million years ago, not long after ice first began to spread across Antarctica.",
+    ],
+    simulation: { id: "black-hole", label: "See a black hole's glowing disc" },
+  },
   {
     id: "m30",
     date: "2026-11-05",
@@ -182,6 +210,11 @@ export function pinRaDec(p: Pin) {
   const [d, dm, ds] = p.dec;
   const sign = d < 0 || Object.is(d, -0) ? -1 : 1;
   return { ra: h + m / 60 + s / 3600, dec: sign * (Math.abs(d) + dm / 60 + ds / 3600) };
+}
+
+/** The picture to show on this site: our own copy if there is one, otherwise NASA's or ESA's. */
+export function pinImage(p: Pin) {
+  return p.image.local ? `${import.meta.env.BASE_URL}${p.image.local}` : p.image.src;
 }
 
 /** Plain words for how far away it is. */
