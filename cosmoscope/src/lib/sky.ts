@@ -115,6 +115,8 @@ export interface PlanetTonight {
   /** Where and when to look, in plain words. */
   when: string;
   brightness: string;
+  /** Distance from Earth in au. */
+  au: number;
 }
 
 const NAKED_EYE = [
@@ -185,6 +187,7 @@ export function planetsTonight(timeMs: number): PlanetTonight[] {
       visible,
       when,
       brightness: id === "mercury" ? "Always low and brief, so you need a clear, flat horizon" : brightnessWords(mag),
+      au: delta,
     };
   });
 }
