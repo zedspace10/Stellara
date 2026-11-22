@@ -29,8 +29,6 @@ const WelcomeScreen = page(() => import("@/components/WelcomeScreen"));
 const NotFound = page(() => import("@/pages/not-found"));
 const SolarSystem = page(() => import("@/pages/SolarSystem"));
 const Tonight = page(() => import("@/pages/Tonight"));
-const APOD = page(() => import("@/pages/APOD"));
-const Constellations = page(() => import("@/pages/Constellations"));
 const ScaleOfUniverse = page(() => import("@/pages/ScaleOfUniverse"));
 const ExoplanetExplorer = page(() => import("@/pages/ExoplanetExplorer"));
 const SimulationsLanding = page(() => import("@/pages/simulations/SimulationsLanding"));
@@ -49,6 +47,8 @@ const BlogPost = page(() => import("@/pages/BlogPost"));
 // Pages that have been retired, and where their old links now go.
 const RETIRED: [string, string][] = [
   ["/universe", "/"],
+  ["/apod", "/discoveries"],
+  ["/constellations", "/tonight"],
   ["/galaxy", "/"],
   ["/explore", "/"],
   ["/observatory", "/tonight"],
@@ -77,8 +77,6 @@ function Router() {
         <Switch>
           <Route path="/" component={SolarSystem} />
           <Route path="/tonight" component={Tonight} />
-          <Route path="/apod" component={APOD} />
-          <Route path="/constellations" component={Constellations} />
           <Route path="/scale" component={ScaleOfUniverse} />
           <Route path="/exoplanets" component={ExoplanetExplorer} />
           <Route path="/simulations" component={SimulationsLanding} />

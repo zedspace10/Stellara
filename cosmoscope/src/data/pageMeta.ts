@@ -60,14 +60,6 @@ export const PAGE_META: Record<string, PageMeta> = {
     title: "Other worlds | PALE",
     description: "More than 6,000 planets found around other stars.",
   },
-  "/constellations": {
-    title: "Constellation guide | PALE",
-    description: "The shapes in the sky, how to find them, and their stories.",
-  },
-  "/apod": {
-    title: "Picture of the day | PALE",
-    description: "NASA's astronomy picture of the day.",
-  },
   "/about": {
     title: "About PALE",
     description: "What PALE is, who makes it, and where the science comes from.",
