@@ -32,8 +32,6 @@ const PLACES: Place[] = [
   { path: "/scale", label: "Scale", long: "Scale of the universe", blurb: "Zoom from the Planck length out to the whole universe" },
   { path: "/simulations", label: "Simulations", blurb: "The biggest events in the universe, step by step" },
   { path: "/exoplanets", label: "Other worlds", blurb: "More than 6,000 planets around other stars", tab: "xl" },
-  { path: "/constellations", label: "Constellation guide", blurb: "The shapes in the sky, and their stories" },
-  { path: "/apod", label: "Picture of the day", blurb: "NASA's astronomy picture, new every day" },
 ];
 // Quieter links, at the bottom of the menus.
 const SMALL: Place[] = [

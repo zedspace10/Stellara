@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import Footer from "@/components/Footer";
 import { moon, planetsTonight, nextSeason, showers } from "@/lib/sky";
 import { LATEST_PIN, isThisWeek, pinDistance, pinImage } from "@/data/pins";
+import { shapeFor } from "@/data/monthShapes";
 import { loadNotes, milestonesFor, kmTravelled, whenReached, bigKm, duration, inSentence } from "@/lib/notes";
 
 const C = {
@@ -123,6 +124,7 @@ export default function Tonight() {
   const meteorShowers = useMemo(() => showers(now), [now]);
 
   const note = useMemo(() => noteProgress(now), [now]);
+  const shape = useMemo(() => shapeFor(new Date(now)), [now]);
   const pin = LATEST_PIN;
 
   const visible = planets.filter((p) => p.visible);
@@ -185,6 +187,12 @@ export default function Tonight() {
             {hidden.length > 0 && <>Hidden in the Sun's glare: {hidden.map((p) => p.name).join(", ")}. </>}
             <Link href="/" className="underline underline-offset-4" style={{ color: C.tint }}>See where they are in 3D</Link>
           </p>
+        </Entry>
+
+        <Entry title="One shape to find">
+          <p className="m-0 font-serif text-[22px] leading-tight" style={{ color: C.text }}>{shape.name}</p>
+          <p className="mt-2 mb-0 text-[15px] leading-relaxed" style={{ color: C.text }}>{shape.where}</p>
+          <p className="mt-2 mb-0 text-[14px] leading-relaxed" style={{ color: C.muted }}>{shape.fact}</p>
         </Entry>
 
         <Entry title="Meteors">
@@ -261,9 +269,9 @@ export default function Tonight() {
 
         <div className="py-8 text-[15px] leading-relaxed" style={{ borderTop: `1px solid ${C.border}`, color: C.muted }}>
           <p className="m-0">
-            Want more? Learn the shapes in the sky with the{" "}
-            <Link href="/constellations" className="underline underline-offset-4" style={{ color: C.tint }}>constellation guide</Link>, or see NASA's{" "}
-            <Link href="/apod" className="underline underline-offset-4" style={{ color: C.tint }}>picture of the day</Link>.
+            Want more? See how far away it all is on the{" "}
+            <Link href="/scale" className="underline underline-offset-4" style={{ color: C.tint }}>scale of the universe</Link>, or look back at{" "}
+            <Link href="/discoveries" className="underline underline-offset-4" style={{ color: C.tint }}>the latest pictures</Link>.
           </p>
           <p className="mt-4 mb-0 text-[13px]" style={{ color: C.faint }}>
             Worked out on your device from NASA JPL orbital data. No location needed. Planets low in the sky near the Sun can be hard to spot from the UK.

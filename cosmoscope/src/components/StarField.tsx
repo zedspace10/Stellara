@@ -3,7 +3,7 @@ import { useLocation } from "wouter";
 
 // Most pages paint their own solid background or fill the screen with a picture, so the stars
 // would never be seen there. Only draw them where they show.
-const SHOWN = (path: string) => path === "/apod" || path.startsWith("/exoplanets");
+const SHOWN = (path: string) => path.startsWith("/exoplanets");
 
 const LAYERS = 3;
 

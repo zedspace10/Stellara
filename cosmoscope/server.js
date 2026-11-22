@@ -60,7 +60,7 @@ const EXO_URL =
   `?QUERY=${encodeURIComponent(`select ${EXO_COLS} from pscomppars where pl_controv_flag=0`)}` +
   '&FORMAT=json';
 const DAY = 24 * 60 * 60 * 1000;
-let exo = { body: null, at: 0, pending: null };
+let exo = { body: null, at: 0, pending: null, count: 0 };
 
 async function loadExoplanets() {
   const res = await fetch(EXO_URL, { signal: AbortSignal.timeout(45000) });
@@ -68,25 +68,28 @@ async function loadExoplanets() {
   const body = await res.text();
   const rows = JSON.parse(body);
   if (!Array.isArray(rows) || rows.length < 1000) throw new Error('Archive returned too few planets');
-  exo = { body, at: Date.now(), pending: null };
+  exo = { body, at: Date.now(), pending: null, count: rows.length };
   return body;
+}
+
+// The archive, refreshed at most once a day. If NASA cannot be reached, yesterday's copy is still
+// far better than nothing.
+async function exoplanetBody() {
+  if (exo.body && Date.now() - exo.at <= DAY) return exo.body;
+  // Only one request to NASA at a time; everyone else waits for the same answer.
+  exo.pending = exo.pending || loadExoplanets().finally(() => { exo.pending = null; });
+  try {
+    return await exo.pending;
+  } catch (err) {
+    if (!exo.body) throw err;
+    console.error('Exoplanet refresh failed, serving the saved copy:', err.message);
+    return exo.body;
+  }
 }
 
 app.get('/data/exoplanets', async (req, res) => {
   try {
-    let body = exo.body;
-    if (!body || Date.now() - exo.at > DAY) {
-      // Only one request to NASA at a time; everyone else waits for the same answer.
-      exo.pending = exo.pending || loadExoplanets().finally(() => { exo.pending = null; });
-      try {
-        body = await exo.pending;
-      } catch (err) {
-        // If NASA cannot be reached, yesterday's copy is still far better than nothing.
-        if (!exo.body) throw err;
-        console.error('Exoplanet refresh failed, serving the saved copy:', err.message);
-        body = exo.body;
-      }
-    }
+    const body = await exoplanetBody();
     res.set('Cache-Control', 'public, max-age=3600');
     res.type('application/json').send(body);
   } catch (err) {
@@ -95,59 +98,15 @@ app.get('/data/exoplanets', async (req, res) => {
   }
 });
 
-// NASA's picture of the day, fetched by our own server and shared by every visitor. Without this,
-// each visitor asked NASA directly with the shared demo key, which only allows a few requests an
-// hour, so the page often failed. Set NASA_API_KEY on Railway to a free key from api.nasa.gov.
-const NASA_KEY = process.env.NASA_API_KEY || process.env.VITE_NASA_API_KEY || 'DEMO_KEY';
-const HOUR = 60 * 60 * 1000;
-const apodCache = new Map(); // query -> { body, at, pending }
-const ISO = /^\d{4}-\d{2}-\d{2}$/;
-
-app.get('/data/apod', async (req, res) => {
-  const q = new URLSearchParams();
-  for (const k of ['date', 'start_date', 'end_date']) {
-    const v = req.query[k];
-    if (v === undefined) continue;
-    if (typeof v !== 'string' || !ISO.test(v)) return res.status(400).json({ error: 'Dates look like 2026-11-22' });
-    q.set(k, v);
-  }
-  const key = q.toString();
-  // Today's picture is checked every few hours; older days never change.
-  const today = new Date().toISOString().slice(0, 10);
-  const touchesToday = !key || key.includes(today) || (q.get('end_date') || '') >= today;
-  const maxAge = touchesToday ? 3 * HOUR : 30 * DAY;
-  let entry = apodCache.get(key);
+// Just the number of confirmed planets, for the Other worlds page.
+app.get('/data/exoplanets/count', async (req, res) => {
   try {
-    if (!entry || Date.now() - entry.at > maxAge) {
-      const pending = entry?.pending || (async () => {
-        const r = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${NASA_KEY}${key ? '&' + key : ''}`,
-          { signal: AbortSignal.timeout(20000) });
-        if (!r.ok) throw new Error(`NASA answered ${r.status}`);
-        const body = await r.text();
-        JSON.parse(body);
-        if (apodCache.size > 300) apodCache.delete(apodCache.keys().next().value);
-        apodCache.set(key, { body, at: Date.now(), pending: null });
-        return body;
-      })();
-      if (entry) entry.pending = pending; else apodCache.set(key, { body: null, at: 0, pending });
-      try {
-        await pending;
-      } catch (err) {
-        // A saved copy, even an old one, is better than an error.
-        const saved = apodCache.get(key);
-        if (saved) saved.pending = null;
-        if (!saved?.body) throw err;
-        console.error('Picture of the day refresh failed, serving the saved copy:', err.message);
-      }
-      entry = apodCache.get(key);
-    }
-    res.set('Cache-Control', 'public, max-age=1800');
-    res.type('application/json').send(entry.body);
+    await exoplanetBody();
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.json({ count: exo.count, at: new Date(exo.at).toISOString() });
   } catch (err) {
-    const saved = apodCache.get(key);
-    if (saved && !saved.body) apodCache.delete(key);
-    console.error('Picture of the day error:', err.message);
-    res.status(502).json({ error: 'NASA could not be reached' });
+    console.error('Exoplanet archive error:', err.message);
+    res.status(502).json({ error: 'The exoplanet archive could not be reached' });
   }
 });
 
